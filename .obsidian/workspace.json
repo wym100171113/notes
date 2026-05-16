@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "c00c80f1c963e2f7",
+        "id": "523e89ab6b6c9186",
         "type": "tabs",
         "children": [
           {
-            "id": "fc0bda47654d248f",
+            "id": "69af8316643484b1",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -179,8 +179,10 @@
       "copilot:Open Copilot Chat": false
     }
   },
-  "active": "fc0bda47654d248f",
+  "active": "5f386619aeebac77",
   "lastOpenFiles": [
+    "物理/壳层定理.md",
+    "数学笔记/贝叶斯定理.md",
     "物理/球壳与质点间引力的推导.md",
     "数学笔记/代数/韦达定理.md",
     "数学笔记/数列",
@@ -198,7 +200,7 @@
     "Excalidraw/侯氏制碱法.md",
     "语文/文言文中的谦辞总结.md",
     "化学笔记/燃烧热的计算.md",
-    "排序不等式与切比雪夫不等式.md",
+    "数学笔记/不等式/排序不等式与切比雪夫不等式.md",
     "化学笔记/侯氏制碱法1.md",
     "化学笔记/侯氏制碱法2.md",
     "Excalidraw/Drawing 2026-04-17 19.37.56.excalidraw.restored.md",
@@ -207,8 +209,6 @@
     "Excalidraw/Drawing 2026-04-17 19.23.13.excalidraw.md",
     "语文/乡土中国.md",
     "物理/黑体辐射.md",
-    "Excalidraw/Drawing 2026-04-17 18.54.16.excalidraw.md",
-    "Excalidraw/Drawing 2026-04-17 18.48.12.excalidraw.md",
     "语文",
     "英语",
     "物理/Pasted image 20260109183719.png",

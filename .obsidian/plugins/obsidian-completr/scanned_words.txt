@@ -2821,6 +2821,7 @@ AzLacHhB
 AzseoaBO
 AvD
 AhzfXP
+Acid
 GM
 Gc
 GL
@@ -7064,6 +7065,7 @@ sSZa
 sQDqZTMf
 sqXhp
 sVqcR
+staggered
 leq
 le
 left
@@ -9920,6 +9922,7 @@ dYUqv
 dlkEwH
 dYxdJR
 dMK
+damped
 cdots
 choose
 cup
@@ -22534,6 +22537,8 @@ LnO
 LnvurujY
 LJyQ
 Lambert
+Lactic
+Likelihood
 quad
 qt
 ql
@@ -26796,6 +26801,7 @@ DYScY
 DaYLp
 DMnTF
 DbWaU
+Diastereomers
 to
 times
 tH
@@ -30906,6 +30912,7 @@ pVTjY
 pQFJad
 pfjjK
 pFxHa
+probability
 approx
 align
 array
@@ -35054,6 +35061,7 @@ ebRYt
 eTrR
 eei
 eXkGhBPF
+eclipsed
 Cf
 Cdf
 Cu
@@ -36479,6 +36487,12 @@ CpjCYTIi
 CvWeW
 CrfHzLU
 CpuiH
+Chirality
+Constitutional
+Chain
+Conformational
+Critically
+Conditional
 Rightarrow
 Reference
 Rh
@@ -37894,6 +37908,7 @@ RVMX
 RukTBuNb
 RYUuqoMj
 RmIzNlTJ
+Ritonavir
 xdx
 xp
 xM
@@ -44968,6 +44983,12 @@ PxGquJ
 PECVC
 PQta
 PaOZ
+Polymorphism
+Position
+Posterior
+Prior
+Probability
+Positive
 IHDR
 Ip
 Ih
@@ -46438,6 +46459,8 @@ IZMph
 IyN
 IIdOKDQ
 IwlcC
+Isomerism
+Isomers
 Kl
 KM
 Ku
@@ -50756,6 +50779,7 @@ ObhZ
 Okdl
 OWiA
 OOz
+Overdamped
 BM
 Bp
 BK
@@ -52105,6 +52129,8 @@ BdRrxyBR
 BSjGhu
 BBv
 Binet
+Bayes
+Base
 zG
 zM
 zk
@@ -61852,6 +61878,7 @@ SRI
 SlMuvTfF
 SmFcHf
 Scherrer
+Stereoisomers
 Uo
 UC
 Ug
@@ -63245,6 +63272,7 @@ UNpg
 USyQm
 UpXtD
 UBoAPrAl
+Underdamped
 Ylm
 Ygv
 Yd
@@ -66183,6 +66211,7 @@ MuTUUG
 MOsa
 MJCb
 MCe
+Marginal
 Qh
 Qu
 QQm
@@ -69168,6 +69197,7 @@ EGM
 EwbuvGy
 EnOuXp
 EUM
+Enantiomers
 TI
 TK
 Tu
@@ -70572,6 +70602,8 @@ TMdnI
 TOWX
 TUir
 Theorem
+Thalidomide
+Trans
 ÄLa
 ÄN
 Ät
@@ -73384,6 +73416,8 @@ FnMd
 FAeKgfXq
 Formula
 FWHM
+Fallacy
+False
 ÜVK
 Üt
 ÜF

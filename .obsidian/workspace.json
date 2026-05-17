@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "ccf7fdbebd583fe1",
+        "id": "918e36acb79ab28e",
         "type": "tabs",
         "children": [
           {
-            "id": "f8fec60edc5a43df",
+            "id": "fe74023daab89538",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "数学笔记/数列/通项与和的关系.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "通项与和的关系"
+              "title": "新标签页"
             }
           }
         ]
@@ -174,7 +170,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5
+    "width": 392.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -184,18 +181,20 @@
       "obsidian-excalidraw-plugin:新建绘图文件": false,
       "bases:新建数据库": false,
       "switcher:打开快速切换": false,
-      "graph:查看关系图谱": false,
       "canvas:新建白板": false,
       "daily-notes:打开/创建今天的日记": false,
       "templates:插入模板": false,
       "command-palette:打开命令面板": false,
-      "copilot:Open Copilot Chat": false
+      "copilot:Open Copilot Chat": false,
+      "graph:查看关系图谱": false
     }
   },
-  "active": "f8fec60edc5a43df",
+  "active": "fe74023daab89538",
   "lastOpenFiles": [
-    "数学笔记/数列/通项与和的关系.md",
+    "copilot/copilot-conversations/复数与负数运算@20260406_202240.md",
+    "全概率公式.md",
     "数学笔记/数列/数列中 aₙ, aₙ₊₁, Sₙ, Sₙ₊₁ 之间关系的系统解析.md",
+    "数学笔记/数列/通项与和的关系.md",
     "数学笔记/数列/等差数列与等比数列的求和公式.md",
     "数学笔记/数列/等差与等比数列的求和公式：不同已知条件下的灵活应用.md",
     "物理/动能与动量.md",
@@ -220,8 +219,6 @@
     "化学笔记/侯氏制碱法1.md",
     "化学笔记/侯氏制碱法2.md",
     "Excalidraw/Drawing 2026-04-17 19.37.56.excalidraw.restored.md",
-    "Excalidraw/Drawing 2026-03-28 17.02.49.excalidraw.md",
-    "Excalidraw/Drawing 2026-04-17 19.34.03.excalidraw.md",
     "语文",
     "英语",
     "物理/Pasted image 20260109183719.png",

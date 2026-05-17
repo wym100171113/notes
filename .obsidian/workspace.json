@@ -8,13 +8,17 @@
         "type": "tabs",
         "children": [
           {
-            "id": "8e9e9f3303abd586",
+            "id": "f8fec60edc5a43df",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "数学笔记/数列/通项与和的关系.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新标签页"
+              "title": "通项与和的关系"
             }
           }
         ]
@@ -154,14 +158,23 @@
               "icon": "message-square",
               "title": "Copilot"
             }
+          },
+          {
+            "id": "5483f1ff5cfe0e8c",
+            "type": "leaf",
+            "state": {
+              "type": "git-view",
+              "state": {},
+              "icon": "git-pull-request",
+              "title": "Source Control"
+            }
           }
         ],
-        "currentTab": 4
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 392.5,
-    "collapsed": true
+    "width": 392.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -181,13 +194,14 @@
   },
   "active": "5f386619aeebac77",
   "lastOpenFiles": [
-    "未命名.md",
+    "数学笔记/数列/通项与和的关系.md",
+    "数学笔记/数列/数列中 aₙ, aₙ₊₁, Sₙ, Sₙ₊₁ 之间关系的系统解析.md",
+    "数学笔记/数列/等差数列与等比数列的求和公式.md",
+    "数学笔记/数列/等差与等比数列的求和公式：不同已知条件下的灵活应用.md",
     "物理/动能与动量.md",
     "物理/弹簧振子与阻尼振子的运动方程推导.md",
     "物理/X射线衍射.md",
     "数学笔记/贝叶斯定理.md",
-    "数学笔记/数列/数列中 aₙ, aₙ₊₁, Sₙ, Sₙ₊₁ 之间关系的系统解析.md",
-    "数学笔记/数列/等差数列与等比数列的求和公式.md",
     "物理/壳层定理.md",
     "物理/球壳与质点间引力的推导.md",
     "物理/运动学中的微分方程建模与求解.md",
@@ -208,7 +222,6 @@
     "Excalidraw/Drawing 2026-04-17 19.37.56.excalidraw.restored.md",
     "Excalidraw/Drawing 2026-03-28 17.02.49.excalidraw.md",
     "Excalidraw/Drawing 2026-04-17 19.34.03.excalidraw.md",
-    "Excalidraw/Drawing 2026-04-17 19.23.13.excalidraw.md",
     "语文",
     "英语",
     "物理/Pasted image 20260109183719.png",

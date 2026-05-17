@@ -174,7 +174,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5
+    "width": 392.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -192,7 +193,7 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "5f386619aeebac77",
+  "active": "10eb3106667a545d",
   "lastOpenFiles": [
     "语文/高考语文阅读题型系统梳理.md",
     "物理/弹簧振子与阻尼振子的运动方程推导.md",

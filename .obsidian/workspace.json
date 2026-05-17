@@ -174,7 +174,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5
+    "width": 392.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -192,7 +193,7 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "5f386619aeebac77",
+  "active": "5390035dc704935a",
   "lastOpenFiles": [
     "化学笔记/化学小随笔.md",
     "化学笔记/杂化轨道理论.md",

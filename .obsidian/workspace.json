@@ -8,13 +8,13 @@
         "type": "tabs",
         "children": [
           {
-            "id": "28a11820a3dd0751",
+            "id": "5390035dc704935a",
             "type": "leaf",
             "state": {
-              "type": "graph",
+              "type": "empty",
               "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "icon": "lucide-file",
+              "title": "新标签页"
             }
           }
         ]
@@ -188,7 +188,7 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "28a11820a3dd0751",
+  "active": "5390035dc704935a",
   "lastOpenFiles": [
     "英语/听力文本词汇与表达精析2.md",
     "英语/听力文本词汇与表达精析1.md",

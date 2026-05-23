@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "dcb57bcc2c733705",
+        "id": "815901334635b96e",
         "type": "tabs",
         "children": [
           {
-            "id": "5a41f68fd0596050",
+            "id": "c6eed649825f2375",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -189,7 +189,7 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "5a41f68fd0596050",
+  "active": "c6eed649825f2375",
   "lastOpenFiles": [
     "数学笔记/数列/幂和公式及推导.md",
     "数学笔记/数列/数列与微分方程核心方法：原理、推导及线性代数本质.md",

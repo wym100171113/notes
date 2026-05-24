@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "数学笔记/总纲.md",
-                "mode": "source",
+                "file": "数学笔记/数学笔记index.md",
+                "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "总纲"
+              "title": "数学笔记index"
             }
           }
         ]
@@ -78,7 +78,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 300
+    "width": 300,
+    "collapsed": true
   },
   "right": {
     "id": "ce3e918e8bd84c7a",
@@ -170,12 +171,11 @@
             }
           }
         ],
-        "currentTab": 4
+        "currentTab": 5
       }
     ],
     "direction": "horizontal",
-    "width": 392.5,
-    "collapsed": true
+    "width": 392.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -195,9 +195,12 @@
   },
   "active": "8fedda5e601d4850",
   "lastOpenFiles": [
+    "数学笔记/数学笔记index.base",
+    "数学笔记/数学笔记index.md",
+    "数学笔记/总纲.md",
+    "数学笔记/随笔/随笔.md",
     "未命名.md",
     "数学笔记/数列/通项与和的关系.md",
-    "数学笔记/总纲.md",
     "数学笔记/数列/幂和公式及推导.md",
     "数学笔记/数列/数列与微分方程核心方法：原理、推导及线性代数本质.md",
     "数学笔记/数列/等差数列与等比数列的求和公式.md",
@@ -205,9 +208,7 @@
     "数学笔记/数列/等差与等比数列的求和公式：不同已知条件下的灵活应用.md",
     "数列.md",
     "数学笔记/向量/向量.md",
-    "数学笔记/数学笔记index.md",
     "数学笔记/杂项",
-    "数学笔记/数学笔记index.base",
     "未命名 1.md",
     "copilot/copilot-conversations/文件夹文件大索引生成@20260524_111555.md",
     "化学笔记/化学反应平衡移动的影响因素.md",
@@ -225,8 +226,6 @@
     "数学笔记/杂项/摆线.md",
     "数学笔记/杂项/运算,逆运算,函数,反函数.md",
     "数学笔记/杂项/2603.21852v2.pdf",
-    "数学笔记/杂项/贝叶斯定理.md",
-    "化学笔记/化学.md",
     "化学笔记/化学5月16日错题集合.pdf",
     "语文/（分类整理）高一下学期期中考前文言复习.pdf",
     "语文/《乡土中国》期中考前复习.pdf",

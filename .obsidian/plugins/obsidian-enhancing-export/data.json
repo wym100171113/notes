@@ -16,7 +16,8 @@
       "name": "Typst"
     },
     {
-      "name": "PDF"
+      "name": "PDF",
+      "customArguments": "--pdf-engine=xelatex"
     },
     {
       "name": "Word (.docx)"
@@ -59,6 +60,5 @@
   "lastExportDirectory": {
     "darwin": "/Users/thomaswang/Downloads"
   },
-  "lastExportType": "Latex",
   "lastEditName": "PDF"
 }

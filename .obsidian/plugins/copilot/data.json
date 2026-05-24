@@ -21,8 +21,8 @@
   "amazonBedrockRegion": "",
   "siliconflowApiKey": "",
   "githubCopilotAccessToken": "ghu_WT6DiFVBp6HWN8LMdSOl9xEw3D6qPs29BAfP",
-  "githubCopilotToken": "tid=230f49084310d9c8aa5aabe9b963b36f;exp=1775479962;sku=free_limited_copilot;proxy-ep=proxy.individual.githubcopilot.com;st=dotcom;chat=1;cit=1;malfil=1;editor_preview_features=1;agent_mode=1;agent_mode_auto_approval=1;mcp=1;client_byok=0;rt=1;8kp=1;ip=180.164.102.247;asn=AS4812;cq=4000;rd=1776470400:2a8d6152a2a96337d715ed93c57239e511174bbb91087a2ff12eebb09505d43e",
-  "githubCopilotTokenExpiresAt": 1775479962000,
+  "githubCopilotToken": "tid=230f49084310d9c8aa5aabe9b963b36f;exp=1779594624;iat=1779592824;sku=free_limited_copilot;proxy-ep=proxy.individual.githubcopilot.com;st=dotcom;chat=1;cit=1;malfil=1;editor_preview_features=1;agent_mode=1;agent_mode_auto_approval=1;mcp=1;blackbird_external_indexing=1;client_byok=0;rt=1;ip=104.28.240.135;asn=AS13335;cq=4000;rd=1781740800:952869b84399251ebafe3398acaa3e57e2bdaf12ecb71c807770ace6d8bcbaa8",
+  "githubCopilotTokenExpiresAt": 1779594624000,
   "defaultChainType": "llm_chain",
   "defaultModelKey": "google/gemini-2.5-flash|openrouterai",
   "embeddingModelKey": "openai/text-embedding-3-small|openrouterai",
@@ -78,7 +78,7 @@
     {
       "name": "gpt-5.5",
       "provider": "openai",
-      "enabled": true,
+      "enabled": false,
       "isBuiltIn": true,
       "core": true,
       "capabilities": [
@@ -88,27 +88,7 @@
     {
       "name": "gpt-5.4-mini",
       "provider": "openai",
-      "enabled": true,
-      "isBuiltIn": true,
-      "core": true,
-      "capabilities": [
-        "vision"
-      ]
-    },
-    {
-      "name": "gpt-5.4",
-      "provider": "openai",
       "enabled": false,
-      "isBuiltIn": true,
-      "core": true,
-      "capabilities": [
-        "vision"
-      ]
-    },
-    {
-      "name": "gpt-5-mini",
-      "provider": "openai",
-      "enabled": true,
       "isBuiltIn": true,
       "core": true,
       "capabilities": [
@@ -126,9 +106,9 @@
       ]
     },
     {
-      "name": "gemini-3.1-flash-lite-preview",
+      "name": "gemini-3.1-flash-lite",
       "provider": "google",
-      "enabled": true,
+      "enabled": false,
       "isBuiltIn": true,
       "projectEnabled": true,
       "capabilities": [
@@ -177,7 +157,7 @@
       ]
     },
     {
-      "name": "openai/gpt-5.4",
+      "name": "openai/gpt-5.5",
       "provider": "openrouterai",
       "enabled": false,
       "isBuiltIn": true,
@@ -188,7 +168,7 @@
       ]
     },
     {
-      "name": "openai/gpt-5-mini",
+      "name": "openai/gpt-5.4-mini",
       "provider": "openrouterai",
       "enabled": false,
       "isBuiltIn": true,
@@ -199,7 +179,7 @@
       ]
     },
     {
-      "name": "grok-4-1-fast",
+      "name": "grok-4.3",
       "provider": "xai",
       "enabled": false,
       "isBuiltIn": true,
@@ -210,7 +190,7 @@
       ]
     },
     {
-      "name": "x-ai/grok-4.1-fast",
+      "name": "x-ai/grok-4.3",
       "provider": "openrouterai",
       "enabled": false,
       "isBuiltIn": true,
@@ -243,7 +223,17 @@
       ]
     },
     {
-      "name": "claude-opus-4-6",
+      "name": "claude-opus-4-7",
+      "provider": "anthropic",
+      "enabled": false,
+      "isBuiltIn": true,
+      "capabilities": [
+        "reasoning",
+        "vision"
+      ]
+    },
+    {
+      "name": "claude-haiku-4-5",
       "provider": "anthropic",
       "enabled": false,
       "isBuiltIn": true,
@@ -301,14 +291,14 @@
       "name": "deepseek-ai/DeepSeek-V3",
       "provider": "siliconflow",
       "enabled": false,
-      "isBuiltIn": false,
+      "isBuiltIn": true,
       "baseUrl": "https://api.siliconflow.com/v1"
     },
     {
       "name": "deepseek-ai/DeepSeek-R1",
       "provider": "siliconflow",
-      "enabled": true,
-      "isBuiltIn": false,
+      "enabled": false,
+      "isBuiltIn": true,
       "baseUrl": "https://api.siliconflow.com/v1",
       "capabilities": [
         "reasoning"
@@ -317,7 +307,7 @@
     {
       "name": "gpt-5.4",
       "provider": "github-copilot",
-      "enabled": true
+      "enabled": false
     },
     {
       "name": "gemini-3.1-pro-preview",
@@ -327,7 +317,7 @@
     {
       "name": "gpt-41-copilot",
       "provider": "github-copilot",
-      "enabled": false
+      "enabled": true
     },
     {
       "name": "gpt-4.1",
@@ -456,7 +446,7 @@
   "defaultConversationNoteName": "{$topic}@{$date}_{$time}",
   "inlineEditCommands": [],
   "projectList": [],
-  "lastDismissedVersion": "3.2.6",
+  "lastDismissedVersion": "3.3.3",
   "passMarkdownImages": true,
   "enableAutonomousAgent": true,
   "enableCustomPromptTemplating": true,

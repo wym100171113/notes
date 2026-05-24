@@ -1,0 +1,12 @@
+views:
+  - type: table
+    name: 表格
+    filters:
+      and:
+        - file.inFolder("数学笔记")
+    groupBy:
+      property: file.folder
+      direction: ASC
+    sort:
+      - property: file.mtime
+        direction: DESC

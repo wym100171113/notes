@@ -7,5 +7,7 @@
   "obsidian-enhancing-mindmap",
   "obsidian-git",
   "editing-toolbar",
-  "better-export-pdf"
+  "better-export-pdf",
+  "latex-exporter",
+  "pdf-plus"
 ]

@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "85033242e27eb014",
+        "id": "7cf1e5b2f64be69f",
         "type": "tabs",
         "children": [
           {
-            "id": "8fedda5e601d4850",
+            "id": "9dd63990d30aef21",
             "type": "leaf",
             "state": {
-              "type": "graph",
+              "type": "empty",
               "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "icon": "lucide-file",
+              "title": "新标签页"
             }
           }
         ]
@@ -189,8 +189,9 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "8fedda5e601d4850",
+  "active": "9dd63990d30aef21",
   "lastOpenFiles": [
+    "数学笔记/IMMC/unsolved.md",
     "数学笔记/数学笔记index.md",
     "数学笔记/数学笔记index.base",
     "数学笔记/总纲.md",

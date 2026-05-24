@@ -8,5 +8,7 @@ views:
       property: file.folder
       direction: ASC
     sort:
+      - property: file.name
+        direction: DESC
       - property: file.mtime
         direction: DESC

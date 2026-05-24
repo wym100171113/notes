@@ -9,5 +9,8 @@
   "editing-toolbar",
   "better-export-pdf",
   "latex-exporter",
-  "pdf-plus"
+  "pdf-plus",
+  "obsidian-pandoc",
+  "obsidian-enhancing-export",
+  "obsidian-tikzjax"
 ]

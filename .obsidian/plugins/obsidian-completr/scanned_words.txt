@@ -2877,6 +2877,7 @@ ADm
 Abel
 API
 ASCII
+Airy
 GM
 Gc
 GL
@@ -7258,6 +7259,9 @@ sXu
 stroke
 shiwens
 shiwen
+stable
+self
+sinc
 leq
 le
 left
@@ -10199,6 +10203,7 @@ dike
 dlink
 direction
 dTTP
+disk
 cdots
 choose
 cup
@@ -11714,6 +11719,8 @@ cRc
 course
 cstr
 cshangxi
+contents
+chaos
 frac
 forall
 fg
@@ -13106,6 +13113,8 @@ fgc
 filters
 folder
 flash
+frequency
+focus
 in
 infty
 id
@@ -16146,6 +16155,7 @@ rto
 rkp
 rwM
 rrgbcf
+rad
 varnothing
 vee
 vdu
@@ -19048,6 +19058,7 @@ wsD
 wSZ
 wYU
 wpF
+wym
 notin
 neq
 ne
@@ -20442,6 +20453,9 @@ nSO
 ntB
 nAk
 nDS
+natural
+normal
+node
 bigcup
 bigcap
 begin
@@ -26151,6 +26165,7 @@ mWayw
 mtime
 model
 mingjus
+mode
 Delta
 Dr
 DWh
@@ -28945,6 +28960,7 @@ tPsL
 tld
 txn
 tBn
+trajectory
 kern
 kA
 kl
@@ -31799,6 +31815,8 @@ pSw
 phqz
 property
 provided
+phase
+phenomenon
 approx
 align
 array
@@ -33255,6 +33273,7 @@ awf
 authorv
 aspx
 astr
+angular
 omega
 operatorname
 ou
@@ -34667,6 +34686,7 @@ oPMv
 oIA
 obsidian
 openrouterai
+oscillation
 end
 epsilon
 exists
@@ -36099,6 +36119,8 @@ eFR
 eBD
 ebBt
 errorChunk
+excited
+extraordinary
 Cf
 Cdf
 Cu
@@ -46237,6 +46259,8 @@ PVZ
 PGA
 Point
 Parametric
+Phase
+Portrait
 IHDR
 Ip
 Ih
@@ -47740,6 +47764,8 @@ INj
 Isotope
 Incubation
 Intercept
+Irradiance
+IEEE
 Kl
 KM
 Ku
@@ -53514,6 +53540,7 @@ BAPDCH
 BpZ
 BSd
 BBVV
+Brewster
 zG
 zM
 zk
@@ -57777,6 +57804,7 @@ jcD
 jHw
 jNJ
 jiucuo
+jump
 Ju
 JB
 JY
@@ -67838,6 +67866,8 @@ MCd
 Moi
 Meselson
 Model
+MRI
+MEMS
 Qh
 Qu
 QQm

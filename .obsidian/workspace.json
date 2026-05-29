@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "语文/答司马谏议书.md",
+                "file": "数学笔记/代数/韦达定理.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "答司马谏议书"
+              "title": "韦达定理"
             }
           }
         ]
@@ -196,8 +196,10 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "5f386619aeebac77",
+  "active": "dbd778a8e3a4a107",
   "lastOpenFiles": [
+    "数学笔记/代数/toPdfViaTempFile1159-0.html",
+    "数学笔记/代数/toPdfViaTempFile1159-1.pdf",
     "语文/答司马谏议书.md",
     "数学笔记/数列/数列与微分方程核心方法：原理、推导及线性代数本质.md",
     "数学笔记/数列/toPdfViaTempFile31850-0.html",
@@ -232,7 +234,6 @@
     "数学笔记/随笔/导数(简要总结).md",
     "数学笔记(外)/方程运算表.pdf",
     "数学笔记(外)/偏微分方程.pdf",
-    "数学笔记/微积分/积分表公式推导（打印版1）.pdf",
     "物理/Pasted image 20260109183719.png",
     "数学笔记(外)/elementary-math-master/content/plane-geometry/pic/2017-02-09-01-01.png",
     "图片引用/Derivative_-_geometric_meaning.svg.png",

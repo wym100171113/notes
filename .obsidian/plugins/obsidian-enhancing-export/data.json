@@ -16,8 +16,7 @@
       "name": "Typst"
     },
     {
-      "name": "PDF",
-      "customArguments": "--pdf-engine=weasyprint"
+      "name": "PDF"
     },
     {
       "name": "Word (.docx)"
@@ -59,6 +58,5 @@
   "showExportProgressBar": true,
   "lastExportDirectory": {
     "darwin": "/Users/thomaswang/Downloads"
-  },
-  "lastEditName": "PDF"
+  }
 }

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "数学笔记/代数/韦达定理.md",
-                "mode": "source",
-                "source": false
+                "file": "数学笔记/不等式/AM-GM不等式.md",
+                "mode": "preview",
+                "source": true
               },
               "icon": "lucide-file",
-              "title": "韦达定理"
+              "title": "AM-GM不等式"
             }
           }
         ]
@@ -198,6 +198,7 @@
   },
   "active": "dbd778a8e3a4a107",
   "lastOpenFiles": [
+    "数学笔记/代数/韦达定理.md",
     "数学笔记/代数/toPdfViaTempFile1159-0.html",
     "数学笔记/代数/toPdfViaTempFile1159-1.pdf",
     "语文/答司马谏议书.md",
@@ -233,7 +234,6 @@
     "数学笔记/杂项/常见函数导数表.md",
     "数学笔记/随笔/导数(简要总结).md",
     "数学笔记(外)/方程运算表.pdf",
-    "数学笔记(外)/偏微分方程.pdf",
     "物理/Pasted image 20260109183719.png",
     "数学笔记(外)/elementary-math-master/content/plane-geometry/pic/2017-02-09-01-01.png",
     "图片引用/Derivative_-_geometric_meaning.svg.png",

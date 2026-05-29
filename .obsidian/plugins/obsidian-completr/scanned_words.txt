@@ -4330,6 +4330,7 @@ GGA
 GjD
 GWC
 GPS
+General
 Xn
 Xi
 Xe
@@ -21801,6 +21802,7 @@ bRS
 bXl
 bLT
 bbvv
+based
 Leftrightarrow
 Lu
 LI
@@ -37561,6 +37563,7 @@ Chase
 CsCl
 Calvin
 Cycle
+Coordinates
 Rightarrow
 Reference
 Rh
@@ -44834,6 +44837,8 @@ Vev
 VfDQ
 VUe
 Vub
+Vector
+Vulkan
 PNG
 Pe
 Ph
@@ -46230,6 +46235,8 @@ Poc
 PFe
 PVZ
 PGA
+Point
+Parametric
 IHDR
 Ip
 Ih
@@ -47732,6 +47739,7 @@ Ido
 INj
 Isotope
 Incubation
+Intercept
 Kl
 KM
 Ku
@@ -52131,6 +52139,7 @@ Oydd
 OdZV
 OMQ
 Oiu
+OpenGL
 BM
 Bp
 BK
@@ -63439,6 +63448,7 @@ SCh
 Sampling
 Separation
 Stahl
+Slope
 Uo
 UC
 Ug
@@ -73708,6 +73718,7 @@ HBJ
 HcSg
 HRg
 Hershey
+Homogeneous
 Fb
 FG
 Fj
@@ -75177,6 +75188,7 @@ Fvx
 Fvb
 Fsr
 Faulhaber
+Forms
 ÜVK
 Üt
 ÜF

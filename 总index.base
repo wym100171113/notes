@@ -1,0 +1,11 @@
+views:
+  - type: table
+    name: 表格
+    groupBy:
+      property: file.folder
+      direction: ASC
+    order:
+      - file.name
+    sort:
+      - property: file.mtime
+        direction: DESC

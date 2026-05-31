@@ -189,7 +189,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5
+    "width": 392.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -212,6 +213,8 @@
   },
   "active": "c70d6afa430210f5",
   "lastOpenFiles": [
+    "欢迎.md",
+    "README.md",
     "物理/光学电学/物理光学.md",
     "物理/光学电学/电磁学.md",
     "物理/力学运动学/拉格朗日方程.md",
@@ -246,8 +249,6 @@
     "数学笔记/随笔/随笔.md",
     "数学笔记/数列/通项与和的关系.md",
     "数学笔记/数列/数列中 aₙ, aₙ₊₁, Sₙ, Sₙ₊₁ 之间关系的系统解析.md",
-    "数学笔记/数列/等差与等比数列的求和公式：不同已知条件下的灵活应用.md",
-    "数列.md",
     "物理/随笔/Pasted image 20260109183719.png",
     "数学笔记(外)/elementary-math-master/content/plane-geometry/pic/2017-02-09-01-01.png",
     "图片引用/Derivative_-_geometric_meaning.svg.png",

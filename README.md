@@ -12,3 +12,10 @@
 - 🕒 **版本可追踪**：每一次修改都被记录，可随时回滚  
 - 📦 **跨设备同步**：可在多台设备上克隆仓库并使用 Obsidian 打开  
 - 👀 **公开仓库**：内容公开，任何人可见  
+
+---
+
+## 🔗 相关链接
+
+- [Pkmer-Math]((https://github.com/PKM-er/Pkmer-Math)
+- [MathWiki](https://github.com/zhaoshenzhai/mathwiki)

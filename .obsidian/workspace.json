@@ -174,7 +174,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5
+    "width": 392.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -195,7 +196,7 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "5f386619aeebac77",
+  "active": "01ba6f40fdbb5aa2",
   "lastOpenFiles": [
     "语文/论卡夫卡《变形记》中人的异化问题.pdf",
     "语文/卡夫卡《变形记》中的异化问题到现代生活中的异化.md",

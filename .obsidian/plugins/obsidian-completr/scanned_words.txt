@@ -1421,6 +1421,7 @@ NYB
 NhY
 NzD
 Nrr
+Notes
 AM
 Au
 Ah
@@ -2878,6 +2879,7 @@ Abel
 API
 ASCII
 Airy
+Abbe
 GM
 Gc
 GL
@@ -4332,6 +4334,8 @@ GjD
 GWC
 GPS
 General
+Gabor
+GitHub
 Xn
 Xi
 Xe
@@ -11721,6 +11725,7 @@ cstr
 cshangxi
 contents
 chaos
+commit
 frac
 forall
 fg
@@ -27585,6 +27590,8 @@ DxD
 DESC
 DNA
 Detection
+DMD
+Dennis
 to
 times
 tH
@@ -31817,6 +31824,7 @@ property
 provided
 phase
 phenomenon
+push
 approx
 align
 array
@@ -33274,6 +33282,7 @@ authorv
 aspx
 astr
 angular
+accommodation
 omega
 operatorname
 ou
@@ -36121,6 +36130,7 @@ ebBt
 errorChunk
 excited
 extraordinary
+experiment
 Cf
 Cdf
 Cu
@@ -37586,6 +37596,7 @@ CsCl
 Calvin
 Cycle
 Coordinates
+CGH
 Rightarrow
 Reference
 Rh
@@ -44861,6 +44872,7 @@ VUe
 Vub
 Vector
 Vulkan
+Vault
 PNG
 Pe
 Ph
@@ -46261,6 +46273,7 @@ Point
 Parametric
 Phase
 Portrait
+Porter
 IHDR
 Ip
 Ih
@@ -73749,6 +73762,7 @@ HcSg
 HRg
 Hershey
 Homogeneous
+Holography
 Fb
 FG
 Fj
@@ -75219,6 +75233,7 @@ Fvb
 Fsr
 Faulhaber
 Forms
+Features
 ÜVK
 Üt
 ÜF

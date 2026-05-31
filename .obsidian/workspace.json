@@ -27,12 +27,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "物理/光学电学/物理光学.md",
+                "file": "README.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "物理光学"
+              "title": "README"
             }
           }
         ],
@@ -210,10 +210,10 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "5f386619aeebac77",
+  "active": "c70d6afa430210f5",
   "lastOpenFiles": [
-    "物理/光学电学/电磁学.md",
     "物理/光学电学/物理光学.md",
+    "物理/光学电学/电磁学.md",
     "物理/力学运动学/拉格朗日方程.md",
     "物理/力学运动学/机械振动.md",
     "物理/热力学",

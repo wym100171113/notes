@@ -17,5 +17,6 @@
 
 ## 🔗 相关链接
 
-- [Pkmer-Math]((https://github.com/PKM-er/Pkmer-Math)
-- [MathWiki](https://github.com/zhaoshenzhai/mathwiki)
+- 🔗 [Pkmer-Math]((https://github.com/PKM-er/Pkmer-Math)
+- 🔗 [MathWiki](https://github.com/zhaoshenzhai/mathwiki)
+- 🔗 [OpenText](https://github.com/insile/OpenText)

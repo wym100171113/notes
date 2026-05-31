@@ -8,17 +8,17 @@
         "type": "tabs",
         "children": [
           {
-            "id": "2493dc9f19df1186",
+            "id": "1620d88140a0e464",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "数学笔记/代数/韦达定理.md",
+                "file": "未命名.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "韦达定理"
+              "title": "未命名"
             }
           }
         ]
@@ -196,11 +196,12 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "5f386619aeebac77",
+  "active": "1620d88140a0e464",
   "lastOpenFiles": [
-    "韦达定理.md",
-    "韦达定理.md",
     "数学笔记/代数/韦达定理.md",
+    "未命名.md",
+    "韦达定理.md",
+    "韦达定理.md",
     "物理/力学运动学/机械振动.md",
     "物理/力学运动学/逐差法.md",
     "物理/力学运动学/喷射液体的功率问题.md",
@@ -232,7 +233,6 @@
     "数学笔记/解析几何/直线的方程与线性代数表示.md",
     "数学笔记/解析几何",
     "数学笔记/解析几何/直线在二维空间的解析方程与线性代数表达.md",
-    "数学笔记/不等式/AM-GM不等式.md",
     "数学笔记/代数/toPdfViaTempFile1159-0.html",
     "数学笔记/代数/toPdfViaTempFile1159-1.pdf",
     "物理/随笔/Pasted image 20260109183719.png",

@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "物理/光学电学/物理光学.md",
+                "file": "英语/虚拟语气.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "物理光学"
+              "title": "虚拟语气"
             }
           }
         ]
@@ -198,9 +198,14 @@
   },
   "active": "2493dc9f19df1186",
   "lastOpenFiles": [
+    "物理/光学电学/物理光学.md",
+    "物理/热力学/黑体辐射.md",
+    "微分方程.md",
+    "未命名.md",
+    "fuck.md",
+    "物理/力学运动学/逐差法.md",
     "物理/光学电学/电磁学.md",
     "物理/力学运动学/拉格朗日方程.md",
-    "物理/光学电学/物理光学.md",
     "数学笔记/随笔/求导.md",
     "总index.md",
     "总index.base",
@@ -230,11 +235,6 @@
     "数学笔记/代数/toPdfViaTempFile1159-1.pdf",
     "语文/答司马谏议书.md",
     "数学笔记/数列/数列与微分方程核心方法：原理、推导及线性代数本质.md",
-    "未命名 1.md",
-    "数学笔记/向量/向量.md",
-    "数学笔记/数列/幂和公式及推导.md",
-    "数学笔记/数列/等差数列与等比数列的求和公式.md",
-    "生物/遗传学三定律、原理与计算方法.md",
     "物理/随笔/Pasted image 20260109183719.png",
     "数学笔记(外)/elementary-math-master/content/plane-geometry/pic/2017-02-09-01-01.png",
     "图片引用/Derivative_-_geometric_meaning.svg.png",

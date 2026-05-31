@@ -17,7 +17,7 @@
     },
     {
       "name": "PDF",
-      "customArguments": "--pdf-engine=xelatex -V CJKmainfont=\"SimSun\""
+      "customArguments": "--pdf-engine=xelatex -V mainfont=\"Songti SC\""
     },
     {
       "name": "Word (.docx)"

@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "42c5714e8ddc69f6",
+        "id": "9794c451b44f7ea5",
         "type": "tabs",
         "children": [
           {
-            "id": "a8cc582324d7af19",
+            "id": "78523b18eaa5540b",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -191,8 +191,12 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "a8cc582324d7af19",
+  "active": "78523b18eaa5540b",
   "lastOpenFiles": [
+    "物理/光学电学/物理光学.md",
+    "数学笔记/概率论/概率论.md",
+    "数学笔记/概率论",
+    "物理/光学电学/电磁学.md",
     "语文/卡夫卡《变形记》中的异化问题到现代生活中的异化.md",
     "语文/论卡夫卡《变形记》中人的异化问题.pdf",
     "语文/变形记：格里高尔之死.md",
@@ -203,11 +207,9 @@
     "物理/力学运动学/逐差法.md",
     "物理/力学运动学/喷射液体的功率问题.md",
     "英语/虚拟语气.md",
-    "物理/光学电学/物理光学.md",
     "物理/热力学/黑体辐射.md",
     "微分方程.md",
     "fuck.md",
-    "物理/光学电学/电磁学.md",
     "物理/力学运动学/拉格朗日方程.md",
     "数学笔记/随笔/求导.md",
     "总index.md",
@@ -226,9 +228,7 @@
     "物理/力学运动学",
     "物理/随笔",
     "物理/光学电学",
-    "数学笔记/总纲.md",
     "数学笔记/解析几何",
-    "数学笔记/代数/toPdfViaTempFile1159-0.html",
     "物理/随笔/Pasted image 20260109183719.png",
     "数学笔记(外)/elementary-math-master/content/plane-geometry/pic/2017-02-09-01-01.png",
     "图片引用/Derivative_-_geometric_meaning.svg.png",

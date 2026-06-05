@@ -7430,6 +7430,8 @@ sov
 stEvt
 softwareAgent
 stRef
+sample
+space
 leq
 le
 left
@@ -12002,6 +12004,8 @@ cBG
 cpm
 changed
 converted
+complementary
+conditional
 frac
 forall
 fg
@@ -15013,6 +15017,7 @@ iyC
 image
 instanceID
 indesign
+independent
 right
 rightarrow
 rm
@@ -16534,6 +16539,7 @@ rcCy
 reUV
 rUMr
 renditionClass
+random
 varnothing
 vee
 vdu
@@ -26787,6 +26793,7 @@ mKh
 mZR
 mJQ
 mfz
+mutually
 Delta
 Dr
 DWh
@@ -32566,6 +32573,10 @@ photoshop
 proof
 parseType
 parameters
+point
+partition
+prior
+posterior
 approx
 align
 array
@@ -36970,6 +36981,7 @@ eDj
 erG
 eHl
 elw
+exclusive
 Cf
 Cdf
 Cu
@@ -38484,6 +38496,7 @@ CreateDate
 ColorMode
 CAC
 CBAC
+Cantelli
 Rightarrow
 Reference
 Rh
@@ -54782,6 +54795,7 @@ BYVM
 BBox
 BCDEFGHIJSTUVWXYZbcdefghijqrstuvwxyz
 BADAC
+Borel
 zG
 zM
 zk
@@ -74011,6 +74025,7 @@ TRt
 TqG
 TrueType
 TEsi
+Total
 ÄLa
 ÄN
 Ät

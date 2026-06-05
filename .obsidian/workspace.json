@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "c27e68a647a2198e",
+        "id": "42c5714e8ddc69f6",
         "type": "tabs",
         "children": [
           {
-            "id": "01ba6f40fdbb5aa2",
+            "id": "a8cc582324d7af19",
             "type": "leaf",
             "state": {
-              "type": "graph",
+              "type": "empty",
               "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "icon": "lucide-file",
+              "title": "新标签页"
             }
           }
         ]
@@ -191,7 +191,7 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "01ba6f40fdbb5aa2",
+  "active": "a8cc582324d7af19",
   "lastOpenFiles": [
     "语文/卡夫卡《变形记》中的异化问题到现代生活中的异化.md",
     "语文/论卡夫卡《变形记》中人的异化问题.pdf",

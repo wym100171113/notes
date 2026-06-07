@@ -11,10 +11,14 @@
             "id": "78523b18eaa5540b",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "README.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新标签页"
+              "title": "README"
             }
           }
         ]
@@ -192,8 +196,9 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "5f386619aeebac77",
+  "active": "78523b18eaa5540b",
   "lastOpenFiles": [
+    "欢迎.md",
     "物理/光学电学/物理光学.md",
     "数学笔记/概率论/概率论.md",
     "数学笔记/概率论",
@@ -216,7 +221,6 @@
     "总index.md",
     "总index.base",
     "README.md",
-    "欢迎.md",
     "数学笔记/数学笔记index.md",
     "图片引用/0afe3d0aafd33781261c35f90f085a07_r.png",
     "未命名.base",

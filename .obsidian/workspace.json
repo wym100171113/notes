@@ -8,17 +8,13 @@
         "type": "tabs",
         "children": [
           {
-            "id": "78523b18eaa5540b",
+            "id": "49daa0d70dfe4c28",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "README.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "README"
+              "type": "graph",
+              "state": {},
+              "icon": "lucide-git-fork",
+              "title": "关系图谱"
             }
           }
         ]
@@ -174,8 +170,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5,
-    "collapsed": true
+    "width": 392.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -196,11 +191,24 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "78523b18eaa5540b",
+  "active": "49daa0d70dfe4c28",
   "lastOpenFiles": [
+    "数学笔记/平面几何/平面几何定律集.md",
+    "数学笔记/平面几何",
+    "数学笔记/解析几何/旋转矩阵.md",
+    "数学笔记/解析几何/点到直线、曲线、平面、曲面的距离.md",
+    "统计学/最小二乘.md",
+    "统计学",
+    "数学笔记/解析几何/圆锥曲线.md",
+    "数学笔记/代数/二项式定律.md",
+    "数学笔记/复数/小知识.md",
+    "数学笔记/复数/复数.md",
+    "数学笔记/排列组合/排列组合.md",
+    "数学笔记/概率论/概率论.md",
+    "数学笔记/排列组合",
+    "README.md",
     "欢迎.md",
     "物理/光学电学/物理光学.md",
-    "数学笔记/概率论/概率论.md",
     "数学笔记/概率论",
     "物理/光学电学/电磁学.md",
     "语文/卡夫卡《变形记》中的异化问题到现代生活中的异化.md",
@@ -215,25 +223,12 @@
     "英语/虚拟语气.md",
     "物理/热力学/黑体辐射.md",
     "微分方程.md",
-    "fuck.md",
-    "物理/力学运动学/拉格朗日方程.md",
-    "数学笔记/随笔/求导.md",
-    "总index.md",
     "总index.base",
-    "README.md",
-    "数学笔记/数学笔记index.md",
     "图片引用/0afe3d0aafd33781261c35f90f085a07_r.png",
     "未命名.base",
     "数学笔记/数学笔记index.base",
-    "数学笔记/题目/随笔题目2(2026.04.12).md",
-    "数学笔记/题目/随笔题目1(2025).md",
-    "数学笔记/随笔/随笔.md",
-    "数学笔记/随笔/随笔2.md",
     "物理/热力学",
     "物理/力学运动学",
-    "物理/随笔",
-    "物理/光学电学",
-    "数学笔记/解析几何",
     "物理/随笔/Pasted image 20260109183719.png",
     "数学笔记(外)/elementary-math-master/content/plane-geometry/pic/2017-02-09-01-01.png",
     "图片引用/Derivative_-_geometric_meaning.svg.png",

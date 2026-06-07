@@ -1452,6 +1452,7 @@ NVDY
 NSH
 NYww
 Nums
+Numbers
 AM
 Au
 Ah
@@ -4424,6 +4425,7 @@ GRWG
 GlvP
 Gjo
 Gain
+Gauss
 Xn
 Xi
 Xe
@@ -10448,6 +10450,9 @@ dMl
 dRmH
 dCH
 documentID
+discrete
+density
+distribution
 cdots
 choose
 cup
@@ -12006,6 +12011,8 @@ changed
 converted
 complementary
 conditional
+continuous
+cumulative
 frac
 forall
 fg
@@ -17978,6 +17985,9 @@ vdwp
 vaZ
 vHH
 vWX
+variable
+value
+variance
 wedge
 wu
 ww
@@ -22334,6 +22344,7 @@ bHk
 bAiG
 blzE
 bIB
+binomial
 Leftrightarrow
 Lu
 LI
@@ -23764,6 +23775,8 @@ LJr
 LbT
 LTx
 Library
+Large
+Limit
 quad
 qt
 ql
@@ -25151,6 +25164,7 @@ qrs
 qHJ
 qexQ
 qruf
+quantile
 mathop
 mathbb
 mapsto
@@ -26794,6 +26808,8 @@ mZR
 mJQ
 mfz
 mutually
+mile
+monkey
 Delta
 Dr
 DWh
@@ -29656,6 +29672,7 @@ thv
 tcq
 tDvS
 tiff
+trial
 kern
 kA
 kl
@@ -36982,6 +36999,8 @@ erG
 eHl
 elw
 exclusive
+expectation
+expected
 Cf
 Cdf
 Cu
@@ -38497,6 +38516,7 @@ ColorMode
 CAC
 CBAC
 Cantelli
+CLT
 Rightarrow
 Reference
 Rh
@@ -42921,6 +42941,7 @@ usN
 uVJ
 uUY
 uYLz
+uniform
 geq
 gAMA
 gT
@@ -47373,6 +47394,8 @@ PZn
 PfN
 PAFeUd
 Photoshop
+PMF
+Poisson
 IHDR
 Ip
 Ih
@@ -51935,6 +51958,7 @@ WNBW
 WjmN
 WIWXTB
 Windows
+Weak
 OZ
 OW
 Oc
@@ -54796,6 +54820,7 @@ BBox
 BCDEFGHIJSTUVWXYZbcdefghijqrstuvwxyz
 BADAC
 Borel
+Bernoulli
 zG
 zM
 zk
@@ -72551,6 +72576,7 @@ ELz
 EÄ
 EEB
 EAC
+Empirical
 TI
 TK
 Tu

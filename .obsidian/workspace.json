@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "9794c451b44f7ea5",
+        "id": "480695e77a733906",
         "type": "tabs",
         "children": [
           {
-            "id": "49daa0d70dfe4c28",
+            "id": "a2cf2aaf0eb2300c",
             "type": "leaf",
             "state": {
-              "type": "graph",
+              "type": "empty",
               "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "icon": "lucide-file",
+              "title": "新标签页"
             }
           }
         ]
@@ -191,7 +191,7 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "49daa0d70dfe4c28",
+  "active": "5483f1ff5cfe0e8c",
   "lastOpenFiles": [
     "数学笔记/平面几何/平面几何定律集.md",
     "数学笔记/平面几何",

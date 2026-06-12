@@ -7453,6 +7453,7 @@ sample
 space
 saddle
 spiral
+structure
 leq
 le
 left
@@ -12035,6 +12036,7 @@ continuous
 cumulative
 context
 correspondence
+cultural
 frac
 forall
 fg
@@ -13460,6 +13462,7 @@ fmC
 fUV
 flK
 fqd
+formatting
 in
 infty
 id
@@ -26846,6 +26849,7 @@ mutually
 mile
 monkey
 match
+meaning
 Delta
 Dr
 DWh
@@ -29721,6 +29725,7 @@ trial
 these
 tone
 trisector
+translated
 kern
 kA
 kl
@@ -34129,6 +34134,7 @@ aqYH
 awc
 aYpW
 action
+appropriate
 omega
 operatorname
 ou
@@ -38601,6 +38607,7 @@ Case
 Connection
 Carlson
 Concave
+Chinese
 Rightarrow
 Reference
 Rh
@@ -47517,6 +47524,7 @@ Parts
 Proving
 Patterns
 Popoviciu
+Preserve
 IHDR
 Ip
 Ih
@@ -69669,6 +69677,7 @@ Monotonically
 Mean
 Methods
 Maclaurin
+Maintain
 Qh
 Qu
 QQm
@@ -74271,6 +74280,7 @@ Terms
 Techniques
 Taylor
 Trick
+Translate
 ÄLa
 ÄN
 Ät

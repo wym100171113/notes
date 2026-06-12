@@ -11,10 +11,14 @@
             "id": "98d19a3c6b2817c6",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "type": "markdown",
+              "state": {
+                "file": "copilot/copilot-custom-prompts/Translate to Chinese.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Translate to Chinese"
             }
           }
         ]
@@ -170,8 +174,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5,
-    "collapsed": true
+    "width": 392.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -192,7 +195,7 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "98d19a3c6b2817c6",
+  "active": "5f386619aeebac77",
   "lastOpenFiles": [
     "数学笔记/不等式/琴生不等式.md",
     "数学笔记/不等式/立方和不等式.md",

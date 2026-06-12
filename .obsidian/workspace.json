@@ -4,21 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "244110a1124d6336",
+        "id": "21682f92e841fd19",
         "type": "tabs",
         "children": [
           {
-            "id": "98d19a3c6b2817c6",
+            "id": "7619ec685667cab7",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "copilot/copilot-custom-prompts/Translate to Chinese.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "Translate to Chinese"
+              "title": "新标签页"
             }
           }
         ]
@@ -174,7 +170,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5
+    "width": 392.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {

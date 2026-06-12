@@ -1453,6 +1453,7 @@ NSH
 NYww
 Nums
 Numbers
+Never
 AM
 Au
 Ah
@@ -4426,6 +4427,7 @@ GlvP
 Gjo
 Gain
 Gauss
+Gimbal
 Xn
 Xi
 Xe
@@ -7434,6 +7436,8 @@ softwareAgent
 stRef
 sample
 space
+saddle
+spiral
 leq
 le
 left
@@ -8919,6 +8923,7 @@ lls
 lus
 lOQW
 luv
+last
 dots
 dy
 dx
@@ -12013,6 +12018,7 @@ complementary
 conditional
 continuous
 cumulative
+context
 frac
 forall
 fg
@@ -16547,6 +16553,8 @@ reUV
 rUMr
 renditionClass
 random
+relevant
+rules
 varnothing
 vee
 vdu
@@ -22345,6 +22353,7 @@ bAiG
 blzE
 bIB
 binomial
+breaks
 Leftrightarrow
 Lu
 LI
@@ -23777,6 +23786,8 @@ LTx
 Library
 Large
 Limit
+Lotka
+Lock
 quad
 qt
 ql
@@ -26810,6 +26821,7 @@ mfz
 mutually
 mile
 monkey
+match
 Delta
 Dr
 DWh
@@ -28260,6 +28272,7 @@ Dzei
 Dox
 Dpw
 DerivedFrom
+Derangement
 to
 times
 tH
@@ -29673,6 +29686,9 @@ tcq
 tDvS
 tiff
 trial
+these
+tone
+trisector
 kern
 kA
 kl
@@ -35534,6 +35550,7 @@ oQsY
 oHB
 oLQ
 originalDocumentID
+original
 end
 epsilon
 exists
@@ -37001,6 +37018,10 @@ elw
 exclusive
 expectation
 expected
+enabled
+emojis
+enhance
+emojified
 Cf
 Cdf
 Cu
@@ -38517,6 +38538,8 @@ CAC
 CBAC
 Cantelli
 CLT
+Choose
+Conic
 Rightarrow
 Reference
 Rh
@@ -39997,6 +40020,7 @@ RSz
 ReT
 RSI
 RenditionClass
+Return
 xdx
 xp
 xM
@@ -42942,6 +42966,7 @@ uVJ
 uUY
 uYLz
 uniform
+unchanged
 geq
 gAMA
 gT
@@ -45968,6 +45993,7 @@ VeG
 VuA
 VkE
 Vwc
+Volterra
 PNG
 Pe
 Ph
@@ -47396,6 +47422,9 @@ PAFeUd
 Photoshop
 PMF
 Poisson
+PDE
+Parabola
+Permutation
 IHDR
 Ip
 Ih
@@ -48927,6 +48956,7 @@ IZd
 IZH
 ICCProfile
 InDesign
+Insert
 Kl
 KM
 Ku
@@ -50468,6 +50498,7 @@ KjWjc
 Kpe
 KCD
 KMr
+Keep
 Wo
 WW
 WG
@@ -54821,6 +54852,7 @@ BCDEFGHIJSTUVWXYZbcdefghijqrstuvwxyz
 BADAC
 Borel
 Bernoulli
+BVP
 zG
 zM
 zk
@@ -64988,6 +65020,8 @@ SWu
 SOw
 SimHei
 SKG
+SLERP
+Sections
 Uo
 UC
 Ug
@@ -69480,6 +69514,7 @@ Mjqr
 Muz
 MfE
 Mhev
+Morley
 Qh
 Qu
 QQm
@@ -72577,6 +72612,7 @@ EÄ
 EEB
 EAC
 Empirical
+Ellipse
 TI
 TK
 Tu
@@ -74052,6 +74088,7 @@ TqG
 TrueType
 TEsi
 Total
+Trisector
 ÄLa
 ÄN
 Ät
@@ -75488,6 +75525,9 @@ HzC
 Hyy
 HVr
 History
+Heun
+Hyperbola
+Hesse
 Fb
 FG
 Fj
@@ -76993,6 +77033,7 @@ FGv
 Fwg
 Fvs
 FKc
+Follow
 ÜVK
 Üt
 ÜF

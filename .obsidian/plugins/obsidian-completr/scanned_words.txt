@@ -1470,6 +1470,7 @@ Need
 Nouns
 Nile
 Nor
+Nicomachus
 AM
 Au
 Ah
@@ -2984,6 +2985,9 @@ Age
 Are
 Adverbs
 Although
+Approximation
+Addition
+Asymptotic
 GM
 Gc
 GL
@@ -4479,6 +4483,9 @@ Great
 Gerund
 Give
 Given
+Glaisher
+Grouping
+Generating
 Xn
 Xi
 Xe
@@ -12397,6 +12404,8 @@ considered
 celebration
 condition
 cancel
+continuation
+constant
 frac
 forall
 fg
@@ -13889,6 +13898,7 @@ folded
 fixed
 factory
 follow
+formula
 in
 infty
 id
@@ -21575,6 +21585,7 @@ narrow
 narrower
 narrowest
 newspaper
+notation
 bigcup
 bigcap
 begin
@@ -24489,6 +24500,8 @@ Let
 Look
 Linking
 Learning
+Linearity
+Laplace
 quad
 qt
 ql
@@ -29051,6 +29064,10 @@ Determiners
 Dinner
 Decimals
 Degree
+Duality
+Dummy
+Denominator
+Differentiation
 to
 times
 tH
@@ -39680,6 +39697,9 @@ Comparative
 Compared
 Condition
 Concession
+Coefficients
+Convergence
+Closed
 Rightarrow
 Reference
 Rh
@@ -41177,6 +41197,13 @@ River
 Remember
 Reason
 Result
+Ratio
+Rational
+Rationalizing
+Recursive
+Reduction
+Recurrence
+Relations
 xdx
 xp
 xM
@@ -47198,6 +47225,8 @@ Very
 Verbs
 Voice
 Verbals
+Variables
+Vieta
 PNG
 Pe
 Ph
@@ -48677,6 +48706,10 @@ Place
 Put
 Pay
 Provided
+Products
+Pochhammer
+Path
+Parseval
 IHDR
 Ip
 Ih
@@ -50238,6 +50271,8 @@ Indefinite
 Infinitive
 Inversion
 Italian
+Interchange
+Identities
 Kl
 KM
 Ku
@@ -51783,6 +51818,7 @@ Keep
 Kind
 Knowledge
 Korea
+Kinkelin
 Wo
 WW
 WG
@@ -53293,6 +53329,8 @@ Walking
 Working
 Weather
 Wherever
+Wallis
+Weierstrass
 OZ
 OW
 Oc
@@ -54763,6 +54801,8 @@ Only
 Opinion
 Origin
 Once
+Order
+Ordinary
 BM
 Bp
 BK
@@ -56188,6 +56228,7 @@ Blending
 Browns
 Basically
 Being
+Barnes
 zG
 zM
 zk
@@ -66474,6 +66515,13 @@ Seen
 Spring
 Strike
 Since
+Summation
+Stirling
+Superfactorial
+Series
+Sums
+Sign
+Steepest
 Uo
 UC
 Ug
@@ -67920,6 +67968,9 @@ Unbounded
 United
 Uncountable
 Unless
+Undetermined
+Uniform
+Under
 Ylm
 Ygv
 Yd
@@ -70995,6 +71046,8 @@ Mark
 Make
 Manner
 Mount
+Multiplicative
+Mascheroni
 Qh
 Qu
 QQm
@@ -74124,6 +74177,7 @@ Emphatic
 Ellipsis
 Everest
 Exhausted
+Empty
 TI
 TK
 Tu
@@ -75626,6 +75680,9 @@ Those
 Twain
 Then
 Though
+Transformation
+Term
+Tonelli
 ÄLa
 ÄN
 Ät
@@ -78605,6 +78662,9 @@ Friday
 Fractions
 Full
 Frequency
+Factorial
+Fubini
+FFT
 ÜVK
 Üt
 ÜF

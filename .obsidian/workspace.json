@@ -11,10 +11,14 @@
             "id": "544db61408131924",
             "type": "leaf",
             "state": {
-              "type": "graph",
-              "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "type": "markdown",
+              "state": {
+                "file": "神秘文件夹/一男高中生竟为米饭开启杀戮模式?黄山研学番外篇.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "一男高中生竟为米饭开启杀戮模式?黄山研学番外篇"
             }
           }
         ]

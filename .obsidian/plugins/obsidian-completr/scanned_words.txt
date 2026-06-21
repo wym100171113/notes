@@ -2992,6 +2992,7 @@ Addition
 Asymptotic
 Appel
 Antichain
+Augmentation
 GM
 Gc
 GL
@@ -4493,6 +4494,7 @@ Generating
 Graph
 Gallai
 Ginzburg
+Glass
 Xn
 Xi
 Xe
@@ -10769,6 +10771,7 @@ developing
 discussed
 damage
 damaged
+doc
 cdots
 choose
 cup
@@ -12415,6 +12418,7 @@ condition
 cancel
 continuation
 constant
+correctly
 frac
 forall
 fg
@@ -39722,6 +39726,8 @@ Connected
 Component
 Chromatic
 Counting
+Cardboard
+Clothes
 Rightarrow
 Reference
 Rh
@@ -41227,6 +41233,7 @@ Reduction
 Recurrence
 Relations
 Ramsey
+ReduceLROnPlateau
 xdx
 xp
 xM
@@ -48738,6 +48745,9 @@ Path
 Parseval
 Pigeonhole
 Perron
+Paper
+Plastic
+Pandas
 IHDR
 Ip
 Ih
@@ -53362,6 +53372,7 @@ Wherever
 Wallis
 Weierstrass
 Wilf
+Weights
 OZ
 OW
 Oc
@@ -56269,6 +56280,9 @@ Brooks
 Birkhoff
 Brouwer
 BatchNorm
+Biological
+Battery
+Batch
 zG
 zM
 zk
@@ -60630,6 +60644,7 @@ journey
 junk
 join
 joke
+jupyter
 Ju
 JB
 JY
@@ -66570,6 +66585,8 @@ Sperner
 Szekeres
 Stolz
 Schröder
+Shoes
+Stratified
 Uo
 UC
 Ug
@@ -71102,6 +71119,7 @@ Menger
 Mantel
 MOC
 Module
+Metal
 Qh
 Qu
 QQm
@@ -74237,6 +74255,7 @@ EGF
 Edge
 Extremal
 EGZ
+EarlyStopping
 TI
 TK
 Tu
@@ -75746,6 +75765,7 @@ Tree
 Tur
 Tribonacci
 TrashNet
+Trash
 ÄLa
 ÄN
 Ät

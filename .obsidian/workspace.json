@@ -11,14 +11,16 @@
             "id": "1eb4da1ddf70f3d3",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "pdf",
               "state": {
-                "file": "数学笔记/数学竞赛/代数/迭代与函数方程.md",
-                "mode": "source",
-                "source": false
+                "file": "数学笔记(外)/线性代数学习指导_(李尚志).pdf",
+                "page": 4,
+                "left": -9,
+                "top": 492,
+                "zoom": 1.7254901960784315
               },
-              "icon": "lucide-file",
-              "title": "迭代与函数方程"
+              "icon": "lucide-file-text",
+              "title": "线性代数学习指导_(李尚志)"
             }
           }
         ]
@@ -174,7 +176,8 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5
+    "width": 392.5,
+    "collapsed": true
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -195,15 +198,15 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "5f386619aeebac77",
+  "active": "1eb4da1ddf70f3d3",
   "lastOpenFiles": [
+    "数学笔记/数学竞赛/代数/数列与递推方法.md",
+    "数学笔记/数学竞赛/代数/迭代与函数方程.md",
     "数学笔记/数学竞赛/代数/数学归纳法.md",
     "数学笔记/数学竞赛/代数/复数与向量方法.md",
     "数学笔记/数学竞赛/代数/不等式与最值问题.md",
-    "数学笔记/数学竞赛/代数/迭代与函数方程.md",
     "数学笔记/数学竞赛/代数/代数总论与函数方程.md",
     "数学笔记/数学竞赛/代数/多项式与方程.md",
-    "数学笔记/数学竞赛/代数/数列与递推方法.md",
     "数学笔记/不等式/柯西不等式.md",
     "数学笔记/不等式/AM-GM不等式.md",
     "数学笔记/不等式/反柯西不等式.md",

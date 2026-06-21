@@ -174,8 +174,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 392.5,
-    "collapsed": true
+    "width": 392.5
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -196,7 +195,7 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "1eb4da1ddf70f3d3",
+  "active": "5f386619aeebac77",
   "lastOpenFiles": [
     "数学笔记/数学竞赛/代数/数学归纳法.md",
     "数学笔记/数学竞赛/代数/复数与向量方法.md",

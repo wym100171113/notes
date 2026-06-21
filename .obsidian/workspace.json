@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "e02d129beae3717a",
+        "id": "1426eead643cfbbc",
         "type": "tabs",
         "children": [
           {
-            "id": "7e64907fa8de2bfb",
+            "id": "99edd0fbeec29d80",
             "type": "leaf",
             "state": {
-              "type": "graph",
+              "type": "empty",
               "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "icon": "lucide-file",
+              "title": "新标签页"
             }
           }
         ]
@@ -191,19 +191,25 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "7e64907fa8de2bfb",
+  "active": "99edd0fbeec29d80",
   "lastOpenFiles": [
+    "总index.base",
+    "README.md",
+    "数学笔记/微分方程.md",
+    "数学笔记/总纲.md",
+    "数学笔记/不同求和式的计算方式.md",
+    "研究性课题报告/obsidian-vault/项目总览.md",
+    "研究性课题报告/obsidian-vault/附件",
+    "研究性课题报告/obsidian-vault/阶段",
+    "研究性课题报告/obsidian-vault/资源",
+    "研究性课题报告/obsidian-vault/知识库",
+    "研究性课题报告/obsidian-vault/模板",
+    "研究性课题报告/obsidian-vault",
     "研究性课题报告/深度学习实战-基于CNN卷积神经网络的垃圾图像分类识别模型.md",
     "研究性课题报告/cnn-garbage-classification-proposal/_shared/fonts/JetBrainsMono-Regular.ttf",
     "研究性课题报告/cnn-garbage-classification-proposal/_shared/fonts/IBMPlexSerif-Regular.ttf",
     "研究性课题报告/cnn-garbage-classification-proposal/_shared/fonts/IBMPlexSerif-Bold.ttf",
     "研究性课题报告/cnn-garbage-classification-proposal/_shared/js",
-    "研究性课题报告/cnn-garbage-classification-proposal/_shared/fonts",
-    "研究性课题报告/cnn-garbage-classification-proposal/cnn-garbage-classification-proposal.html",
-    "研究性课题报告/cnn-garbage-classification-proposal/assets",
-    "研究性课题报告/cnn-garbage-classification-proposal/_shared",
-    "研究性课题报告/cnn-garbage-classification-proposal",
-    "研究性课题报告/课题实施方案表_CNN垃圾分类.docx",
     "数学笔记/数学竞赛/代数/数列与递推方法.md",
     "数学笔记/数学竞赛/代数/迭代与函数方程.md",
     "数学笔记/数学竞赛/代数/数学归纳法.md",
@@ -223,11 +229,6 @@
     "数学笔记/数学竞赛/组合数学/图论基础与染色.md",
     "数学笔记/数学竞赛/组合数学/组合恒等式与生成函数.md",
     "数学笔记/数学竞赛/组合数学/计数原理与方法.md",
-    "数学笔记/数学竞赛/代数/三角函数与恒等变换.md",
-    "数学笔记/数学竞赛/大纲/数学竞赛大纲.md",
-    "神秘文件夹/一男高中生竟为米饭开启杀戮模式?黄山研学番外篇.md",
-    "数学笔记/数列/混合大型运算的计算方式.md",
-    "数学笔记/数列/求和式的计算方式.md",
     "图片引用/0afe3d0aafd33781261c35f90f085a07_r.png",
     "物理/随笔/Pasted image 20260109183719.png",
     "数学笔记(外)/elementary-math-master/content/plane-geometry/pic/2017-02-09-01-01.png",

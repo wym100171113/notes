@@ -7638,6 +7638,7 @@ sick
 shopping
 support
 stranger
+status
 leq
 le
 left
@@ -29081,6 +29082,8 @@ Differentiation
 Dirac
 Davenport
 Dyck
+Dropout
+DataLoader
 to
 times
 tH
@@ -35140,6 +35143,7 @@ afford
 account
 active
 arrives
+arxiv
 omega
 operatorname
 ou
@@ -56264,6 +56268,7 @@ Bipartite
 Brooks
 Birkhoff
 Brouwer
+BatchNorm
 zG
 zM
 zk
@@ -71095,6 +71100,8 @@ Mascheroni
 MISSISSIPPI
 Menger
 Mantel
+MOC
+Module
 Qh
 Qu
 QQm
@@ -75738,6 +75745,7 @@ Tonelli
 Tree
 Tur
 Tribonacci
+TrashNet
 ÄLa
 ÄN
 Ät

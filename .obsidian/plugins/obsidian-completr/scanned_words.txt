@@ -48733,6 +48733,7 @@ Pochhammer
 Path
 Parseval
 Pigeonhole
+Perron
 IHDR
 Ip
 Ih
@@ -51843,6 +51844,7 @@ Kind
 Knowledge
 Korea
 Kinkelin
+Kronecker
 Wo
 WW
 WG
@@ -56261,6 +56263,7 @@ Bridge
 Bipartite
 Brooks
 Birkhoff
+Brouwer
 zG
 zM
 zk
@@ -66561,6 +66564,7 @@ Sylvester
 Sperner
 Szekeres
 Stolz
+Schröder
 Uo
 UC
 Ug
@@ -69565,6 +69569,7 @@ Yes
 Yourself
 Yangtze
 Your
+Yorke
 MfY
 Mh
 Mp
@@ -77192,6 +77197,7 @@ Herbert
 Handshaking
 Haken
 Hull
+Hamel
 Fb
 FG
 Fj
@@ -78719,6 +78725,7 @@ Factorial
 Fubini
 FFT
 Fleury
+Fibonacci
 ÜVK
 Üt
 ÜF

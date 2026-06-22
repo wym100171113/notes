@@ -4,11 +4,11 @@
     "type": "split",
     "children": [
       {
-        "id": "1426eead643cfbbc",
+        "id": "4da60a8b8387e197",
         "type": "tabs",
         "children": [
           {
-            "id": "99edd0fbeec29d80",
+            "id": "cba64ace44b9b699",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -193,8 +193,15 @@
   },
   "active": "5f386619aeebac77",
   "lastOpenFiles": [
+    "语文/（更新）2025学年第二学期高一语文期末答案.pdf",
+    "语文/期末考.md",
+    "数学笔记/IMMC/临期商品碳减排核算框架.md",
+    "数学笔记/IMMC/IMMC3.md",
+    "数学笔记/IMMC/IMMC1.md",
+    "数学笔记/IMMC/IMMC2.md",
+    "研究性课题报告项目流程/进度追踪.md",
+    "研究性课题报告项目流程/项目总览.md",
     "研究性课题报告/obsidian-vault/项目总览.md",
-    "未命名.md",
     "研究性课题报告/参考/Garbage_Classification-main/validation",
     "研究性课题报告/参考/Garbage_Classification-main/README.md",
     "研究性课题报告/参考/Garbage_Classification-main/model.py",
@@ -205,7 +212,6 @@
     "研究性课题报告/参考/Garbage_classification-master/train.py",
     "研究性课题报告/参考/Garbage_classification-master/model/LetNet_5.h5",
     "研究性课题报告/参考/Garbage_classification-master/model",
-    "研究性课题报告/参考/Garbage_classification-master/application.py",
     "研究性课题报告/深度学习实战-基于CNN卷积神经网络的垃圾图像分类识别模型.md",
     "研究性课题报告/obsidian-vault/进度追踪.md",
     "研究性课题报告/obsidian-vault/模板/实验记录模板.md",
@@ -222,13 +228,6 @@
     "数学笔记/微分方程.md",
     "数学笔记/总纲.md",
     "数学笔记/不同求和式的计算方式.md",
-    "数学笔记/数学竞赛/代数/数列与递推方法.md",
-    "数学笔记/数学竞赛/代数/迭代与函数方程.md",
-    "数学笔记/数学竞赛/代数/数学归纳法.md",
-    "数学笔记/数学竞赛/代数/复数与向量方法.md",
-    "数学笔记/数学竞赛/代数/不等式与最值问题.md",
-    "数学笔记/数学竞赛/代数/代数总论与函数方程.md",
-    "数学笔记/数学竞赛/代数/多项式与方程.md",
     "图片引用/0afe3d0aafd33781261c35f90f085a07_r.png",
     "物理/随笔/Pasted image 20260109183719.png",
     "数学笔记(外)/elementary-math-master/content/plane-geometry/pic/2017-02-09-01-01.png",

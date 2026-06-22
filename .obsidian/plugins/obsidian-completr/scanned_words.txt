@@ -1473,6 +1473,8 @@ Nor
 Nicomachus
 Nesbitt
 Neumann
+NumPy
+Networks
 AM
 Au
 Ah
@@ -2993,6 +2995,11 @@ Asymptotic
 Appel
 Antichain
 Augmentation
+AlexNet
+Adam
+Accuracy
+Applied
+Attention
 GM
 Gc
 GL
@@ -4495,6 +4502,8 @@ Graph
 Gallai
 Ginzburg
 Glass
+Gradient
+Google
 Xn
 Xi
 Xe
@@ -7641,6 +7650,11 @@ shopping
 support
 stranger
 status
+shift
+shear
+stride
+sigmoid
+softmax
 leq
 le
 left
@@ -9179,6 +9193,7 @@ listened
 loudly
 lift
 labeled
+loss
 dots
 dy
 dx
@@ -12419,6 +12434,7 @@ cancel
 continuation
 constant
 correctly
+classes
 frac
 forall
 fg
@@ -13912,6 +13928,8 @@ fixed
 factory
 follow
 formula
+factor
+features
 in
 infty
 id
@@ -17094,6 +17112,9 @@ running
 returned
 rains
 rook
+resize
+rotation
+range
 varnothing
 vee
 vdu
@@ -18545,6 +18566,7 @@ vase
 visit
 visits
 verdict
+valid
 wedge
 wu
 ww
@@ -21601,6 +21623,8 @@ narrowest
 newspaper
 notation
 nig
+neural
+networks
 bigcup
 bigcap
 begin
@@ -23071,6 +23095,8 @@ becoming
 bit
 buildings
 bloom
+backward
+batch
 Leftrightarrow
 Lu
 LI
@@ -24517,6 +24543,9 @@ Linking
 Learning
 Linearity
 Laplace
+LeNet
+Layer
+LBP
 quad
 qt
 ql
@@ -29088,6 +29117,10 @@ Davenport
 Dyck
 Dropout
 DataLoader
+Dense
+Decision
+Deep
+DeepMind
 to
 times
 tH
@@ -30578,6 +30611,7 @@ track
 turned
 trip
 till
+transferable
 kern
 kA
 kl
@@ -32101,6 +32135,7 @@ kitchen
 kept
 keys
 knowing
+kernel
 pt
 partial
 pm
@@ -33593,6 +33628,7 @@ purse
 permitting
 pale
 picnic
+padding
 approx
 align
 array
@@ -35148,6 +35184,7 @@ account
 active
 arrives
 arxiv
+accuracy
 omega
 operatorname
 ou
@@ -36626,6 +36663,7 @@ oldest
 options
 ocean
 objects
+optimizer
 end
 epsilon
 exists
@@ -38143,6 +38181,7 @@ eldest
 even
 entered
 evidence
+epochs
 Cf
 Cdf
 Cu
@@ -39728,6 +39767,10 @@ Chromatic
 Counting
 Cardboard
 Clothes
+CrossEntropyLoss
+Convolutional
+CNNs
+Code
 Rightarrow
 Reference
 Rh
@@ -41234,6 +41277,12 @@ Recurrence
 Relations
 Ramsey
 ReduceLROnPlateau
+ResNet
+Recall
+Recognition
+Residual
+Recyclability
+Research
 xdx
 xp
 xM
@@ -47260,6 +47309,7 @@ Vieta
 Vandermonde
 Vertex
 Vizing
+VGGNet
 PNG
 Pe
 Ph
@@ -48748,6 +48798,11 @@ Perron
 Paper
 Plastic
 Pandas
+PyTorch
+Pooling
+Precision
+Papers
+PPT
 IHDR
 Ip
 Ih
@@ -50312,6 +50367,7 @@ Italian
 Interchange
 Identities
 Inclusion
+ImageNet
 Kl
 KM
 Ku
@@ -51859,6 +51915,7 @@ Knowledge
 Korea
 Kinkelin
 Kronecker
+Kernel
 Wo
 WW
 WG
@@ -54846,6 +54903,7 @@ Once
 Order
 Ordinary
 Oil
+OpenAI
 BM
 Bp
 BK
@@ -56283,6 +56341,9 @@ BatchNorm
 Biological
 Battery
 Batch
+Blue
+Backpropagation
+Based
 zG
 zM
 zk
@@ -57753,6 +57814,7 @@ zjG
 ztWUW
 zVz
 zvqL
+zoom
 Zs
 Zok
 ZW
@@ -62084,6 +62146,7 @@ Japan
 July
 June
 January
+JPG
 hv
 hW
 hg
@@ -63561,6 +63624,7 @@ hit
 hair
 hurry
 happens
+horizontal
 yk
 yS
 yt
@@ -66587,6 +66651,13 @@ Stolz
 Schröder
 Shoes
 Stratified
+Split
+Skip
+Score
+Scikit
+Status
+SOTA
+Scholar
 Uo
 UC
 Ug
@@ -71120,6 +71191,11 @@ Mantel
 MOC
 Module
 Metal
+Matplotlib
+MNIST
+MaxPooling
+Margin
+Meta
 Qh
 Qu
 QQm
@@ -75766,6 +75842,8 @@ Tur
 Tribonacci
 TrashNet
 Trash
+True
+Transformer
 ÄLa
 ÄN
 Ät
@@ -77227,6 +77305,7 @@ Handshaking
 Haken
 Hull
 Hamel
+HOG
 Fb
 FG
 Fj
@@ -78755,6 +78834,7 @@ Fubini
 FFT
 Fleury
 Fibonacci
+Fully
 ÜVK
 Üt
 ÜF

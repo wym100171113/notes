@@ -4,17 +4,17 @@
     "type": "split",
     "children": [
       {
-        "id": "161cf6cbd0d3417e",
+        "id": "2bec859833328a26",
         "type": "tabs",
         "children": [
           {
-            "id": "d575b420d005ce10",
+            "id": "487eb846f3726c92",
             "type": "leaf",
             "state": {
-              "type": "graph",
+              "type": "empty",
               "state": {},
-              "icon": "lucide-git-fork",
-              "title": "关系图谱"
+              "icon": "lucide-file",
+              "title": "新标签页"
             }
           }
         ]
@@ -191,13 +191,13 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "5f386619aeebac77",
+  "active": "487eb846f3726c92",
   "lastOpenFiles": [
+    "下载.md",
     "Users/thomaswang/Downloads/v2-2034338e9c7cff4f15dc7a8a60889f63_b.jpg.md",
     "Users/thomaswang/Downloads",
     "Users/thomaswang",
     "Users",
-    "下载.md",
     "第七章——微分方程.md",
     "未命名.md",
     "相对论 (2) —— 守恒定律.md",

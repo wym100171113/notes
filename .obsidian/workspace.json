@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "物理/相对论/汤姆孙散射.md",
+                "file": "研究性课题报告项目流程/附件/使用部署教程_Windows.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "汤姆孙散射"
+              "title": "使用部署教程_Windows"
             }
           }
         ]
@@ -181,12 +181,13 @@
       "pdf-plus:PDF++: Toggle auto-copy": false,
       "pdf-plus:PDF++: Toggle auto-focus": false,
       "pdf-plus:PDF++: Toggle auto-paste": false,
-      "copilot:Open Copilot Chat": false,
       "graph:查看关系图谱": false
     }
   },
-  "active": "b05f480f11c606b4",
+  "active": "5f386619aeebac77",
   "lastOpenFiles": [
+    "物理/相对论/汤姆孙散射.md",
+    "研究性课题报告项目流程/附件/使用部署教程_Windows.md",
     "物理/相对论/相对论专题.md",
     "物理/相对论/相对论推导.md",
     "物理/相对论/相对论(知乎潦草搬运)/相对论 (2) —— 守恒定律.md",
@@ -215,8 +216,6 @@
     "物理/相对论/相对论(知乎潦草搬运)/狭义相对论 (1) —— 洛伦兹变换.md",
     "物理/相对论/相对论(知乎潦草搬运)/狭义相对论 (2) —— 守恒量.md",
     "物理/相对论/量子电动力学.md",
-    "物理/相对论/佯谬分析.md",
-    "物理/相对论/天体物理.md",
     "物理/量子力学",
     "物理笔记",
     "物理/相对论",

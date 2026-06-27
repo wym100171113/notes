@@ -1489,6 +1489,7 @@ Nuttall
 Nordheim
 Noether
 Nordsieck
+NVIDIA
 AM
 Au
 Ah
@@ -4580,6 +4581,8 @@ Gamma
 GRBs
 Geodesic
 Gerard
+Grad
+GIF
 Xn
 Xi
 Xe
@@ -12616,6 +12619,7 @@ characters
 content
 corrected
 capture
+cuDNN
 frac
 forall
 fg
@@ -14131,6 +14135,7 @@ force
 fireball
 freq
 fuzzball
+flask
 in
 infty
 id
@@ -15762,6 +15767,7 @@ infinite
 improper
 iint
 island
+installer
 right
 rightarrow
 rm
@@ -20435,6 +20441,7 @@ wyT
 wTz
 wavefunction
 wave
+werkzeug
 notin
 neq
 ne
@@ -23395,6 +23402,7 @@ boxed
 bold
 bullet
 bulk
+base
 Leftrightarrow
 Lu
 LI
@@ -24869,6 +24877,7 @@ LASCO
 Ldt
 LEP
 Leonard
+Linux
 quad
 qt
 ql
@@ -29491,6 +29500,7 @@ Doppler
 Dominated
 DASI
 Downloads
+Defender
 to
 times
 tH
@@ -31005,6 +31015,7 @@ textcolor
 thomaswang
 total
 thermodynamics
+tensorflow
 kern
 kA
 kl
@@ -34071,6 +34082,7 @@ pexrav
 pexmon
 purple
 phix
+python
 approx
 align
 array
@@ -37144,6 +37156,7 @@ operators
 orthochronous
 overbrace
 oint
+opencv
 end
 epsilon
 exists
@@ -40297,6 +40310,10 @@ Create
 CERN
 Carter
 Christodoulou
+CAM
+CUDA
+CMD
+Chrome
 Rightarrow
 Reference
 Rh
@@ -41836,6 +41853,7 @@ Redshift
 Robinson
 Remnant
 Rosen
+RESTful
 xdx
 xp
 xM
@@ -49442,6 +49460,8 @@ Physics
 Price
 Podolsky
 Perry
+PATH
+PowerShell
 IHDR
 Ip
 Ih
@@ -51019,6 +51039,8 @@ Ives
 Inflation
 ISCO
 ILC
+Install
+IPv
 Kl
 KM
 Ku
@@ -54117,6 +54139,8 @@ Weinberg
 Wald
 Wien
 William
+WSGI
+WebP
 OZ
 OW
 Oc
@@ -57083,6 +57107,7 @@ Beaming
 Bradley
 Black
 Bardeen
+BMP
 zG
 zM
 zk
@@ -62932,6 +62957,7 @@ Jeans
 Jaysny
 James
 Juan
+JSON
 hv
 hW
 hg
@@ -72105,6 +72131,7 @@ Maldacena
 Marolf
 Macdonald
 Mathur
+MobileNetV
 Qh
 Qu
 QQm
@@ -76814,6 +76841,9 @@ Terrell
 Thomas
 Theta
 Thorlacius
+TensorFlow
+Toolkit
+TCP
 ÄLa
 ÄN
 Ät

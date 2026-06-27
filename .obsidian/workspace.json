@@ -11,10 +11,14 @@
             "id": "b05f480f11c606b4",
             "type": "leaf",
             "state": {
-              "type": "empty",
-              "state": {},
+              "type": "markdown",
+              "state": {
+                "file": "物理/相对论/相对论(知乎潦草搬运)/相对论 (2) —— 守恒定律.md",
+                "mode": "source",
+                "source": false
+              },
               "icon": "lucide-file",
-              "title": "新标签页"
+              "title": "相对论 (2) —— 守恒定律"
             }
           }
         ]
@@ -146,16 +150,6 @@
             }
           },
           {
-            "id": "29d27ad9869518c0",
-            "type": "leaf",
-            "state": {
-              "type": "copilot-chat-view",
-              "state": {},
-              "icon": "message-square",
-              "title": "Copilot"
-            }
-          },
-          {
             "id": "5483f1ff5cfe0e8c",
             "type": "leaf",
             "state": {
@@ -166,7 +160,7 @@
             }
           }
         ],
-        "currentTab": 5
+        "currentTab": 4
       }
     ],
     "direction": "horizontal",
@@ -193,6 +187,10 @@
   },
   "active": "b05f480f11c606b4",
   "lastOpenFiles": [
+    "物理/相对论/相对论专题.md",
+    "物理/相对论/黑洞物理.md",
+    "物理/相对论/相对论推导.md",
+    "物理/相对论/钟慢尺缩与质增.md",
     "copilot/copilot-custom-prompts/Translate to Chinese.md",
     "copilot/copilot-custom-prompts/Summarize.md",
     "copilot/copilot-custom-prompts/Fix grammar and spelling.md",
@@ -211,7 +209,6 @@
     "未命名.md",
     "相对论 (2) —— 守恒定律.md",
     "物理/相对论/相对论(知乎潦草搬运)",
-    "物理/相对论/相对论专题.md",
     "物理/相对论/相对论(知乎潦草搬运)/相对论 (2) —— 守恒定律.md",
     "物理/相对论/相对论(知乎潦草搬运)/相对论 (1) —— 变分原理基础.md",
     "物理/相对论/相对论(知乎潦草搬运)/变分法——宇宙的法则.md",
@@ -220,9 +217,6 @@
     "物理/相对论/量子电动力学.md",
     "物理/相对论/佯谬分析.md",
     "物理/相对论/天体物理.md",
-    "物理/相对论/同步辐射.md",
-    "物理/相对论/牛顿力学.md",
-    "物理/相对论/SZ效应.md",
     "物理/量子力学",
     "物理笔记",
     "物理/相对论",

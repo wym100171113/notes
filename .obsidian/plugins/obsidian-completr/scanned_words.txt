@@ -3048,6 +3048,10 @@ AMI
 Atacama
 Advection
 Accretion
+Alfred
+Aberration
+AMPS
+Almheiri
 GM
 Gc
 GL
@@ -4575,6 +4579,7 @@ GRB
 Gamma
 GRBs
 Geodesic
+Gerard
 Xn
 Xi
 Xe
@@ -7760,6 +7765,8 @@ superposition
 stress
 sinh
 special
+stretched
+soft
 leq
 le
 left
@@ -10930,6 +10937,7 @@ det
 darkgreen
 dxdy
 ddot
+deconfinement
 cdots
 choose
 cup
@@ -14122,6 +14130,7 @@ formulas
 force
 fireball
 freq
+fuzzball
 in
 infty
 id
@@ -15752,6 +15761,7 @@ interpretation
 infinite
 improper
 iint
+island
 right
 rightarrow
 rm
@@ -17346,6 +17356,8 @@ restricted
 reversal
 ray
 remove
+remnants
+remnant
 varnothing
 vee
 vdu
@@ -23382,6 +23394,7 @@ bmatrix
 boxed
 bold
 bullet
+bulk
 Leftrightarrow
 Lu
 LI
@@ -24854,6 +24867,8 @@ Lorentzian
 Larmor
 LASCO
 Ldt
+LEP
+Leonard
 quad
 qt
 ql
@@ -27970,6 +27985,7 @@ matrix
 magnon
 minimal
 manifold
+monogamy
 Delta
 Dr
 DWh
@@ -30988,6 +31004,7 @@ thetax
 textcolor
 thomaswang
 total
+thermodynamics
 kern
 kA
 kl
@@ -38661,6 +38678,7 @@ eigenfunction
 elsewhere
 equiv
 edu
+entanglement
 Cf
 Cdf
 Cu
@@ -40276,6 +40294,9 @@ Cosmology
 CME
 CLIC
 Create
+CERN
+Carter
+Christodoulou
 Rightarrow
 Reference
 Rh
@@ -41810,6 +41831,11 @@ Ramsauer
 Radiation
 Rindler
 Ray
+Rotation
+Redshift
+Robinson
+Remnant
+Rosen
 xdx
 xp
 xM
@@ -46317,6 +46343,7 @@ group
 gravity
 geodesic
 grammar
+gen
 Venn
 VU
 Vah
@@ -47893,6 +47920,7 @@ VKovd
 VLBI
 Virgo
 Vulcan
+Vafa
 PNG
 Pe
 Ph
@@ -49410,6 +49438,10 @@ Polchinski
 Poincar
 Pole
 Pdx
+Physics
+Price
+Podolsky
+Perry
 IHDR
 Ip
 Ih
@@ -54084,6 +54116,7 @@ Well
 Weinberg
 Wald
 Wien
+William
 OZ
 OW
 Oc
@@ -57042,6 +57075,14 @@ Boost
 Binaries
 Bursts
 Band
+Bailey
+Bucherer
+Bertozzi
+Blueshift
+Beaming
+Bradley
+Black
+Bardeen
 zG
 zM
 zk
@@ -62889,6 +62930,8 @@ Josephson
 Joseph
 Jeans
 Jaysny
+James
+Juan
 hv
 hW
 hg
@@ -64383,6 +64426,7 @@ hyperbolic
 horizon
 hump
 hat
+holes
 yk
 yS
 yt
@@ -67471,6 +67515,11 @@ STEREO
 SECCHI
 Solve
 SciPy
+Susskind
+Sully
+Stretched
+Schwarzschild
+Strominger
 Uo
 UC
 Ug
@@ -68932,6 +68981,7 @@ UcUa
 Unspeakable
 Unruh
 Users
+Uglum
 Ylm
 Ygv
 Yd
@@ -72051,6 +72101,10 @@ Microwave
 Merzbacher
 MTW
 MeV
+Maldacena
+Marolf
+Macdonald
+Mathur
 Qh
 Qu
 QQm
@@ -75224,6 +75278,7 @@ Ehrenfest
 Experience
 External
 EBL
+Effect
 TI
 TK
 Tu
@@ -76758,6 +76813,7 @@ Tannoudji
 Terrell
 Thomas
 Theta
+Thorlacius
 ÄLa
 ÄN
 Ät
@@ -78244,6 +78300,9 @@ Hermitian
 Hamiltonian
 Hawking
 High
+Headlight
+Hole
+Hooft
 Fb
 FG
 Fj
@@ -79792,6 +79851,7 @@ FSRQ
 Fraunhofer
 Flow
 Fix
+Fuzzball
 ÜVK
 Üt
 ÜF

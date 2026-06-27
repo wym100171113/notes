@@ -8,7 +8,7 @@
         "type": "tabs",
         "children": [
           {
-            "id": "487eb846f3726c92",
+            "id": "b05f480f11c606b4",
             "type": "leaf",
             "state": {
               "type": "empty",
@@ -191,8 +191,17 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "487eb846f3726c92",
+  "active": "b05f480f11c606b4",
   "lastOpenFiles": [
+    "copilot/copilot-custom-prompts/Translate to Chinese.md",
+    "copilot/copilot-custom-prompts/Summarize.md",
+    "copilot/copilot-custom-prompts/Fix grammar and spelling.md",
+    "copilot/copilot-conversations/复数与负数运算@20260406_202240.md",
+    "copilot/copilot-conversations/三心共线证明@20260406_182716.md",
+    "copilot/copilot-conversations/Obsidian_平面_定义@20260403_201114.md",
+    "copilot/copilot-conversations/Entropy,_Enthalpy,_Gibbs@20260402_222706.md",
+    "copilot/copilot-conversations/总结@20260329_232937.md",
+    "copilot/copilot-conversations/Hybrid_Orbital_Theory@20260328_162822.md",
     "下载.md",
     "Users/thomaswang/Downloads/v2-2034338e9c7cff4f15dc7a8a60889f63_b.jpg.md",
     "Users/thomaswang/Downloads",
@@ -201,7 +210,6 @@
     "第七章——微分方程.md",
     "未命名.md",
     "相对论 (2) —— 守恒定律.md",
-    "copilot/copilot-conversations/Entropy,_Enthalpy,_Gibbs@20260402_222706.md",
     "物理/相对论/相对论(知乎潦草搬运)",
     "物理/相对论/相对论专题.md",
     "物理/相对论/相对论(知乎潦草搬运)/相对论 (2) —— 守恒定律.md",
@@ -215,14 +223,6 @@
     "物理/相对论/同步辐射.md",
     "物理/相对论/牛顿力学.md",
     "物理/相对论/SZ效应.md",
-    "物理/相对论/引力波天文学.md",
-    "物理/相对论/黑洞物理.md",
-    "物理/相对论/场方程与施瓦西解.md",
-    "物理/相对论/引力波与黑洞.md",
-    "物理/相对论/宇宙学观测.md",
-    "物理/相对论/活动星系核物理.md",
-    "物理/相对论/相对论推导.md",
-    "物理/相对论/汤姆孙散射.md",
     "物理/量子力学",
     "物理笔记",
     "物理/相对论",

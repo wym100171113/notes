@@ -7759,6 +7759,7 @@ solution
 superposition
 stress
 sinh
+special
 leq
 le
 left
@@ -9310,6 +9311,7 @@ length
 lightlike
 local
 low
+line
 dots
 dy
 dx
@@ -12602,6 +12604,10 @@ cooling
 coronagraph
 cosh
 cosy
+characters
+content
+corrected
+capture
 frac
 forall
 fg
@@ -14115,6 +14121,7 @@ foundation
 formulas
 force
 fireball
+freq
 in
 infty
 id
@@ -17338,6 +17345,7 @@ representation
 restricted
 reversal
 ray
+remove
 varnothing
 vee
 vdu
@@ -21884,6 +21892,7 @@ ncb
 noS
 nGH
 normalization
+net
 bigcup
 bigcap
 begin
@@ -23372,6 +23381,7 @@ blazar
 bmatrix
 boxed
 bold
+bullet
 Leftrightarrow
 Lu
 LI
@@ -30977,6 +30987,7 @@ todo
 thetax
 textcolor
 thomaswang
+total
 kern
 kA
 kl
@@ -38649,6 +38660,7 @@ eigenvalue
 eigenfunction
 elsewhere
 equiv
+edu
 Cf
 Cdf
 Cu
@@ -40263,6 +40275,7 @@ Christoffel
 Cosmology
 CME
 CLIC
+Create
 Rightarrow
 Reference
 Rh
@@ -46303,6 +46316,7 @@ global
 group
 gravity
 geodesic
+grammar
 Venn
 VU
 Vah
@@ -67456,6 +67470,7 @@ SOHO
 STEREO
 SECCHI
 Solve
+SciPy
 Uo
 UC
 Ug
@@ -79776,6 +79791,7 @@ Fowler
 FSRQ
 Fraunhofer
 Flow
+Fix
 ÜVK
 Üt
 ÜF

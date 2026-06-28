@@ -4,21 +4,21 @@
     "type": "split",
     "children": [
       {
-        "id": "bb04adb0b202afd7",
+        "id": "6cb286fe86cc8697",
         "type": "tabs",
         "children": [
           {
-            "id": "6752bb7c7f8b70c6",
+            "id": "6ee7c55df43f8b2f",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "神秘文件夹/网页小游戏.md",
+                "file": "物理/力学运动学/拉格朗日方程.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "网页小游戏"
+              "title": "拉格朗日方程"
             }
           }
         ]
@@ -53,7 +53,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "读本",
+                "query": "摆线",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -184,8 +184,19 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "6752bb7c7f8b70c6",
+  "active": "6ee7c55df43f8b2f",
   "lastOpenFiles": [
+    "数学笔记/解析几何/摆线.md",
+    "物理/力学运动学/运动学中的微分方程建模与求解.md",
+    "物理/力学运动学/拉格朗日方程.md",
+    "数学笔记/解析几何/直线在二维空间的解析方程与线性代数表达.md",
+    "物理/力学运动学/动能与动量.md",
+    "物理/随笔/Pasted image 20260109183719.png",
+    "物理/随笔/随笔物理题2.md",
+    "物理/随笔/随笔物理题.md",
+    "物理/力学运动学/机械振动.md",
+    "物理/力学运动学/弹簧振子与阻尼振子的运动方程推导.md",
+    "物理/力学运动学/喷射液体的功率问题.md",
     "神秘文件夹/网页小游戏.md",
     "研究性课题报告项目流程/附件/使用部署教程_Windows.md",
     "研究性课题报告项目流程/项目总览.md",
@@ -202,24 +213,13 @@
     "copilot/copilot-conversations/三心共线证明@20260406_182716.md",
     "copilot/copilot-conversations/Obsidian_平面_定义@20260403_201114.md",
     "copilot/copilot-conversations/Entropy,_Enthalpy,_Gibbs@20260402_222706.md",
-    "copilot/copilot-conversations/总结@20260329_232937.md",
-    "copilot/copilot-conversations/Hybrid_Orbital_Theory@20260328_162822.md",
-    "下载.md",
-    "Users/thomaswang/Downloads/v2-2034338e9c7cff4f15dc7a8a60889f63_b.jpg.md",
     "Users/thomaswang/Downloads",
     "Users/thomaswang",
     "Users",
-    "第七章——微分方程.md",
-    "相对论 (2) —— 守恒定律.md",
     "物理/相对论/相对论(知乎潦草搬运)",
-    "物理/相对论/相对论(知乎潦草搬运)/相对论 (1) —— 变分原理基础.md",
-    "物理/相对论/相对论(知乎潦草搬运)/变分法——宇宙的法则.md",
-    "物理/相对论/相对论(知乎潦草搬运)/狭义相对论 (1) —— 洛伦兹变换.md",
-    "物理/相对论/相对论(知乎潦草搬运)/狭义相对论 (2) —— 守恒量.md",
     "物理/量子力学",
     "物理笔记",
     "物理/相对论",
-    "物理/随笔/Pasted image 20260109183719.png",
     "语文/（更新）2025学年第二学期高一语文期末答案.pdf",
     "研究性课题报告/参考/Garbage_Classification-main/validation",
     "研究性课题报告/参考/Garbage_Classification-main/model.py",

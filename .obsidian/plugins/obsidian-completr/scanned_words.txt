@@ -3053,6 +3053,7 @@ Alfred
 Aberration
 AMPS
 Almheiri
+Apollonian
 GM
 Gc
 GL
@@ -4583,6 +4584,7 @@ Geodesic
 Gerard
 Grad
 GIF
+Gasket
 Xn
 Xi
 Xe
@@ -18832,6 +18834,7 @@ valued
 variables
 velocity
 vartheta
+val
 wedge
 wu
 ww
@@ -29503,6 +29506,7 @@ Dominated
 DASI
 Downloads
 Defender
+Depthwise
 to
 times
 tH
@@ -40316,6 +40320,12 @@ CAM
 CUDA
 CMD
 Chrome
+Convolutions
+CPU
+Collision
+Coefficient
+Cradle
+Center
 Rightarrow
 Reference
 Rh
@@ -41856,6 +41866,9 @@ Robinson
 Remnant
 Rosen
 RESTful
+Residuals
+Restitution
+Reduced
 xdx
 xp
 xM
@@ -49465,6 +49478,8 @@ Podolsky
 Perry
 PATH
 PowerShell
+Perfectly
+Packing
 IHDR
 Ip
 Ih
@@ -51044,6 +51059,8 @@ ISCO
 ILC
 Install
 IPv
+Inverted
+Inelastic
 Kl
 KM
 Ku
@@ -52609,6 +52626,8 @@ Kerr
 Kompaneets
 Kontinuierliche
 Korona
+König
+Kissing
 Wo
 WW
 WG
@@ -54144,6 +54163,8 @@ Wien
 William
 WSGI
 WebP
+Weber
+Weiszfeld
 OZ
 OW
 Oc
@@ -55633,6 +55654,7 @@ Observation
 Oppenheimer
 Oscillator
 Omega
+Oblique
 BM
 Bp
 BK
@@ -57111,6 +57133,7 @@ Bradley
 Black
 Bardeen
 BMP
+Bottlenecks
 zG
 zM
 zk
@@ -62961,6 +62984,7 @@ Jaysny
 James
 Juan
 JSON
+JPEG
 hv
 hW
 hg
@@ -67550,6 +67574,7 @@ Sully
 Stretched
 Schwarzschild
 Strominger
+Separable
 Uo
 UC
 Ug
@@ -72136,6 +72161,7 @@ Marolf
 Macdonald
 Mathur
 MobileNetV
+Mass
 Qh
 Qu
 QQm
@@ -75310,6 +75336,7 @@ Experience
 External
 EBL
 Effect
+Elastic
 TI
 TK
 Tu
@@ -78338,6 +78365,7 @@ Headlight
 Hole
 Hooft
 Hopeful
+Head
 Fb
 FG
 Fj
@@ -79887,6 +79915,8 @@ Fraunhofer
 Flow
 Fix
 Fuzzball
+Frame
+FCC
 ÜVK
 Üt
 ÜF

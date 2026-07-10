@@ -1,0 +1,710 @@
+/* LuaTikz plugin-scoped Liquid Glass styling */
+
+.luatikz-glass-card {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 18px;
+  background: color-mix(in srgb, var(--background-secondary) 78%, transparent);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(18px) saturate(140%);
+  padding: 16px;
+}
+
+@supports not (background: color-mix(in srgb, white 50%, transparent)) {
+  .luatikz-glass-card {
+    background: var(--background-secondary);
+  }
+}
+
+/* --- Plugin render blocks: frameless Obsidian code-block wrapper --- */
+
+.markdown-reading-view .block-language-tikz.luatikz-render-wrapper,
+.markdown-reading-view .block-language-luatikz.luatikz-render-wrapper,
+.markdown-preview-view .block-language-tikz.luatikz-render-wrapper,
+.markdown-preview-view .block-language-luatikz.luatikz-render-wrapper,
+.markdown-rendered .block-language-tikz.luatikz-render-wrapper,
+.markdown-rendered .block-language-luatikz.luatikz-render-wrapper {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  padding: 0;
+}
+
+/* Finished diagram: no card, border, or panel */
+.markdown-reading-view .tikzjax-hebrew-local-block.luatikz-output-card,
+.markdown-preview-view .tikzjax-hebrew-local-block.luatikz-output-card,
+.markdown-rendered .tikzjax-hebrew-local-block.luatikz-output-card,
+.markdown-reading-view .tikzjax-hebrew-local-output.luatikz-output-card,
+.markdown-preview-view .tikzjax-hebrew-local-output.luatikz-output-card,
+.markdown-rendered .tikzjax-hebrew-local-output.luatikz-output-card,
+.markdown-reading-view .tikzjax-hebrew-local-block:not(.luatikz-error-card),
+.markdown-preview-view .tikzjax-hebrew-local-block:not(.luatikz-error-card),
+.markdown-rendered .tikzjax-hebrew-local-block:not(.luatikz-error-card),
+.markdown-reading-view .tikzjax-hebrew-local-output:not(.luatikz-glass-card):not(.luatikz-error-card),
+.markdown-preview-view .tikzjax-hebrew-local-output:not(.luatikz-glass-card):not(.luatikz-error-card),
+.markdown-rendered .tikzjax-hebrew-local-output:not(.luatikz-glass-card):not(.luatikz-error-card) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  border-radius: 0;
+}
+
+.tikzjax-hebrew-local-block.luatikz-output-card {
+  position: relative;
+  padding: 0;
+  overflow: visible;
+  backdrop-filter: none;
+}
+
+/* Loading placeholder: subtle background/border for readability */
+.markdown-reading-view .tikzjax-hebrew-local-output.luatikz-glass-card,
+.markdown-preview-view .tikzjax-hebrew-local-output.luatikz-glass-card,
+.markdown-rendered .tikzjax-hebrew-local-output.luatikz-glass-card {
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 18px;
+  overflow: hidden;
+  background-clip: padding-box;
+  box-sizing: border-box;
+  box-shadow: none;
+  backdrop-filter: none;
+  padding: 16px;
+  display: flex;
+  justify-content: center;
+  color: var(--text-muted);
+  font-size: 0.9em;
+}
+
+/* Error cards stay readable */
+.markdown-reading-view .tikzjax-hebrew-local-error.luatikz-error-card,
+.markdown-preview-view .tikzjax-hebrew-local-error.luatikz-error-card,
+.markdown-rendered .tikzjax-hebrew-local-error.luatikz-error-card {
+  background: var(--background-secondary);
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 12px;
+  overflow: hidden;
+  background-clip: padding-box;
+  box-sizing: border-box;
+  box-shadow: none;
+}
+
+.markdown-reading-view .tikzjax-hebrew-local-image,
+.markdown-preview-view .tikzjax-hebrew-local-image,
+.markdown-rendered .tikzjax-hebrew-local-image,
+.markdown-reading-view .tikzjax-hebrew-local-svg,
+.markdown-preview-view .tikzjax-hebrew-local-svg,
+.markdown-rendered .tikzjax-hebrew-local-svg,
+.markdown-reading-view .luatikz-tikzjax-host,
+.markdown-preview-view .luatikz-tikzjax-host,
+.markdown-rendered .luatikz-tikzjax-host,
+.markdown-reading-view .tikzjax-hebrew-local-output svg,
+.markdown-preview-view .tikzjax-hebrew-local-output svg,
+.markdown-rendered .tikzjax-hebrew-local-output svg,
+.markdown-reading-view .tikzjax-hebrew-local-block svg,
+.markdown-preview-view .tikzjax-hebrew-local-block svg,
+.markdown-rendered .tikzjax-hebrew-local-block svg,
+.markdown-reading-view .luatikz-tikzjax-host svg,
+.markdown-preview-view .luatikz-tikzjax-host svg,
+.markdown-rendered .luatikz-tikzjax-host svg {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.tikzjax-hebrew-local-output > *,
+.tikzjax-hebrew-local-block > *,
+.block-language-tikz .luatikz-output-card > *,
+.block-language-luatikz .luatikz-output-card > *,
+.block-language-tikz .tikzjax-hebrew-local-output.luatikz-glass-card > *,
+.block-language-luatikz .tikzjax-hebrew-local-output.luatikz-glass-card > * {
+  background-color: transparent;
+}
+
+.markdown-reading-view .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output,
+.markdown-preview-view .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output,
+.markdown-rendered .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  border-radius: 0;
+  overflow-x: auto;
+  display: flex;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.block-language-tikz .edit-block-button,
+.block-language-luatikz .edit-block-button,
+.block-language-tikz .code-block-flair,
+.block-language-luatikz .code-block-flair,
+.block-language-tikz .clickable-icon,
+.block-language-luatikz .clickable-icon {
+  background: transparent;
+  border-radius: 8px;
+  box-shadow: none;
+}
+
+.block-language-tikz .edit-block-button:hover,
+.block-language-luatikz .edit-block-button:hover,
+.block-language-tikz .code-block-flair:hover,
+.block-language-luatikz .code-block-flair:hover {
+  background: var(--background-modifier-hover);
+}
+
+.tikzjax-hebrew-local-output.luatikz-glass-card::before,
+.tikzjax-hebrew-local-output.luatikz-glass-card::after {
+  border-radius: inherit;
+}
+
+/* Settings / modals keep translucent glass styling. */
+.luatikz-settings .luatikz-glass-card,
+.luatikz-install-notice .luatikz-glass-card {
+  overflow: hidden;
+  background-clip: padding-box;
+}
+
+.luatikz-glass-header {
+  margin-bottom: 16px;
+}
+
+.luatikz-glass-header h2 {
+  margin: 0 0 6px;
+}
+
+.luatikz-glass-section {
+  margin-bottom: 14px;
+}
+
+.luatikz-glass-section h3 {
+  margin: 0 0 10px;
+}
+
+.luatikz-muted {
+  color: var(--text-muted);
+  font-size: 0.9em;
+  line-height: 1.45;
+}
+
+.luatikz-renderer-choices {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.luatikz-renderer-choice {
+  border: 1px solid var(--background-modifier-border);
+  border-radius: 16px;
+  padding: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+  background: color-mix(in srgb, var(--background-primary) 70%, transparent);
+}
+
+.luatikz-renderer-choice:hover {
+  border-color: var(--interactive-accent);
+  transform: translateY(-1px);
+}
+
+.luatikz-renderer-choice-active {
+  border-color: var(--interactive-accent);
+  box-shadow: 0 0 0 1px var(--interactive-accent);
+}
+
+.luatikz-soft-button,
+.tikzjax-hebrew-local-toolbar-button.luatikz-soft-button,
+.tikzjax-hebrew-local-error-button.luatikz-soft-button {
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 6px 12px;
+  font-size: 0.82em;
+  border: 1px solid var(--background-modifier-border);
+  background: color-mix(in srgb, var(--background-secondary) 85%, transparent);
+  color: var(--text-normal);
+}
+
+.luatikz-soft-button:hover,
+.tikzjax-hebrew-local-toolbar-button.luatikz-soft-button:hover,
+.tikzjax-hebrew-local-error-button.luatikz-soft-button:hover {
+  background: var(--background-modifier-hover);
+}
+
+.luatikz-danger-button {
+  border-color: var(--text-error);
+  color: var(--text-error);
+}
+
+.luatikz-output-card {
+  margin: 1em 0;
+}
+
+.markdown-reading-view .luatikz-output-card,
+.markdown-preview-view .luatikz-output-card,
+.markdown-rendered .luatikz-output-card,
+.markdown-reading-view .tikzjax-hebrew-local-block.luatikz-output-card,
+.markdown-preview-view .tikzjax-hebrew-local-block.luatikz-output-card,
+.markdown-rendered .tikzjax-hebrew-local-block.luatikz-output-card {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  border-radius: 0;
+}
+
+.luatikz-error-card {
+  overflow: hidden;
+  background-clip: padding-box;
+}
+
+.luatikz-install-notice {
+  padding: 0;
+}
+
+.luatikz-install-message {
+  margin: 0 0 12px;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.luatikz-install-buttons {
+  display: flex;
+  margin-top: 0;
+}
+
+.luatikz-settings .setting-item {
+  border-top: none;
+}
+
+.markdown-reading-view .block-language-tikz.luatikz-render-wrapper img.tikzjax-hebrew-local-image,
+.markdown-reading-view .block-language-luatikz.luatikz-render-wrapper img.tikzjax-hebrew-local-image,
+.markdown-preview-view .block-language-tikz.luatikz-render-wrapper img.tikzjax-hebrew-local-image,
+.markdown-preview-view .block-language-luatikz.luatikz-render-wrapper img.tikzjax-hebrew-local-image,
+.markdown-rendered .block-language-tikz.luatikz-render-wrapper img.tikzjax-hebrew-local-image,
+.markdown-rendered .block-language-luatikz.luatikz-render-wrapper img.tikzjax-hebrew-local-image,
+.markdown-reading-view .block-language-tikz.luatikz-render-wrapper .luatikz-tikzjax-host,
+.markdown-reading-view .block-language-luatikz.luatikz-render-wrapper .luatikz-tikzjax-host,
+.markdown-preview-view .block-language-tikz.luatikz-render-wrapper .luatikz-tikzjax-host,
+.markdown-preview-view .block-language-luatikz.luatikz-render-wrapper .luatikz-tikzjax-host,
+.markdown-rendered .block-language-tikz.luatikz-render-wrapper .luatikz-tikzjax-host,
+.markdown-rendered .block-language-luatikz.luatikz-render-wrapper .luatikz-tikzjax-host {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  border-radius: 0;
+}
+
+.markdown-reading-view .luatikz-tikzjax-host svg,
+.markdown-preview-view .luatikz-tikzjax-host svg,
+.markdown-rendered .luatikz-tikzjax-host svg {
+  max-width: 100%;
+  height: auto;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.luatikz-rtl {
+  direction: rtl;
+  text-align: right;
+}
+
+.luatikz-ltr {
+  direction: ltr;
+  text-align: left;
+}
+
+.luatikz-diagram-align-left,
+.markdown-reading-view .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output.luatikz-diagram-align-left,
+.markdown-preview-view .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output.luatikz-diagram-align-left,
+.markdown-rendered .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output.luatikz-diagram-align-left {
+  justify-content: flex-start;
+}
+
+.luatikz-diagram-align-center,
+.markdown-reading-view .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output.luatikz-diagram-align-center,
+.markdown-preview-view .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output.luatikz-diagram-align-center,
+.markdown-rendered .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output.luatikz-diagram-align-center {
+  justify-content: center;
+}
+
+.luatikz-diagram-align-right,
+.markdown-reading-view .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output.luatikz-diagram-align-right,
+.markdown-preview-view .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output.luatikz-diagram-align-right,
+.markdown-rendered .tikzjax-hebrew-local-block .tikzjax-hebrew-local-output.luatikz-diagram-align-right {
+  justify-content: flex-end;
+}
+
+.tikzjax-hebrew-local-output .tikzjax-hebrew-local-image,
+.tikzjax-hebrew-local-output .luatikz-tikzjax-host {
+  width: auto;
+  max-width: 100%;
+  flex: 0 0 auto;
+}
+
+.markdown-reading-view .tikzjax-hebrew-local-block,
+.markdown-preview-view .tikzjax-hebrew-local-block,
+.markdown-rendered .tikzjax-hebrew-local-block {
+  margin: 1em 0;
+  position: relative;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  border-radius: 0;
+}
+
+.tikzjax-hebrew-local-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  z-index: 2;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease, visibility 0.15s ease;
+}
+
+.tikzjax-hebrew-local-block:hover .tikzjax-hebrew-local-toolbar,
+.block-language-tikz:hover .tikzjax-hebrew-local-toolbar,
+.block-language-luatikz:hover .tikzjax-hebrew-local-toolbar {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+@media print {
+  .markdown-preview-view .tikzjax-hebrew-local-toolbar,
+  .block-language-tikz .tikzjax-hebrew-local-toolbar,
+  .block-language-luatikz .tikzjax-hebrew-local-toolbar {
+    display: none;
+  }
+}
+
+.tikzjax-hebrew-local-download-link {
+  display: none;
+}
+
+.tikzjax-hebrew-local-error-details-hidden {
+  display: none;
+}
+
+.tikzjax-hebrew-local-output {
+  overflow-x: auto;
+  display: flex;
+  justify-content: center;
+}
+
+/* Finished output only; loading uses .luatikz-glass-card styling above. */
+.markdown-reading-view .tikzjax-hebrew-local-output:not(.luatikz-glass-card):not(.luatikz-error-card),
+.markdown-preview-view .tikzjax-hebrew-local-output:not(.luatikz-glass-card):not(.luatikz-error-card),
+.markdown-rendered .tikzjax-hebrew-local-output:not(.luatikz-glass-card):not(.luatikz-error-card) {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+  border-radius: 0;
+}
+
+.markdown-reading-view .tikzjax-hebrew-local-image,
+.markdown-preview-view .tikzjax-hebrew-local-image,
+.markdown-rendered .tikzjax-hebrew-local-image {
+  max-width: 100%;
+  height: auto;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  outline: none;
+}
+
+.tikzjax-hebrew-local-error {
+  padding: 12px 14px;
+  color: var(--text-normal);
+  font-size: 0.9em;
+  backdrop-filter: none;
+}
+
+.tikzjax-hebrew-local-error-title {
+  color: var(--text-error);
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.cm-editor .cm-content .cm-line.luatikz-error-line-highlight {
+  background-color: rgba(255, 80, 80, 0.18);
+}
+
+.cm-editor .cm-content .luatikz-error-mark-highlight {
+  background-color: rgba(255, 80, 80, 0.42);
+  border-radius: 2px;
+}
+
+.theme-dark .cm-editor .cm-content .cm-line.luatikz-error-line-highlight {
+  background-color: rgba(255, 120, 120, 0.22);
+}
+
+.theme-dark .cm-editor .cm-content .luatikz-error-mark-highlight {
+  background-color: rgba(255, 120, 120, 0.48);
+}
+
+.luatikz-environment-list {
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+}
+
+.luatikz-environment-hint {
+  margin-top: 4px;
+  font-size: 0.85em;
+  color: var(--text-muted);
+}
+
+.luatikz-dark-brightness-boost .tikzjax-hebrew-local-image,
+.luatikz-dark-brightness-boost .luatikz-tikzjax-host svg {
+  filter: brightness(1.28) contrast(1.06);
+}
+
+.tikzjax-hebrew-local-error-details {
+  max-height: 320px;
+  overflow: auto;
+  white-space: pre-wrap;
+  font-size: 0.78em;
+  padding: 8px;
+  border-radius: 10px;
+  background: var(--background-primary);
+  border: 1px solid var(--background-modifier-border);
+}
+
+.tikzjax-hebrew-local-inline-preview {
+  position: absolute;
+  top: 30px;
+  right: 24px;
+  z-index: 100;
+  width: min(520px, 45vw);
+  height: min(360px, 40vh);
+  min-width: 160px;
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background-clip: padding-box;
+  text-align: center;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.tikzjax-hebrew-local-inline-preview.luatikz-inline-preview-sized {
+  left: var(--luatikz-preview-left, auto);
+  top: var(--luatikz-preview-top, 30px);
+  right: var(--luatikz-preview-right, 24px);
+  width: var(--luatikz-preview-width, min(520px, 45vw));
+  height: var(--luatikz-preview-height, min(360px, 40vh));
+  max-width: none;
+  max-height: none;
+}
+
+.tikzjax-hebrew-local-inline-preview-body {
+  flex: 1;
+  min-height: 0;
+  width: 100%;
+  overflow: auto;
+  padding: 0.75em;
+  box-sizing: border-box;
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.tikzjax-hebrew-local-inline-preview-body.luatikz-pick-mode {
+  padding: 0;
+  overflow: hidden;
+}
+
+.tikzjax-hebrew-local-inline-preview-body > * {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+}
+
+.tikzjax-hebrew-local-inline-preview-output {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.tikzjax-hebrew-local-inline-preview-output.luatikz-pick-surface {
+  cursor: crosshair;
+}
+
+.tikzjax-hebrew-local-inline-preview-output.luatikz-diagram-align-left {
+  justify-content: flex-start;
+}
+
+.tikzjax-hebrew-local-inline-preview-output.luatikz-diagram-align-center {
+  justify-content: center;
+}
+
+.tikzjax-hebrew-local-inline-preview-output.luatikz-diagram-align-right {
+  justify-content: flex-end;
+}
+
+.tikzjax-hebrew-local-inline-preview-image {
+  max-width: 100%;
+  max-height: 100%;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.tikzjax-inline-resize-handle {
+  position: absolute;
+  z-index: 2;
+}
+
+.tikzjax-inline-resize-n,
+.tikzjax-inline-resize-s {
+  left: 10px;
+  right: 10px;
+  height: 8px;
+}
+
+.tikzjax-inline-resize-n {
+  top: -2px;
+  cursor: n-resize;
+}
+
+.tikzjax-inline-resize-s {
+  bottom: -2px;
+  cursor: s-resize;
+}
+
+.tikzjax-inline-resize-e,
+.tikzjax-inline-resize-w {
+  top: 10px;
+  bottom: 10px;
+  width: 8px;
+}
+
+.tikzjax-inline-resize-e {
+  right: -2px;
+  cursor: e-resize;
+}
+
+.tikzjax-inline-resize-w {
+  left: -2px;
+  cursor: w-resize;
+}
+
+.tikzjax-inline-resize-ne,
+.tikzjax-inline-resize-nw,
+.tikzjax-inline-resize-se,
+.tikzjax-inline-resize-sw {
+  width: 14px;
+  height: 14px;
+}
+
+.tikzjax-inline-resize-ne {
+  top: -2px;
+  right: -2px;
+  cursor: ne-resize;
+}
+
+.tikzjax-inline-resize-nw {
+  top: -2px;
+  left: -2px;
+  cursor: nw-resize;
+}
+
+.tikzjax-inline-resize-se {
+  bottom: -2px;
+  right: -2px;
+  cursor: se-resize;
+}
+
+.tikzjax-inline-resize-sw {
+  bottom: -2px;
+  left: -2px;
+  cursor: sw-resize;
+}
+
+.tikzjax-hebrew-local-inline-preview img {
+  max-width: 100%;
+  height: auto;
+}
+
+.tikzjax-hebrew-local-inline-preview-message {
+  color: var(--text-muted);
+  font-size: 0.9em;
+  text-align: center;
+}
+
+.tikzjax-hebrew-local-inline-preview-error {
+  margin-top: 0.75em;
+  text-align: left;
+}
+
+.tikzjax-hebrew-local-error-button-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  margin-bottom: 8px;
+}
+
+.luatikz-cheatsheet-row,
+.luatikz-template-row,
+.luatikz-category-row,
+.luatikz-snippet-row {
+  padding: 0.6em 0.4em;
+  border-bottom: 1px solid var(--background-modifier-border);
+  cursor: pointer;
+}
+
+.luatikz-cheatsheet-row:hover,
+.luatikz-template-row:hover,
+.luatikz-category-row:hover,
+.luatikz-snippet-row:hover {
+  background: var(--background-modifier-hover);
+}
+
+.luatikz-cheatsheet-snippet {
+  display: block;
+  font-size: 0.85em;
+  margin-top: 0.25em;
+}
+
+.tikzjax-hebrew-local-inline-preview img {
+  max-width: 100%;
+  height: auto;
+}
+
+.luatikz-inline-svg-host {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.luatikz-inline-svg-host svg {
+  width: 100%;
+  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.luatikz-inline-svg-host.luatikz-pick-mode {
+  cursor: crosshair;
+}

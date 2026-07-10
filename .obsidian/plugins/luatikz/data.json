@@ -1,0 +1,16 @@
+{
+  "renderEngine": "tikzjax",
+  "lualatexPath": "/Library/TeX/texbin/lualatex",
+  "enableLocalShellRenderer": true,
+  "showInstallNotice": false,
+  "outputFormat": "svg",
+  "timeoutMs": 15000,
+  "cacheEnabled": true,
+  "extraPreamble": "",
+  "inlineLivePreviewEnabledByDefault": true,
+  "darkModeStyle": "auto-invert",
+  "starterBlockOnNewFence": true,
+  "enableStructuralLint": true,
+  "semicolonReminderMode": "hint",
+  "autoCloseBrackets": true
+}

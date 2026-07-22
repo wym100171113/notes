@@ -7991,6 +7991,7 @@ skn
 sgl
 subdivision
 sporadic
+syndrome
 leq
 le
 left
@@ -11253,6 +11254,7 @@ ddF
 dif
 der
 doubling
+derangement
 cdots
 choose
 cup
@@ -35037,6 +35039,7 @@ pole
 produces
 pital
 partitions
+pigeonhole
 approx
 align
 array
@@ -41466,6 +41469,7 @@ Coding
 Chowla
 Combinatorial
 Combinatorics
+Coincidence
 Rightarrow
 Reference
 Rh
@@ -43064,6 +43068,9 @@ Reed
 Redfield
 Regularity
 Ruzsa
+RBRRBRBR
+Raphson
+Rado
 xdx
 xp
 xM
@@ -50881,6 +50888,7 @@ Polya
 Petersen
 Proofs
 Plünnecke
+Pascal
 IHDR
 Ip
 Ih
@@ -61790,6 +61798,7 @@ ZOn
 ZLV
 Zygmund
 Ziegler
+Zsigmondy
 jsBu
 jv
 js
@@ -71036,6 +71045,8 @@ UeD
 UCH
 Upfal
 USAMO
+UCT
+Universal
 Ylm
 Ygv
 Yd
@@ -79126,6 +79137,7 @@ Tao
 Trotter
 Tutte
 THE
+Technique
 ÄLa
 ÄN
 Ät

@@ -6,9 +6,12 @@ tags:
   - 组合
   - 群作用
   - Pólya计数
-aliases: [Pólya定理, Burnside引理, 群作用计数, 循环指标]
-author:
-  - wym
+aliases:
+  - Pólya定理
+  - Burnside引理
+  - 群作用计数
+  - 循环指标
+author: wym
 date: 2026-07-22
 ---
 

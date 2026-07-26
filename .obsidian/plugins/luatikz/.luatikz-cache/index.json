@@ -14,6 +14,20 @@
       "outputFormat": "svg",
       "assetFile": "127eb19d63ed8e65b10ef4da0f8d8d0f53b9518847eaaa2db18c9489d9c8df96.svg",
       "kind": "svg"
+    },
+    "9e0f80771ef1b02c4806a4f4c02add0edddaa8bbf6464f40c439b6f90b58c3f5": {
+      "createdAt": 1784951094758,
+      "engine": "tikzjax",
+      "outputFormat": "svg",
+      "assetFile": "9e0f80771ef1b02c4806a4f4c02add0edddaa8bbf6464f40c439b6f90b58c3f5.svg",
+      "kind": "svg"
+    },
+    "22023b4e8d025325c9fa821c6716cd000439e7b3efdfc3df2c22d00468e77e46": {
+      "createdAt": 1784951157361,
+      "engine": "tikzjax",
+      "outputFormat": "svg",
+      "assetFile": "22023b4e8d025325c9fa821c6716cd000439e7b3efdfc3df2c22d00468e77e46.svg",
+      "kind": "svg"
     }
   }
 }

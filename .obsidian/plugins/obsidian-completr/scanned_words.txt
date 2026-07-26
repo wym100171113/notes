@@ -22554,6 +22554,7 @@ numerically
 neHa
 nnm
 nyi
+nqSv
 bigcup
 bigcap
 begin

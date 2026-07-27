@@ -1,9 +1,6 @@
 views:
   - type: table
     name: 表格
-    filters:
-      and:
-        - file.folder.contains("数学笔记")
     groupBy:
       property: file.folder
       direction: ASC

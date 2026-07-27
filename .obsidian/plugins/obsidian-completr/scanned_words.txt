@@ -3154,6 +3154,7 @@ AIof
 AMG
 Augustin
 Alternating
+Avogadro
 GM
 Gc
 GL
@@ -11280,6 +11281,7 @@ doubling
 derangement
 dHf
 dsd
+defining
 cdots
 choose
 cup
@@ -14575,6 +14577,7 @@ fOi
 fcYp
 fHy
 fdYV
+fluctuation
 in
 infty
 id
@@ -25621,6 +25624,7 @@ LQfw
 LHj
 LjM
 LaTeX
+Lennard
 quad
 qt
 ql
@@ -50971,6 +50975,7 @@ Plünnecke
 Pascal
 PDz
 Pgj
+Perrin
 IHDR
 Ip
 Ih
@@ -64900,6 +64905,7 @@ Jordan
 Joel
 Janson
 Jeq
+Jones
 hv
 hW
 hg
@@ -74420,6 +74426,7 @@ Motzkin
 Mersenne
 Murty
 MEM
+Matter
 Qh
 Qu
 QQm

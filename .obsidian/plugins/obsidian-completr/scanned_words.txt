@@ -3155,6 +3155,11 @@ AMG
 Augustin
 Alternating
 Avogadro
+Aoyama
+AXP
+Amplitude
+ABCD
+ABCQP
 GM
 Gc
 GL
@@ -4744,6 +4749,9 @@ Gupta
 GbGf
 Gdc
 GCUU
+Gabrielse
+Greiner
+GHz
 Xn
 Xi
 Xe
@@ -8014,6 +8022,12 @@ subdivision
 sporadic
 syndrome
 sKf
+shell
+scheme
+squark
+slepton
+superconvergence
+safely
 leq
 le
 left
@@ -11282,6 +11296,7 @@ derangement
 dHf
 dsd
 defining
+dark
 cdots
 choose
 cup
@@ -14579,6 +14594,10 @@ fcYp
 fHy
 fdYV
 fluctuation
+field
+formalism
+flavor
+frontier
 in
 infty
 id
@@ -22560,6 +22579,7 @@ neHa
 nnm
 nyi
 nqSv
+neutralino
 bigcup
 bigcap
 begin
@@ -24088,6 +24108,7 @@ boH
 bWdR
 bai
 bKx
+boosts
 Leftrightarrow
 Lu
 LI
@@ -28839,6 +28860,7 @@ mam
 maTk
 majorization
 mod
+mechanics
 Delta
 Dr
 DWh
@@ -31959,6 +31981,7 @@ tsR
 tWwU
 taL
 tqO
+trap
 kern
 kA
 kl
@@ -33530,6 +33553,7 @@ kev
 kvtw
 kVVW
 kpp
+kHz
 pt
 partial
 pm
@@ -35102,6 +35126,9 @@ pog
 pcM
 pHj
 pAql
+prescriptions
+photon
+precision
 approx
 align
 array
@@ -41546,6 +41573,7 @@ Coulomb
 Charles
 Chang
 Current
+Cornu
 Rightarrow
 Reference
 Rh
@@ -43149,6 +43177,7 @@ Raphson
 Rado
 RCp
 Rup
+RFID
 xdx
 xp
 xM
@@ -46210,6 +46239,7 @@ uvw
 uczak
 uhC
 urd
+understands
 geq
 gAMA
 gT
@@ -47779,6 +47809,8 @@ gallery
 gukf
 gap
 gpW
+gaugino
+gluino
 Venn
 VU
 Vah
@@ -49397,6 +49429,7 @@ Viennot
 Van
 VqUNp
 VLH
+Veltman
 PNG
 Pe
 Ph
@@ -50977,6 +51010,11 @@ Pascal
 PDz
 Pgj
 Perrin
+Petermann
+Popov
+Penning
+PEP
+Pitaevskii
 IHDR
 Ip
 Ih
@@ -52606,6 +52644,8 @@ IDATz
 IDATj
 IOzRvmQ
 ISN
+Island
+IXPE
 Kl
 KM
 Ku
@@ -54217,6 +54257,9 @@ Kneser
 Kuratowski
 Karp
 KMs
+Kinoshita
+Kamiokande
+KEKB
 Wo
 WW
 WG
@@ -55805,6 +55848,7 @@ Witt
 Wolstenholme
 WpP
 WSKz
+Ward
 OZ
 OW
 Oc
@@ -58890,6 +58934,9 @@ Babbage
 Brun
 BZG
 BNGRGVGZG
+Bleuler
+Bhabha
+Berestetskii
 zG
 zM
 zk
@@ -66458,6 +66505,8 @@ hvo
 hDj
 hVp
 hth
+higgsino
+hyperasymptotics
 yk
 yS
 yt
@@ -69658,6 +69707,12 @@ Scd
 SQak
 SUm
 SMb
+Sommerfield
+Shelter
+SGR
+Super
+SUSY
+Schwartz
 Uo
 UC
 Ug
@@ -74428,6 +74483,10 @@ Mersenne
 Murty
 MEM
 Matter
+MSSM
+Michael
+MEG
+Modulation
 Qh
 Qu
 QQm
@@ -80826,6 +80885,9 @@ HhE
 HOp
 Homothety
 Heng
+Hanneke
+Hoogerheide
+Hänsch
 Fb
 FG
 Fj
@@ -82437,6 +82499,10 @@ Freiman
 FPD
 Foa
 Franklin
+Furry
+Faddeev
+Field
+Faraday
 ÜVK
 Üt
 ÜF

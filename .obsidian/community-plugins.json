@@ -7,5 +7,7 @@
   "obsidian-git",
   "editing-toolbar",
   "pdf-plus",
-  "luatikz"
+  "luatikz",
+  "weave-epub-reader",
+  "obsidian-pretty-bibtex"
 ]

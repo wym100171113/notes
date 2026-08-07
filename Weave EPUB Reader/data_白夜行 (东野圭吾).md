@@ -1,8 +1,10 @@
 ---
 format: "weave-epub-bookmarks/v3"
 weave_epub_bookmark_file: true
-stableKey: "epub-book-17to268"
-bookId: "epub-book-17to268"
+stableKey: "epubsrc-1565455c2cb8"
+bookId: "epub-book-18rf1dd"
+sourceId: "epubsrc-1565455c2cb84b08021e720c"
+sourceFingerprint: "1565455c2cb84b08021e720c8e2f658805a0bec9b92ad2b8b1c8a49b4ba73707"
 bookPath: "不妨来看看看书/白夜行 (东野圭吾).epub"
 displayTitle: "白夜行 (东野圭吾)"
 bookTitle: "白夜行 (东野圭吾)"
@@ -44,7 +46,7 @@ user:
   rating: null
   priority: ""
   notes: ""
-updatedAt: 1785302410051
+updatedAt: 1785809481434
 ---
 
 > 📎 本页由 Weave EPUB 自动维护。YAML 中 `readingState`、`bookmarks` 请勿手改；`user` 与「我的标注」可自由编辑。

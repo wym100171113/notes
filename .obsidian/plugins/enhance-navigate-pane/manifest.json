@@ -1,0 +1,13 @@
+{
+	"id": "enhance-navigate-pane",
+	"name": "Enhance Navigate Pane",
+	"version": "1.0.4",
+	"minAppVersion": "0.15.0",
+	"description": "Supercharge your File Explorer with custom file/folder icons, markdown heading navigation, recursive collapse, advanced filtering, and keyboard navigation.",
+	"author": "usero2-endofday",
+	"authorUrl": "https://github.com/usero2",
+	"fundingUrl": {
+		"Buy me a Coffee": "https://buymeacoffee.com/endofday"
+	},
+	"isDesktopOnly": false
+}

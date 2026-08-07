@@ -4,52 +4,20 @@
     "type": "split",
     "children": [
       {
-        "id": "f7336435a634ea90",
+        "id": "848b4427abf5cac9",
         "type": "tabs",
         "children": [
           {
-            "id": "0cbc3624ec9ca4cb",
+            "id": "6e2d587486b7bf38",
             "type": "leaf",
             "state": {
-              "type": "markdown",
-              "state": {
-                "file": "物理/高中物理/电学/03-磁场/03-洛伦兹力.md",
-                "mode": "source",
-                "source": false
-              },
+              "type": "empty",
+              "state": {},
               "icon": "lucide-file",
-              "title": "03-洛伦兹力"
-            }
-          },
-          {
-            "id": "637bb764e392b8dd",
-            "type": "leaf",
-            "state": {
-              "type": "weave-epub-reader-standalone",
-              "state": {
-                "filePath": "不妨来看看看书/慢煮生活-汪曾祺.epub",
-                "file": "不妨来看看看书/慢煮生活-汪曾祺.epub"
-              },
-              "icon": "book-open",
-              "title": "慢煮生活-汪曾祺 - 人间草木"
-            }
-          },
-          {
-            "id": "710ab8cf865f41e6",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "数学笔记/随笔/二维与三维 \"No-k-in-a-Row\" 问题：论文与进展整理.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "二维与三维 \"No-k-in-a-Row\" 问题：论文与进展整理"
+              "title": "新标签页"
             }
           }
-        ],
-        "currentTab": 2
+        ]
       }
     ],
     "direction": "vertical"
@@ -103,7 +71,7 @@
             }
           },
           {
-            "id": "d41ff4ad8ac8a512",
+            "id": "cf03914a98ae3971",
             "type": "leaf",
             "state": {
               "type": "weave-epub-sidebar-standalone",
@@ -116,7 +84,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 282.5
+    "width": 259.5
   },
   "right": {
     "id": "ce3e918e8bd84c7a",
@@ -223,46 +191,46 @@
       "graph:查看关系图谱": false
     }
   },
-  "active": "710ab8cf865f41e6",
+  "active": "6e2d587486b7bf38",
   "lastOpenFiles": [
-    "数学笔记/随笔/二维与三维 \"No-k-in-a-Row\" 问题：论文与进展整理.md",
-    "物理/高中物理/电学/03-磁场/03-洛伦兹力.md",
-    "物理/高中物理/电学/03-磁场/02-安培力.md",
-    "物理/高中物理/电学/04-电磁感应/03-楞次定律.md",
-    "物理/高中物理/电学/04-电磁感应/02-法拉第电磁感应定律.md",
-    "物理/高中物理/电学/04-电磁感应/01-磁通量与电磁感应现象.md",
-    "物理/高中物理/电学/01-静电场/03-电势与电势能.md",
-    "物理/物理学大类/光学电学/电磁学.md",
-    "物理/物理学大类/相对论/量子电动力学.md",
-    "物理/物理学大类/相对论/闵氏几何.md",
-    "物理/高中物理/光学/03-光的波动性/05-光的电磁本性.md",
-    "物理/高中物理/电学/01-静电场/01-电荷与库仑定律.md",
-    "物理/高中物理/电学/06-电磁波与传感器/01-电磁振荡与电磁波.md",
-    "物理/高中物理/光学/00-光学总览.md",
-    "物理/物理学大类/量子力学/波函数与薛定谔方程.md",
-    "物理/高中物理/电学/00-电学总览.md",
-    "物理/随笔/平台抛体最大水平位移问题.md",
-    "物理/高中物理/力学/01-运动学/01-描述运动的基本物理量.md",
-    "Weave EPUB Reader/data_普林斯顿微积分读本(修订版) (阿德里安．班纳 (Adrian Banner)).md",
-    "Weave EPUB Reader/data_Yu Hua works (all 13 ).md",
-    "Weave EPUB Reader/data_窄门.md",
-    "Weave EPUB Reader/data_瓦尔登湖 (亨利-戴维-梭罗).md",
-    "Weave EPUB Reader/data_逝水.md",
-    "Weave EPUB Reader/data_慢煮生活-汪曾祺.md",
-    "Weave EPUB Reader/data_白夜行 (东野圭吾).md",
-    "Weave EPUB Reader/Export templates/excerpt-citation-g.md",
+    "物理/物理学大类/相对论/康普顿散射.md",
+    "物理笔记/康普顿散射.md",
+    "物理笔记",
+    "物理/物理学大类/电力系统.md",
+    "物理/高中物理/电学/06-电磁波与传感器/传感器技术.md",
+    "物理/物理学大类/流体力学.md",
+    "物理/物理学大类/半导体物理.md",
+    "物理/物理学大类/固体物理.md",
+    "物理/物理学大类/相对论/星系团物理.md",
+    "物理/物理学大类/相对论/相对论.md",
+    "物理/物理学大类/相对论/Kompaneets方程.md",
+    "物理/物理学大类/力学运动学/力学.md",
+    "物理/物理学大类/相对论/逆康普顿散射.md",
+    "物理/物理学大类/力学运动学/理论力学.md",
+    "物理/物理学大类/相对论/宇宙微波背景辐射.md",
+    "物理/物理学大类/力学运动学/机械波.md",
+    "物理/物理学大类/量子力学/核磁共振.md",
+    "物理/物理学大类/量子力学/原子物理.md",
+    "物理/物理学大类/光学电学/电路分析.md",
+    "物理/物理学大类/量子力学/量子力学.md",
+    "物理/物理学大类/力学运动学/微积分.md",
+    "物理/物理学大类/力学运动学/高斯定理 (重力场).md",
+    "物理/物理学大类/力学运动学/万有引力定律.md",
+    "物理/物理学大类/热力学/熵与信息论.md",
+    "物理/物理学大类/热力学/相变与流体.md",
+    "物理/物理学大类/热力学/统计物理.md",
+    "物理/物理学大类/热力学/热力学.md",
+    "化学笔记/暑假作业5答案.pdf",
+    "数学笔记/数学竞赛/题目集/2026暑假集训模拟测试1-5（有解答）.pdf",
+    "数学笔记/数学竞赛/题目集/2026暑假集训模拟测试1-5（有解答）.pdf.crdownload",
+    "物理/物理竞赛/01-预备知识",
+    "物理/物理竞赛",
+    "神秘文件夹/stories",
+    "神秘文件夹/未命名文件夹",
+    "神秘文件夹/神秘试卷.jpg",
     "Weave EPUB Reader/Export templates",
     "不妨来看看看书/慢煮生活-汪曾祺.epub",
-    "不妨来看看看书/尤利西斯.mobi",
-    "不妨来看看看书/瓦尔登湖 (亨利·戴维·梭罗).epub",
-    "不妨来看看看书/窄门.epub",
-    "不妨来看看看书/白夜行 (东野圭吾).epub",
-    "不妨来看看看书/Yu Hua works (all 13 ) .epub",
-    "不妨来看看看书/逝水 .epub",
-    "不妨来看看看书",
-    "Weave EPUB Reader",
     "图片引用/geogebra-export 1.png",
-    "神秘文件夹/神秘试卷.jpg",
     "图片引用/geogebra-export.png",
     "物理/随笔/Pasted image 20260109183719.png",
     "图片引用/0afe3d0aafd33781261c35f90f085a07_r.png",

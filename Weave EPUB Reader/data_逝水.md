@@ -1,8 +1,10 @@
 ---
 format: "weave-epub-bookmarks/v3"
 weave_epub_bookmark_file: true
-stableKey: "epub-book-1wphfa6"
-bookId: "epub-book-1wphfa6"
+stableKey: "epubsrc-fd6402f78b9c"
+bookId: "epub-book-1gqdhae"
+sourceId: "epubsrc-fd6402f78b9c57612e026c1a"
+sourceFingerprint: "fd6402f78b9c57612e026c1ae06c2d9774978def1566d66cbcd7971d2b075680"
 bookPath: "不妨来看看看书/逝水 .epub"
 displayTitle: "逝水"
 bookTitle: "逝水"
@@ -32,7 +34,7 @@ user:
   rating: null
   priority: ""
   notes: ""
-updatedAt: 1785302410113
+updatedAt: 1785809481674
 ---
 
 > 📎 本页由 Weave EPUB 自动维护。YAML 中 `readingState`、`bookmarks` 请勿手改；`user` 与「我的标注」可自由编辑。

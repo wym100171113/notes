@@ -1,8 +1,10 @@
 ---
 format: "weave-epub-bookmarks/v3"
 weave_epub_bookmark_file: true
-stableKey: "epub-book-11llfet"
-bookId: "epub-book-11llfet"
+stableKey: "epubsrc-479ae578aa75"
+bookId: "epub-book-2yvs2i"
+sourceId: "epubsrc-479ae578aa75454630148bd7"
+sourceFingerprint: "479ae578aa75454630148bd7509db0ffe7bb181ecd049c8b4a7032b067374797"
 bookPath: "不妨来看看看书/Yu Hua works (all 13 ) .epub"
 displayTitle: "Yu Hua works (all 13 )"
 bookTitle: "Yu Hua works (all 13 )"
@@ -43,7 +45,7 @@ user:
   rating: null
   priority: ""
   notes: ""
-updatedAt: 1785302410187
+updatedAt: 1785809482162
 ---
 
 > 📎 本页由 Weave EPUB 自动维护。YAML 中 `readingState`、`bookmarks` 请勿手改；`user` 与「我的标注」可自由编辑。

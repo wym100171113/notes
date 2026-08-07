@@ -9,5 +9,7 @@
   "pdf-plus",
   "luatikz",
   "weave-epub-reader",
-  "obsidian-pretty-bibtex"
+  "obsidian-pretty-bibtex",
+  "enhance-navigate-pane",
+  "flexplorer"
 ]

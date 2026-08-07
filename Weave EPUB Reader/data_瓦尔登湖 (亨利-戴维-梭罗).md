@@ -1,8 +1,10 @@
 ---
 format: "weave-epub-bookmarks/v3"
 weave_epub_bookmark_file: true
-stableKey: "epub-book-1c9d3jd"
-bookId: "epub-book-1c9d3jd"
+stableKey: "epubsrc-588ed71e61de"
+bookId: "epub-book-amzmdw"
+sourceId: "epubsrc-588ed71e61de475afa6c8d3a"
+sourceFingerprint: "588ed71e61de475afa6c8d3aca20dd05232efaf0d170b276e5c2f0dabd928bed"
 bookPath: "不妨来看看看书/瓦尔登湖 (亨利·戴维·梭罗).epub"
 displayTitle: "瓦尔登湖 (亨利·戴维·梭罗)"
 bookTitle: "瓦尔登湖 (亨利·戴维·梭罗)"
@@ -32,7 +34,7 @@ user:
   rating: null
   priority: ""
   notes: ""
-updatedAt: 1785302410135
+updatedAt: 1785809481833
 ---
 
 > 📎 本页由 Weave EPUB 自动维护。YAML 中 `readingState`、`bookmarks` 请勿手改；`user` 与「我的标注」可自由编辑。

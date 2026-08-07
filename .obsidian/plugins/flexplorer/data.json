@@ -199,7 +199,7 @@
       "isHidden": false
     },
     "数学笔记": {
-      "isPinned": false,
+      "isPinned": true,
       "isHidden": false,
       "sortOrder": "custom",
       "customOrder": [
@@ -484,7 +484,7 @@
       "isHidden": false
     },
     "数学笔记/数学竞赛": {
-      "isPinned": false,
+      "isPinned": true,
       "isHidden": false,
       "sortOrder": "custom",
       "customOrder": [
@@ -1219,7 +1219,7 @@
       "isHidden": false
     },
     "物理": {
-      "isPinned": false,
+      "isPinned": true,
       "isHidden": false,
       "sortOrder": "custom",
       "customOrder": [
@@ -3406,10 +3406,11 @@
       "isHidden": false
     },
     "化学笔记": {
-      "isPinned": false,
+      "isPinned": true,
       "isHidden": false,
       "sortOrder": "custom",
       "customOrder": [
+        "高中化学",
         "~$假作业5答案.docx",
         "暑假作业5答案.pdf",
         "暑假作业6答案.pdf",
@@ -3767,15 +3768,16 @@
     "物理/物理竞赛": {
       "isPinned": false,
       "isHidden": false,
+      "sortOrder": "custom",
       "customOrder": [
         "00-物理竞赛总览.md",
         "01-预备知识"
-      ],
-      "sortOrder": "custom"
+      ]
     },
     "物理/物理竞赛/01-预备知识": {
       "isPinned": false,
       "isHidden": false,
+      "sortOrder": "custom",
       "customOrder": [
         "07-近似与估算方法.md",
         "05-复数与欧拉公式.md",
@@ -3784,8 +3786,7 @@
         "03-矢量运算.md",
         "01-微积分基础.md",
         "06-量纲分析.md"
-      ],
-      "sortOrder": "custom"
+      ]
     },
     "物理/物理竞赛/00-物理竞赛总览.md": {
       "isPinned": false,
@@ -3930,9 +3931,692 @@
     "物理/物理学大类/相对论/康普顿散射.md": {
       "isPinned": false,
       "isHidden": false
+    },
+    "化学笔记/高中化学": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "00-化学总览.md",
+        "22-有机化学基础选必三",
+        "21-物质结构与性质选必二",
+        "20-电化学选必一",
+        "19-水溶液中的离子平衡选必一",
+        "18-化学平衡选必一",
+        "17-化学反应速率选必一",
+        "16-化学反应热效应选必一",
+        "15-化学与可持续发展",
+        "14-有机化合物必修二",
+        "13-化学反应与能量必修二",
+        "12-硅及其化合物与非金属材料",
+        "11-氮及其化合物",
+        "10-硫及其化合物",
+        "09-元素周期表与周期律",
+        "08-铝及其化合物与金属材料",
+        "07-铁及其化合物",
+        "06-物质的量",
+        "05-氯及其化合物",
+        "04-钠及其化合物",
+        "03-氧化还原反应",
+        "02-离子反应",
+        "01-物质分类与转化"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/01-物质分类与转化": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-分散系与胶体.md",
+        "02-物质的转化.md",
+        "01-物质的分类.md",
+        "00-物质分类与转化总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/02-离子反应": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-离子共存与离子检验.md",
+        "02-离子反应与离子方程式.md",
+        "01-电离与电解质.md",
+        "00-离子反应总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/03-氧化还原反应": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "04-氧化还原反应的规律.md",
+        "03-氧化还原方程式配平.md",
+        "02-氧化剂与还原剂.md",
+        "01-氧化还原基本概念.md",
+        "00-氧化还原反应总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/04-钠及其化合物": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-碳酸钠与碳酸氢钠.md",
+        "02-钠的氧化物.md",
+        "01-钠单质.md",
+        "00-钠及其化合物总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/05-氯及其化合物": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-氯气的实验室制法与氯离子检验.md",
+        "02-氯的化合物与含氯消毒剂.md",
+        "01-氯气.md",
+        "00-氯及其化合物总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/06-物质的量": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-物质的量浓度与溶液配制.md",
+        "02-阿伏伽德罗定律与气体摩尔体积.md",
+        "01-物质的量与摩尔质量.md",
+        "00-物质的量总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/07-铁及其化合物": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-铁三角与亚铁离子铁离子的转化.md",
+        "02-铁的氧化物与氢氧化物.md",
+        "01-铁单质.md",
+        "00-铁及其化合物总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/08-铝及其化合物与金属材料": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-金属材料与合金.md",
+        "02-铝的氧化物与氢氧化物两性.md",
+        "01-铝单质与铝热反应.md",
+        "00-铝及其化合物总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/09-元素周期表与周期律": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "04-化学键.md",
+        "03-元素周期律.md",
+        "02-元素周期表.md",
+        "01-原子结构.md",
+        "00-元素周期表与周期律总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/10-硫及其化合物": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "04-硫酸根离子的检验.md",
+        "03-浓硫酸.md",
+        "02-二氧化硫.md",
+        "01-硫单质.md",
+        "00-硫及其化合物总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/11-氮及其化合物": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-硝酸.md",
+        "02-氨与铵盐.md",
+        "01-氮气与氮的氧化物.md",
+        "00-氮及其化合物总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/12-硅及其化合物与非金属材料": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "02-硅酸盐与无机非金属材料.md",
+        "01-硅单质与二氧化硅.md",
+        "00-硅及其化合物总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/13-化学反应与能量必修二": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-化学反应速率与限度.md",
+        "02-原电池与化学电池.md",
+        "01-化学键与化学反应热.md",
+        "00-化学反应与能量总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/14-有机化合物必修二": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "06-同系物与同分异构体.md",
+        "05-基本营养物质.md",
+        "04-乙醇与乙酸.md",
+        "03-苯与芳香烃.md",
+        "02-乙烯与烯烃.md",
+        "01-甲烷与烷烃.md",
+        "00-有机化合物总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/15-化学与可持续发展": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-环境保护与绿色化学.md",
+        "02-海水资源的综合利用.md",
+        "01-自然资源的开发利用.md",
+        "00-化学与可持续发展总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/16-化学反应热效应选必一": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-盖斯定律与反应热计算.md",
+        "02-热化学方程式与燃烧热.md",
+        "01-反应热与焓变.md",
+        "00-化学反应热效应总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/17-化学反应速率选必一": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-碰撞理论活化能与催化剂.md",
+        "02-影响化学反应速率的因素.md",
+        "01-化学反应速率概念与计算.md",
+        "00-化学反应速率总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/18-化学平衡选必一": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "04-等效平衡与平衡图像.md",
+        "03-勒夏特列原理与平衡移动.md",
+        "02-化学平衡常数.md",
+        "01-化学平衡状态.md",
+        "00-化学平衡总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/19-水溶液中的离子平衡选必一": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "05-酸碱中和滴定.md",
+        "04-沉淀溶解平衡.md",
+        "03-盐类的水解.md",
+        "02-水的电离与pH.md",
+        "01-电离平衡与弱电解质.md",
+        "00-水溶液中的离子平衡总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/20-电化学选必一": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-金属腐蚀与防护.md",
+        "02-电解池.md",
+        "01-原电池.md",
+        "00-电化学总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/21-物质结构与性质选必二": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "03-晶体结构与性质.md",
+        "02-分子结构与性质.md",
+        "01-原子结构与性质.md",
+        "00-物质结构与性质总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/22-有机化学基础选必三": {
+      "isPinned": false,
+      "isHidden": false,
+      "customOrder": [
+        "05-生物大分子糖类蛋白质核酸.md",
+        "04-有机合成与推断.md",
+        "03-烃的衍生物卤代烃醇酚醛酮羧酸酯.md",
+        "02-烃烷烯炔与芳香烃.md",
+        "01-有机物的结构特点与命名.md",
+        "00-有机化学基础总览.md"
+      ],
+      "sortOrder": "custom"
+    },
+    "化学笔记/高中化学/00-化学总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/21-物质结构与性质选必二/00-物质结构与性质总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/16-化学反应热效应选必一/00-化学反应热效应总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/19-水溶液中的离子平衡选必一/00-水溶液中的离子平衡总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/10-硫及其化合物/00-硫及其化合物总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/21-物质结构与性质选必二/01-原子结构与性质.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/16-化学反应热效应选必一/01-反应热与焓变.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/10-硫及其化合物/01-硫单质.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/01-物质分类与转化/00-物质分类与转化总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/19-水溶液中的离子平衡选必一/01-电离平衡与弱电解质.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/04-钠及其化合物/00-钠及其化合物总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/07-铁及其化合物/00-铁及其化合物总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/16-化学反应热效应选必一/02-热化学方程式与燃烧热.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/21-物质结构与性质选必二/02-分子结构与性质.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/10-硫及其化合物/02-二氧化硫.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/19-水溶液中的离子平衡选必一/02-水的电离与pH.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/01-物质分类与转化/01-物质的分类.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/04-钠及其化合物/01-钠单质.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/07-铁及其化合物/01-铁单质.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/16-化学反应热效应选必一/03-盖斯定律与反应热计算.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/10-硫及其化合物/03-浓硫酸.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/21-物质结构与性质选必二/03-晶体结构与性质.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/13-化学反应与能量必修二/00-化学反应与能量总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/13-化学反应与能量必修二/01-化学键与化学反应热.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/13-化学反应与能量必修二/02-原电池与化学电池.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/13-化学反应与能量必修二/03-化学反应速率与限度.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/17-化学反应速率选必一/00-化学反应速率总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/04-钠及其化合物/02-钠的氧化物.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/07-铁及其化合物/02-铁的氧化物与氢氧化物.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/22-有机化学基础选必三/00-有机化学基础总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/01-物质分类与转化/02-物质的转化.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/10-硫及其化合物/04-硫酸根离子的检验.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/19-水溶液中的离子平衡选必一/03-盐类的水解.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/17-化学反应速率选必一/01-化学反应速率概念与计算.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/11-氮及其化合物/00-氮及其化合物总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/22-有机化学基础选必三/01-有机物的结构特点与命名.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/07-铁及其化合物/03-铁三角与亚铁离子铁离子的转化.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/04-钠及其化合物/03-碳酸钠与碳酸氢钠.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/01-物质分类与转化/03-分散系与胶体.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/17-化学反应速率选必一/02-影响化学反应速率的因素.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/11-氮及其化合物/01-氮气与氮的氧化物.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/08-铝及其化合物与金属材料/00-铝及其化合物总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/02-离子反应/00-离子反应总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/19-水溶液中的离子平衡选必一/04-沉淀溶解平衡.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/05-氯及其化合物/00-氯及其化合物总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/14-有机化合物必修二/00-有机化合物总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/14-有机化合物必修二/01-甲烷与烷烃.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/14-有机化合物必修二/02-乙烯与烯烃.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/14-有机化合物必修二/03-苯与芳香烃.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/22-有机化学基础选必三/02-烃烷烯炔与芳香烃.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/08-铝及其化合物与金属材料/01-铝单质与铝热反应.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/11-氮及其化合物/02-氨与铵盐.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/02-离子反应/01-电离与电解质.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/05-氯及其化合物/01-氯气.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/19-水溶液中的离子平衡选必一/05-酸碱中和滴定.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/11-氮及其化合物/03-硝酸.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/02-离子反应/02-离子反应与离子方程式.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/20-电化学选必一/00-电化学总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/22-有机化学基础选必三/03-烃的衍生物卤代烃醇酚醛酮羧酸酯.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/17-化学反应速率选必一/03-碰撞理论活化能与催化剂.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/05-氯及其化合物/02-氯的化合物与含氯消毒剂.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/12-硅及其化合物与非金属材料/00-硅及其化合物总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/14-有机化合物必修二/04-乙醇与乙酸.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/14-有机化合物必修二/05-基本营养物质.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/14-有机化合物必修二/06-同系物与同分异构体.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/18-化学平衡选必一/00-化学平衡总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/02-离子反应/03-离子共存与离子检验.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/20-电化学选必一/01-原电池.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/08-铝及其化合物与金属材料/02-铝的氧化物与氢氧化物两性.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/03-氧化还原反应/00-氧化还原反应总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/05-氯及其化合物/03-氯气的实验室制法与氯离子检验.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/06-物质的量/00-物质的量总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/20-电化学选必一/02-电解池.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/03-氧化还原反应/01-氧化还原基本概念.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/20-电化学选必一/03-金属腐蚀与防护.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/22-有机化学基础选必三/04-有机合成与推断.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/03-氧化还原反应/02-氧化剂与还原剂.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/12-硅及其化合物与非金属材料/01-硅单质与二氧化硅.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/06-物质的量/01-物质的量与摩尔质量.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/12-硅及其化合物与非金属材料/02-硅酸盐与无机非金属材料.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/06-物质的量/02-阿伏伽德罗定律与气体摩尔体积.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/03-氧化还原反应/03-氧化还原方程式配平.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/06-物质的量/03-物质的量浓度与溶液配制.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/15-化学与可持续发展/00-化学与可持续发展总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/15-化学与可持续发展/01-自然资源的开发利用.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/15-化学与可持续发展/02-海水资源的综合利用.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/15-化学与可持续发展/03-环境保护与绿色化学.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/08-铝及其化合物与金属材料/03-金属材料与合金.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/09-元素周期表与周期律/00-元素周期表与周期律总览.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/03-氧化还原反应/04-氧化还原反应的规律.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/22-有机化学基础选必三/05-生物大分子糖类蛋白质核酸.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/18-化学平衡选必一/01-化学平衡状态.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/09-元素周期表与周期律/01-原子结构.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/09-元素周期表与周期律/02-元素周期表.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/18-化学平衡选必一/02-化学平衡常数.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/09-元素周期表与周期律/03-元素周期律.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/18-化学平衡选必一/03-勒夏特列原理与平衡移动.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/09-元素周期表与周期律/04-化学键.md": {
+      "isPinned": false,
+      "isHidden": false
+    },
+    "化学笔记/高中化学/18-化学平衡选必一/04-等效平衡与平衡图像.md": {
+      "isPinned": false,
+      "isHidden": false
     }
   },
-  "pinnedFiles": [],
+  "pinnedFiles": [
+    "数学笔记",
+    "物理",
+    "数学笔记/数学竞赛",
+    "化学笔记"
+  ],
   "showHidden": false,
   "newItemPlacement": "top",
   "persistOrderOnCreateDelete": true,

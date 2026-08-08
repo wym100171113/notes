@@ -1,3 +1,21 @@
-神秘文件夹/
+# macOS
+.DS_Store
 
-/神秘文件夹/
+# Office / 临时文件
+~$*
+
+# Obsidian workspace 状态(UI 布局,自动生成,持续变化)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+
+# Obsidian 插件缓存
+.obsidian/plugins/obsidian-completr/scanned_words.txt
+
+# Obsidian 插件数据(可能含 API 密钥/本地状态,不应入库)
+.obsidian/plugins/*/data.json
+
+# Trae IDE 配置与任务规格
+.trae/
+
+# 神秘文件夹
+神秘文件夹/

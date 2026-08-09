@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 import { readdirSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import markdownItMark from 'markdown-it-mark'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const docsDir = join(here, '../docs')
@@ -68,6 +69,10 @@ export default defineConfig({
     // 关闭原始 HTML 透传, 避免笔记中的不规范标签导致 Vue 模板编译失败
     html: false,
     // 数学在浏览器端用 KaTeX 渲染(见 theme), 避免 SSR 预渲染 444 页公式导致构建内存溢出
+    config(md) {
+      // Obsidian ==高亮== -> <mark>
+      md.use(markdownItMark)
+    },
   },
   themeConfig: {
     logo: undefined,
@@ -82,7 +87,7 @@ export default defineConfig({
       '/物理/': sidebarFor('物理'),
       '/化学/': sidebarFor('化学'),
     },
-    outline: { level: [2, 3], label: '本页目录' },
+    outline: { level: [2, 4], label: '本页目录' },
     search: {
       provider: 'local',
       options: {

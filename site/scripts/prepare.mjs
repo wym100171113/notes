@@ -129,27 +129,34 @@ const CALLOUT_MAP = {
   failure: 'danger', fail: 'danger', missing: 'danger',
   danger: 'danger', error: 'danger', bug: 'danger',
   example: 'info', quote: 'info', cite: 'info',
+  // 数学/物理常见标注
+  definition: 'info', theorem: 'info', lemma: 'info', corollary: 'info', property: 'info',
+  proof: 'tip', exercise: 'tip', remark: 'tip', solution: 'tip',
 };
 
+// 把 Obsidian callout(> [!type] 标题 + 嵌套)转换为 VitePress ::: 容器
 function convertCallouts(content) {
   const lines = content.split('\n');
   const out = [];
   let i = 0;
-  const re = /^>\s*\[!([a-z]+)\]\s*(.*)$/i;
+  const re = /^>\s*\[!([a-zA-Z]+)([+-])?\]\s*(.*)$/;
+
   while (i < lines.length) {
     const m = lines[i].match(re);
     if (m) {
       const type = CALLOUT_MAP[m[1].toLowerCase()] || 'info';
-      const title = m[2].trim();
-      const body = [];
+      const title = (m[3] || '').trim();
       i++;
+      const bodyLines = [];
       while (i < lines.length && /^>\s?/.test(lines[i])) {
-        body.push(lines[i].replace(/^>\s?/, ''));
+        bodyLines.push(lines[i].replace(/^>\s?/, ''));
         i++;
       }
-      while (body.length && body[body.length - 1].trim() === '') body.pop();
+      while (bodyLines.length && bodyLines[bodyLines.length - 1].trim() === '') bodyLines.pop();
+      // 递归处理嵌套 callout(保留 > 前缀以识别)
+      const body = convertCallouts(bodyLines.join('\n')).trim();
       out.push(`::: ${type}${title ? ' ' + title : ''}`);
-      for (const b of body) out.push(b);
+      if (body) out.push(body);
       out.push(':::');
       continue;
     }
@@ -157,6 +164,12 @@ function convertCallouts(content) {
     i++;
   }
   return out.join('\n');
+}
+
+// 删除 Obsidian 注释 %% ... %% (跳过 fenced code block)
+function stripObsidianComments(content) {
+  const parts = content.split(/```/);
+  return parts.map((part, i) => (i % 2 === 1 ? part : part.replace(/%%[\s\S]*?%%/g, ''))).join('```');
 }
 
 // 修复笔记中不规范的 $$ 定界符, 防止单个超长数学块拖垮构建
@@ -261,6 +274,7 @@ function transform(content, curRel) {
     return alias || target;
   });
 
+  content = stripObsidianComments(content);
   content = convertCallouts(content);
   content = normalizeMath(content);
   content = escapeVueBraces(content);

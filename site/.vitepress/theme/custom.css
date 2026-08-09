@@ -16,3 +16,34 @@
 .VPDoc h3 {
   scroll-margin-top: 88px;
 }
+
+/* Obsidian ==高亮== -> <mark> */
+.vp-doc mark {
+  background: #fde68a;
+  color: #1f2937;
+  border-radius: 3px;
+  padding: 0 0.2em;
+}
+.dark .vp-doc mark {
+  background: #854d0e;
+  color: #fef3c7;
+}
+
+/* Mermaid 图表容器 */
+.vp-doc .mermaid {
+  margin: 1rem 0;
+  overflow-x: auto;
+  text-align: center;
+}
+.vp-doc .mermaid svg {
+  max-width: 100%;
+  height: auto;
+}
+.mermaid-error {
+  color: #b91c1c;
+  font-size: 0.85rem;
+  margin: 0.5rem 0;
+}
+.dark .mermaid-error {
+  color: #f87171;
+}

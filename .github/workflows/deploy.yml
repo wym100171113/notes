@@ -3,13 +3,6 @@ name: Deploy VitePress site to Pages
 on:
   push:
     branches: [main]
-    paths:
-      - 'site/**'
-      - '数学笔记/**'
-      - '物理/**'
-      - '化学笔记/**'
-      - '图片引用/**'
-      - '.github/workflows/deploy.yml'
   workflow_dispatch:
 
 permissions:

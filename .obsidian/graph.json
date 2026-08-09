@@ -8,13 +8,6 @@
   "collapse-color-groups": false,
   "colorGroups": [
     {
-      "query": "path:数学笔记  ",
-      "color": {
-        "a": 1,
-        "rgb": 14048348
-      }
-    },
-    {
       "query": "path:物理  ",
       "color": {
         "a": 1,
@@ -55,6 +48,13 @@
         "a": 1,
         "rgb": 6053078
       }
+    },
+    {
+      "query": "path:数学笔记  ",
+      "color": {
+        "a": 1,
+        "rgb": 5395168
+      }
     }
   ],
   "collapse-display": false,
@@ -67,6 +67,6 @@
   "repelStrength": 10,
   "linkStrength": 1,
   "linkDistance": 250,
-  "scale": 0.6038560273832183,
+  "scale": 0.18892177154013856,
   "close": true
 }

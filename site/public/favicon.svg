@@ -6,7 +6,6 @@
     </linearGradient>
   </defs>
   <rect width="64" height="64" rx="14" fill="url(#g)"/>
-  <path d="M18 16 H46 L27 32 H18 L46 48 H18"
-        stroke="#fff" stroke-width="5" fill="none"
-        stroke-linecap="round" stroke-linejoin="round"/>
+  <text x="32" y="45" font-family="'STIX Two Math','Cambria Math','Times New Roman',Georgia,serif"
+        font-size="38" fill="#fff" text-anchor="middle">∑</text>
 </svg>

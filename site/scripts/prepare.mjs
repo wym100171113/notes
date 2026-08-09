@@ -50,6 +50,11 @@ mkdirSync(docsDir, { recursive: true });
 const assetsSrc = join(repoRoot, ASSETS_DIR);
 if (existsSync(assetsSrc)) copyDir(assetsSrc, join(docsDir, ASSETS_DIR));
 
+// 站点静态资源(favicon / OG 图片) -> docs/public
+// (VitePress 固定把 srcDir/public 复制到构建输出)
+const sitePublic = join(siteDir, 'public');
+if (existsSync(sitePublic)) copyDir(sitePublic, join(docsDir, 'public'));
+
 // 收集并复制 md 文件
 const mdFiles = []; // { absSrc, relDst }
 for (const { src, dst } of SUBJECTS) {

@@ -7,6 +7,22 @@ import markdownItMark from 'markdown-it-mark'
 const here = dirname(fileURLToPath(import.meta.url))
 const docsDir = join(here, '../docs')
 
+// 中文搜索分词: 连续中文切成 bigram, 英文/数字保持整词
+function tokenizeForSearch(text: string): string[] {
+  const tokens: string[] = []
+  const parts = text.split(/([\u4e00-\u9fff]+)/).filter(Boolean)
+  for (const part of parts) {
+    if (/^[\u4e00-\u9fff]+$/.test(part)) {
+      const chars = Array.from(part)
+      if (chars.length === 1) tokens.push(chars[0])
+      else for (let i = 0; i < chars.length - 1; i++) tokens.push(chars[i] + chars[i + 1])
+    } else {
+      tokens.push(...part.split(/[^\p{L}\p{N}]+/u).filter(Boolean))
+    }
+  }
+  return tokens
+}
+
 interface SidebarItem {
   text: string
   link?: string
@@ -108,6 +124,14 @@ export default defineConfig({
     search: {
       provider: 'local',
       options: {
+        miniSearch: {
+          searchOptions: {
+            combineWith: 'AND',
+          },
+          options: {
+            tokenize: tokenizeForSearch,
+          },
+        },
         translations: {
           button: { buttonText: '搜索', buttonAriaLabel: '搜索' },
           modal: { noResultsText: '未找到相关结果', displayDetails: '显示详情' },

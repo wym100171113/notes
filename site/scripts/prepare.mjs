@@ -55,16 +55,21 @@ if (existsSync(assetsSrc)) copyDir(assetsSrc, join(docsDir, ASSETS_DIR));
 const sitePublic = join(siteDir, 'public');
 if (existsSync(sitePublic)) copyDir(sitePublic, join(docsDir, 'public'));
 
+// 文件名净化: 去掉会破坏 URL/JSON 的字符(如双引号)
+const sanitizeName = (name) => name.replace(/["']/g, '');
+
 // 收集并复制 md 文件
-const mdFiles = []; // { absSrc, relDst }
+const mdFiles = []; // { absSrc, relDst, origName }
 for (const { src, dst } of SUBJECTS) {
   const srcAbs = join(repoRoot, src);
   if (!existsSync(srcAbs)) continue;
   walk(srcAbs, (abs) => {
     if (extname(abs).toLowerCase() !== '.md') return;
     const relSrc = toSlashes(relative(srcAbs, abs));
-    const relDst = join(dst, relSrc);
-    mdFiles.push({ absSrc: abs, relDst: toSlashes(relDst) });
+    // 逐段净化路径
+    const cleanRel = relSrc.split('/').map(sanitizeName).join('/');
+    const relDst = join(dst, cleanRel);
+    mdFiles.push({ absSrc: abs, relDst: toSlashes(relDst), origName: basename(abs, '.md') });
   });
 }
 for (const f of mdFiles) {
@@ -86,6 +91,10 @@ for (const f of allFiles) {
   if (!byBase.has(base)) byBase.set(base, f.rel);
   const fn = basename(f.rel);
   if (!byFileName.has(fn)) byFileName.set(fn, f.rel);
+}
+// 原文件名(净化前, 可能含引号)也映射到净化后的路径, 保证 wikilink 仍能解析
+for (const f of mdFiles) {
+  if (!byBase.has(f.origName)) byBase.set(f.origName, f.relDst);
 }
 
 // ---------- 3. 链接/嵌入解析 ----------

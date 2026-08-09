@@ -19,3 +19,9 @@
 
 # 神秘文件夹
 神秘文件夹/
+
+# VitePress 站点(生成内容与依赖)
+site/node_modules/
+site/docs/
+site/.vitepress/dist/
+site/.vitepress/cache/

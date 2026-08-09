@@ -1,0 +1,19 @@
+{
+  "name": "notes-site",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "数学 · 物理 · 化学 学习笔记站点 (VitePress)",
+  "scripts": {
+    "gen": "node scripts/prepare.mjs",
+    "dev": "npm run gen && vitepress dev",
+    "build": "npm run gen && vitepress build",
+    "preview": "vitepress preview"
+  },
+  "dependencies": {
+    "katex": "^0.18.2"
+  },
+  "devDependencies": {
+    "vitepress": "^1.6.4"
+  }
+}

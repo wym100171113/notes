@@ -1,0 +1,18 @@
+/* 数学公式在深色主题下的可读性微调 */
+.dark .katex {
+  color: #d1d5db;
+}
+
+/* 长公式横向滚动, 避免溢出页面 */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}
+
+/* 标题锚点与页首之间留出间距 */
+.VPDoc h1,
+.VPDoc h2,
+.VPDoc h3 {
+  scroll-margin-top: 88px;
+}

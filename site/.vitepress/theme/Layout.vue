@@ -268,13 +268,8 @@ watch(isDark, () => {
   background: var(--vp-c-bg-soft);
   color: var(--vp-c-text-2);
   cursor: pointer;
-  opacity: 0;
-  transition: opacity 0.2s ease, color 0.2s ease, border-color 0.2s ease;
-}
-
-:deep(.mermaid:hover) :deep(.mermaid-zoom-btn),
-:deep(.mermaid-zoom-btn:focus-visible) {
   opacity: 1;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 :deep(.mermaid-zoom-btn:hover) {

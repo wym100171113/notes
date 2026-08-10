@@ -15,13 +15,27 @@
 
 /* 宽屏布局: 内容区伸长(限宽 1440→1600), 导航标题/搜索贴近左侧
  * 官方 scoped 规则特异性 0,2,0, 用双类名同特异度且后加载覆盖 */
+
+/* 内层 <a>: 宽度 auto 填满 wrapper, 文字 padding-left 16px, 横线完整覆盖侧栏 0→272
+ * 注: 不要用重复类名(.title.title), CSS 压缩器会去重导致特异性下降 */
+#app .VPNavBarTitle .title {
+  width: auto;
+  padding-left: 16px;
+}
+@media (min-width: 960px) {
+  .VPNavBar.VPNavBar.has-sidebar .title {
+    padding: 0;
+  }
+}
+
 @media (min-width: 1440px) {
   :root {
     --vp-layout-max-width: 1600px;
   }
 
-  .VPNavBar.VPNavBar {
-    padding-left: 16px;
+  .VPNavBar.VPNavBar.has-sidebar .title {
+    padding: 0;
+    width: var(--vp-sidebar-width);
   }
 
   .VPSidebar.VPSidebar {

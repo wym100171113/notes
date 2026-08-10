@@ -1,67 +1,23 @@
-<script setup lang="ts">
-import { computed, ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
-import { useRouter, useData } from 'vitepress'
+<script lang="ts">
 import MiniSearch from 'minisearch'
 import localSearchIndex from '@localSearchIndex'
 
-const emit = defineEmits<{ (e: 'close'): void }>()
-const router = useRouter()
-const { localeIndex, theme } = useData()
-
-/* ============ 数据层: 模块级缓存, 组件重挂载不重复加载 ============ */
+/* ============ 模块级: 缓存与加载器(组件重挂载/切出再打开不重置) ============ */
 const BASE = import.meta.env.BASE_URL as string
 let titleCache: { id: string; title: string; titles: string[] }[] | null = null
 let excerptsCache: Record<string, { t: string; x: string }[]> | null = null
 let fullIndexCache: MiniSearch | null = null
 let fullIndexPromise: Promise<MiniSearch> | null = null
-
-
-/* ============ IndexedDB 持久缓存(全文索引) ============ */
-const IDB_NAME = 'notes-search'
-const IDB_STORE = 'kv'
 let buildVersion = ''
-async function getBuildVersion() {
-  if (buildVersion) return buildVersion
-  try {
-    const r = await fetch(`${BASE}search-data/version.json`)
-    buildVersion = ((await r.json()) as { v: string }).v
-  } catch {
-    buildVersion = 'local'
-  }
-  return buildVersion
+let currentLocale = 'root'
+let currentSearchOptions: any = undefined
+
+export function setSearchEnv(locale: string, searchOptions: any) {
+  currentLocale = locale
+  currentSearchOptions = searchOptions
 }
-function idbOpen(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    const req = indexedDB.open(IDB_NAME, 1)
-    req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE)
-    req.onsuccess = () => resolve(req.result)
-    req.onerror = () => reject(req.error)
-  })
-}
-async function idbGet(key: string): Promise<string | null> {
-  try {
-    const db = await idbOpen()
-    return await new Promise((resolve) => {
-      const req = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(key)
-      req.onsuccess = () => resolve((req.result as string) ?? null)
-      req.onerror = () => resolve(null)
-    })
-  } catch {
-    return null
-  }
-}
-async function idbSet(key: string, val: string): Promise<void> {
-  try {
-    const db = await idbOpen()
-    await new Promise<void>((resolve, reject) => {
-      const tx = db.transaction(IDB_STORE, 'readwrite')
-      tx.objectStore(IDB_STORE).put(val, key)
-      tx.oncomplete = () => resolve()
-      tx.onerror = () => reject(tx.error)
-    })
-  } catch {
-    /* 忽略 */
-  }
+export function warmFullIndex() {
+  loadFullIndex().catch(() => {})
 }
 
 async function loadTitles() {
@@ -76,6 +32,49 @@ async function loadExcerpts() {
   excerptsCache = await res.json()
   return excerptsCache
 }
+async function getBuildVersion() {
+  if (buildVersion) return buildVersion
+  try {
+    const r = await fetch(`${BASE}search-data/version.json`)
+    buildVersion = ((await r.json()) as { v: string }).v
+  } catch {
+    buildVersion = 'local'
+  }
+  return buildVersion
+}
+function idbOpen(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open('notes-search', 1)
+    req.onupgradeneeded = () => req.result.createObjectStore('kv')
+    req.onsuccess = () => resolve(req.result)
+    req.onerror = () => reject(req.error)
+  })
+}
+async function idbGet(key: string): Promise<string | null> {
+  try {
+    const db = await idbOpen()
+    return await new Promise((resolve) => {
+      const req = db.transaction('kv', 'readonly').objectStore('kv').get(key)
+      req.onsuccess = () => resolve((req.result as string) ?? null)
+      req.onerror = () => resolve(null)
+    })
+  } catch {
+    return null
+  }
+}
+async function idbSet(key: string, val: string): Promise<void> {
+  try {
+    const db = await idbOpen()
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction('kv', 'readwrite')
+      tx.objectStore('kv').put(val, key)
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+  } catch {
+    /* 忽略 */
+  }
+}
 async function loadFullIndex(): Promise<MiniSearch> {
   if (fullIndexCache) return fullIndexCache
   if (fullIndexPromise) return fullIndexPromise
@@ -88,7 +87,7 @@ async function loadFullIndex(): Promise<MiniSearch> {
       data = ''
     }
     if (!data) {
-      data = (await localSearchIndex[localeIndex.value]?.())?.default as string
+      data = (await localSearchIndex[currentLocale]?.())?.default as string
       try {
         const v = await getBuildVersion()
         await idbSet('search-index-' + v, data)
@@ -96,7 +95,6 @@ async function loadFullIndex(): Promise<MiniSearch> {
         /* 忽略 */
       }
     }
-    const opts = theme.value.search?.provider === 'local' ? theme.value.search.options : undefined
     return MiniSearch.loadJSON(data, {
       fields: ['title', 'titles', 'text'],
       storeFields: ['title', 'titles'],
@@ -105,14 +103,27 @@ async function loadFullIndex(): Promise<MiniSearch> {
         fuzzy: false,
         prefix: true,
         boost: { title: 4, text: 2, titles: 1 },
-        ...(opts?.miniSearch?.searchOptions || {}),
+        ...(currentSearchOptions?.miniSearch?.searchOptions || {}),
       },
-      ...(opts?.miniSearch?.options || {}),
+      ...(currentSearchOptions?.miniSearch?.options || {}),
     })
   })()
   fullIndexCache = await fullIndexPromise
   return fullIndexCache
 }
+</script>
+
+<script setup lang="ts">
+import { computed, ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useRouter, useData } from 'vitepress'
+
+const emit = defineEmits<{ (e: 'close'): void }>()
+const router = useRouter()
+const { localeIndex, theme } = useData()
+setSearchEnv(
+  localeIndex.value,
+  theme.value.search?.provider === 'local' ? theme.value.search.options : undefined
+)
 
 /* ============ 状态 ============ */
 type Mode = 'quick' | 'full'
@@ -156,7 +167,7 @@ function quickSearch() {
   if (!q) { results.value = []; return }
   const hit = (s: string) => s.toLowerCase().includes(q)
   const out: any[] = []
-  for (const e of titleCache || []) {
+  for (const e of titleCache ?? []) {
     const titleHit = hit(e.title)
     const pathHit = hit(e.id)
     if (titleHit || pathHit) {
@@ -178,8 +189,7 @@ function fullSearch() {
     .map((r) => ({ id: r.id, title: r.title, titles: r.titles || [] }))
 }
 
-/* ============ 展开详情(摘录来自静态 excerpts.json) ============ */
-// 详情按钮仅在全文档模式显示, 直接切换 expanded 即可
+/* ============ 展开详情 ============ */
 function excerptFor(id: string): { t: string; x: string } | null {
   const base = BASE.replace(/\/$/, '')
   const path = id.split('#')[0]
@@ -244,13 +254,14 @@ function onKey(e: KeyboardEvent) {
 }
 onMounted(() => {
   focusInput()
-  // 打开即预取轻量数据(标题/摘录), 全文索引懒加载
+  // 打开即预取: 标题/摘录/全文索引(后台预热, 点全文时已就绪)
   loadTitles().catch(() => {})
   loadExcerpts().catch(() => {})
+  warmFullIndex()
 })
 onBeforeUnmount(() => clearTimeout(searchTimer))
 
-/* ============ 高亮(安全转义后自实现) ============ */
+/* ============ 高亮(安全转义) ============ */
 function esc(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
@@ -423,6 +434,8 @@ function isBodyHit(r: any) {
 .seg-btn { position: relative; z-index: 1; width: 76px; padding: 5px 0; border: none; background: transparent; color: var(--vp-c-text-2); font-size: 0.82rem; cursor: pointer; transition: color 0.2s ease; }
 .seg-btn:hover { color: var(--vp-c-text-1); }
 .seg-btn.active { color: var(--vp-c-brand-1); font-weight: 600; }
+.mode-hint { font-size: 0.75rem; color: var(--vp-c-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
 .detail-btn {
   flex-shrink: 0;
   padding: 4px 10px;
@@ -436,7 +449,6 @@ function isBodyHit(r: any) {
 }
 .detail-btn:hover { color: var(--vp-c-brand-1); border-color: var(--vp-c-brand-1); }
 .detail-btn.on { color: var(--vp-c-brand-1); border-color: var(--vp-c-brand-1); font-weight: 600; }
-.mode-hint { font-size: 0.75rem; color: var(--vp-c-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 .fuzzy-toggle { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; flex-shrink: 0; cursor: pointer; user-select: none; }
 .fuzzy-toggle input { position: absolute; opacity: 0; pointer-events: none; }

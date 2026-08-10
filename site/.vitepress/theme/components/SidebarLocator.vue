@@ -26,13 +26,20 @@ function check() {
     }
     const sb = sidebar.getBoundingClientRect()
     const r = el.getBoundingClientRect()
-    // 12px 余量内完全可见 → 淡出指示器
-    visible.value = !(r.top < sb.top + 12 || r.bottom > sb.bottom - 12)
+    // 当前项超出侧栏可视区(12px 余量)时显示指示器; 完全可见则淡出
+    visible.value = r.top < sb.top + 12 || r.bottom > sb.bottom - 12
   })
 }
 
 function scrollToActive() {
-  currentLink()?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+  const el = currentLink()
+  const sidebar = document.querySelector('.VPSidebar')
+  const nav = sidebar?.querySelector('.nav') as HTMLElement | null
+  if (!el || !nav) return
+  // 只滚动侧栏容器, 不滚动页面
+  const itemRect = el.getBoundingClientRect()
+  const navRect = nav.getBoundingClientRect()
+  nav.scrollTop += itemRect.top - navRect.top - nav.clientHeight / 2
   visible.value = false
 }
 
@@ -43,12 +50,15 @@ onMounted(() => {
   if (!inBrowser) return
   check()
   window.addEventListener('resize', check)
-  window.addEventListener('scroll', check, true)
+  // 只监听侧栏自身的滚动(避免全站滚动高频触发)
+  const sidebar = document.querySelector('.VPSidebar')
+  sidebar?.addEventListener('scroll', check, { passive: true })
 })
 onBeforeUnmount(() => {
   if (!inBrowser) return
   window.removeEventListener('resize', check)
-  window.removeEventListener('scroll', check, true)
+  const sidebar = document.querySelector('.VPSidebar')
+  sidebar?.removeEventListener('scroll', check)
 })
 </script>
 

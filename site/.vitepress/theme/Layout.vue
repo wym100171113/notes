@@ -104,7 +104,7 @@ function initMermaid() {
 }
 
 async function renderMath() {
-  const el = page.value
+  const el = page.value?.querySelector('.vp-doc')
   if (!el) return
   try {
     renderMathInElement(el, {
@@ -123,6 +123,31 @@ async function renderMath() {
   }
 }
 
+// 渲染单张 mermaid 图(源码留存在 wrap.dataset.mermaidSrc, 供深色模式重绘)
+function renderOneMermaid(source: string) {
+  const id = 'mmd-' + Math.random().toString(36).slice(2, 10)
+  return mermaid.render(id, source).then(({ svg }) => {
+    const wrap = document.createElement('div')
+    wrap.className = 'mermaid'
+    wrap.dataset.mermaidSrc = source
+    wrap.innerHTML = svg
+    // 放大查看按钮
+    const zoomBtn = document.createElement('button')
+    zoomBtn.type = 'button'
+    zoomBtn.className = 'mermaid-zoom-btn'
+    zoomBtn.title = '放大查看'
+    zoomBtn.setAttribute('aria-label', '放大查看脉络图')
+    zoomBtn.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M10 2h4v4l-1.5-1.5-3 3L8.5 6.5l3-3L10 2zM6 14H2v-4l1.5 1.5 3-3L7.5 9.5l-3 3L6 14z" fill="currentColor"/></svg>'
+    zoomBtn.addEventListener('click', (ev) => {
+      ev.stopPropagation()
+      const svgEl = wrap.querySelector('svg')
+      if (svgEl) openLightbox(svgEl)
+    })
+    wrap.appendChild(zoomBtn)
+    return wrap
+  })
+}
+
 async function renderMermaid() {
   const el = page.value
   if (!el) return
@@ -134,26 +159,9 @@ async function renderMermaid() {
     const source = (code.textContent || '').trim()
     if (!source || div.dataset.mermaidRendered) continue
     div.dataset.mermaidRendered = '1'
-    const id = 'mmd-' + Math.random().toString(36).slice(2, 10)
     try {
-      const { svg } = await mermaid.render(id, source)
-      const wrap = document.createElement('div')
-      wrap.className = 'mermaid'
-      wrap.innerHTML = svg
+      const wrap = await renderOneMermaid(source)
       div.replaceWith(wrap)
-      // 放大查看按钮
-      const zoomBtn = document.createElement('button')
-      zoomBtn.type = 'button'
-      zoomBtn.className = 'mermaid-zoom-btn'
-      zoomBtn.title = '放大查看'
-      zoomBtn.setAttribute('aria-label', '放大查看脉络图')
-      zoomBtn.innerHTML = '<svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><path d="M10 2h4v4l-1.5-1.5-3 3L8.5 6.5l3-3L10 2zM6 14H2v-4l1.5 1.5 3-3L7.5 9.5l-3 3L6 14z" fill="currentColor"/></svg>'
-      zoomBtn.addEventListener('click', (ev) => {
-        ev.stopPropagation()
-        const svgEl = wrap.querySelector('svg')
-        if (svgEl) openLightbox(svgEl)
-      })
-      wrap.appendChild(zoomBtn)
     } catch (err) {
       // 渲染失败: 保留原始源码, 仅标记
       const msg = document.createElement('div')
@@ -184,15 +192,23 @@ watch(
   },
 )
 
-// 切换深色模式时重绘 Mermaid
+// 切换深色模式时重绘 Mermaid(用留存的源码, 图与放大按钮都会重建)
 watch(isDark, () => {
   mermaidInitialized = false
   const pre = page.value
   if (pre) {
-    pre.querySelectorAll<HTMLElement>('.mermaid').forEach((el) => el.remove())
-    pre.querySelectorAll<HTMLElement>('[data-mermaid-rendered]').forEach((el) => delete el.dataset.mermaidRendered)
+    const sources: string[] = []
+    pre.querySelectorAll<HTMLElement>('.mermaid[data-mermaid-src]').forEach((el) => {
+      sources.push(el.dataset.mermaidSrc || '')
+      el.remove()
+    })
+    if (sources.length) {
+      initMermaid()
+      sources.forEach((src) => {
+        if (src) renderOneMermaid(src).then((wrap) => pre.appendChild(wrap))
+      })
+    }
   }
-  renderMermaid()
 })
 </script>
 

@@ -119,10 +119,11 @@ async function compactSearchIndex(): Promise<Plugin> {
 
 // 中文搜索分词: 优先用 Intl.Segmenter 词典分词(更接近词语, 误匹配少, 索引更小),
 // 不可用时退回 bigram; 与 VPLocalSearchBox.vue 的 tokenizeQuery 保持一致。
-const HAS_SEGMENTER = typeof Intl !== 'undefined' && 'Segmenter' in Intl
+// 注意: 该函数会被 VitePress 序列化进客户端包, 必须自包含(不能引用模块级常量)。
 function tokenizeForSearch(text: string): string[] {
+  const hasSegmenter = typeof Intl !== 'undefined' && 'Segmenter' in Intl
   const tokens: string[] = []
-  if (HAS_SEGMENTER) {
+  if (hasSegmenter) {
     const seg = new Intl.Segmenter('zh', { granularity: 'word' })
     for (const part of seg.segment(text)) {
       const t = part.segment.trim()

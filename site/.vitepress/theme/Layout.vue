@@ -28,25 +28,54 @@ async function renderMath() {
   if (mathRendering) return
   mathRendering = true
   try {
-    const el = page.value?.querySelector('.vp-doc')
+    const el = page.value
     if (!el) return
-    // 按顶层块分批渲染, 每批让出主线程: 长公式页(数百个公式)若一次性同步渲染,
-    // 会以 200ms+ 长任务阻塞输入与滚动(刷新后"瘫痪 2 秒"的元凶)
-    const blocks = [...el.children].filter((c) => c.querySelector?.('*'))
-    for (let i = 0; i < blocks.length; i++) {
-      try {
-        renderMathInElement(blocks[i] as HTMLElement, KATEX_OPTIONS)
-      } catch (err) {
-        // 单个公式渲染失败不影响页面
-        console.error('[katex]', err)
-      }
-      if (i % 8 === 7) {
-        await new Promise((resolve) => setTimeout(resolve, 0))
+    // 渲染范围: 正文 + 本页目录(大纲标题里的行内公式, 如 $a=-kv$)
+    const targets = [
+      el.querySelector('.vp-doc'),
+      el.querySelector('.VPDocAsideOutline .content'),
+    ].filter((n): n is HTMLElement => !!n)
+    for (const target of targets) {
+      // 按顶层块分批渲染, 每批让出主线程: 长公式页(数百个公式)若一次性同步渲染,
+      // 会以 200ms+ 长任务阻塞输入与滚动
+      const blocks = [...target.children].filter((c) => c.querySelector?.('*'))
+      for (let i = 0; i < blocks.length; i++) {
+        try {
+          renderMathInElement(blocks[i] as HTMLElement, KATEX_OPTIONS)
+        } catch (err) {
+          // 单个公式渲染失败不影响页面
+          console.error('[katex]', err)
+        }
+        if (i % 8 === 7) {
+          await new Promise((resolve) => setTimeout(resolve, 0))
+        }
       }
     }
   } finally {
     mathRendering = false
   }
+}
+
+/* ===== 大纲激活项自动滚动对齐 =====
+ * 大纲列表超高时(24+ 项)底部项会被滚出视野, 监听激活项类变化,
+ * 将其滚动到大纲容器可视区中部 */
+let outlineObserver: MutationObserver | null = null
+function initOutlineFollow() {
+  outlineObserver?.disconnect()
+  outlineObserver = null
+  const content = page.value?.querySelector('.VPDocAsideOutline .content')
+  if (!content) return
+  const observer = new MutationObserver(() => {
+    const active = content.querySelector('.outline-link.active')
+    if (!active) return
+    const ar = active.getBoundingClientRect()
+    const cr = content.getBoundingClientRect()
+    if (ar.top < cr.top + 4 || ar.bottom > cr.bottom - 4) {
+      content.scrollTop += ar.top - cr.top - content.clientHeight / 2
+    }
+  })
+  observer.observe(content, { subtree: true, attributes: true, attributeFilter: ['class'] })
+  outlineObserver = observer
 }
 
 /* ===== Mermaid 渲染(mermaid 体积大, 页面存在脉络图时才动态加载) ===== */
@@ -140,7 +169,10 @@ function renderAll() {
 onMounted(() => {
   renderAll()
   // 首次渲染可能在路由就绪前, 再补一次
-  setTimeout(renderAll, 0)
+  setTimeout(() => {
+    renderAll()
+    initOutlineFollow()
+  }, 0)
   // 预热搜索框 chunk, 打开搜索时秒开
   import('../components/VPLocalSearchBox.vue').catch(() => {})
 })
@@ -149,7 +181,10 @@ watch(
   () => route.path,
   () => {
     // 等待新页面内容渲染完成后再渲染公式/图表
-    requestAnimationFrame(() => requestAnimationFrame(renderAll))
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      renderAll()
+      initOutlineFollow()
+    }))
   },
 )
 

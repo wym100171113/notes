@@ -142,6 +142,9 @@
   overflow-x: auto;
   overflow-y: hidden;
   padding: 4px 0;
+  /* Firefox 细滚动条(::-webkit-* 仅 WebKit 生效) */
+  scrollbar-width: thin;
+  scrollbar-color: var(--vp-c-divider) transparent;
 }
 
 .vp-doc .katex-display::-webkit-scrollbar {
@@ -153,8 +156,10 @@
   background: var(--vp-c-divider);
 }
 
-/* Firefox 的细滚动条(::-webkit-* 仅 WebKit 生效) */
-.vp-doc .katex-display {
-  scrollbar-width: thin;
-  scrollbar-color: var(--vp-c-divider) transparent;
+/* ---------- 7. 本页目录(大纲) ---------- */
+/* 大纲超高时自身可滚动, 激活项由 Layout.vue 的 initOutlineFollow 自动对齐 */
+.VPDocAsideOutline .content {
+  max-height: calc(100vh - var(--vp-nav-height) - 48px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
 }

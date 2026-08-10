@@ -34,12 +34,11 @@ function check() {
 function scrollToActive() {
   const el = currentLink()
   const sidebar = document.querySelector('.VPSidebar')
-  const nav = sidebar?.querySelector('.nav') as HTMLElement | null
-  if (!el || !nav) return
-  // 只滚动侧栏容器, 不滚动页面
+  if (!el || !sidebar) return
+  // 滚动容器是 .VPSidebar 自身(overflow-y: auto), 滚动内部 .nav 无效
   const itemRect = el.getBoundingClientRect()
-  const navRect = nav.getBoundingClientRect()
-  nav.scrollTop += itemRect.top - navRect.top - nav.clientHeight / 2
+  const sbRect = sidebar.getBoundingClientRect()
+  sidebar.scrollTop += itemRect.top - sbRect.top - sidebar.clientHeight / 2
   visible.value = false
 }
 

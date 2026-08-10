@@ -39,8 +39,10 @@ record('导航: 404→点击物理', navUrl.includes('/物理/') && navContent.l
 // ---------- 2. 数学页导航(含 $ 标题的 outline) ----------
 await page.goto(BASE + '/数学/数学竞赛/组合数学/拉姆齐理论与极图理论.html', { waitUntil: 'networkidle0' })
 await sleep(800)
+// 大纲标题里的行内公式应被 KaTeX 渲染(新需求), 且无残留 $ 文本
 const outlineKatex = await page.evaluate(() => document.querySelectorAll('.VPDocAsideOutline .katex').length)
-record('数学页 outline 不被 KaTeX 污染', outlineKatex === 0, `outline内katex节点=${outlineKatex}`)
+const outlineDollar = await page.evaluate(() => [...document.querySelectorAll('.VPDocAsideOutline a')].filter((a) => a.textContent.includes('$')).length)
+record('数学页 outline 公式已渲染', outlineKatex > 0 && outlineDollar === 0, `katex=${outlineKatex} 残留$=${outlineDollar}`)
 // 再从数学页点导航"物理"
 await page.evaluate(() => {
   const link = [...document.querySelectorAll('.VPNavBarMenuLink')].find((a) => a.textContent.includes('物理'))

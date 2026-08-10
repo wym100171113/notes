@@ -136,6 +136,7 @@ const expanded = ref(false)
 const useFuzzy = ref(false)
 const fullLoading = ref(false)
 const fullFailed = ref(false)
+const queryTooBroad = ref(false)
 const hint = computed(() => {
   if (mode.value === 'quick') return '即时检索标题 · 切"全文"可搜正文'
   if (fullLoading.value || fullFailed.value) return ''
@@ -183,11 +184,39 @@ function quickSearch() {
 function fullSearch() {
   enableNoResults.value = true
   if (!fullIndexCache) { results.value = []; return }
+  // 过滤单字停用词: 避免搜"你"命中一堆正文
+  const tokens = tokenizeQuery(query.value).filter((t2) => !(t2.length === 1 && STOP_WORDS.has(t2)))
+  if (!tokens.length) {
+    queryTooBroad.value = true
+    results.value = []
+    return
+  }
+  queryTooBroad.value = false
   const fuzzyOpt = useFuzzy.value ? 0.2 : false
-  results.value = (fullIndexCache.search(query.value, { fuzzy: fuzzyOpt, prefix: true }) as any[])
+  results.value = (fullIndexCache.search(tokens.join(' '), { fuzzy: fuzzyOpt, prefix: true }) as any[])
     .slice(0, 16)
     .map((r) => ({ id: r.id, title: r.title, titles: r.titles || [] }))
 }
+
+/* ============ 查询分词与停用词过滤 ============ */
+function tokenizeQuery(text: string): string[] {
+  const tokens: string[] = []
+  if (typeof Intl !== 'undefined' && 'Segmenter' in Intl) {
+    const seg = new Intl.Segmenter('zh', { granularity: 'word' })
+    for (const part of seg.segment(text)) {
+      const t2 = part.segment.trim()
+      if (!t2) continue
+      if (/^[\u4e00-\u9fff]+$/u.test(t2)) tokens.push(t2)
+      else tokens.push(...t2.split(/[^\p{L}\p{N}]+/u).filter(Boolean))
+    }
+  } else {
+    tokens.push(...text.split(/[^\p{L}\p{N}]+/u).filter(Boolean))
+  }
+  return tokens
+}
+const STOP_WORDS = new Set(
+  Array.from('你我他她它们这那哪何谁什之的了在是有和就不人都而及与或等被他从以之其对这那也于还中为如但并者且么吧呢个点又再总各只该当要把向被让可要以能会去来上下很更最得地着过些没看说想知见做其已仍').join('')
+)
 
 /* ============ 展开详情 ============ */
 function excerptFor(id: string): { t: string; x: string } | null {
@@ -222,6 +251,7 @@ async function switchMode(m: Mode) {
 }
 watch([mode, query, useFuzzy], () => {
   enableNoResults.value = false
+  queryTooBroad.value = false
   runSearch()
 })
 
@@ -345,6 +375,9 @@ function isBodyHit(r: any) {
             </a>
           </li>
         </ul>
+        <div v-else-if="queryTooBroad" class="no-results">
+          查询词过于宽泛, 请输入更具体的词(如"楞次定律")
+        </div>
         <div v-else-if="query && enableNoResults && !fullLoading" class="no-results">
           未找到与 "<strong>{{ query }}</strong>" 相关的结果
         </div>

@@ -13,6 +13,16 @@
   --vp-c-tip-3: #60a5fa;
 }
 
+/* 桌面端去掉侧栏入场滑入动画: 滑动过程中侧栏右缘从 0 扫到 272, 会与固定的标题横线短暂错位 */
+@media (min-width: 960px) {
+  .VPSidebar.VPSidebar,
+  .VPSidebar.VPSidebar.open {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
 /* 宽屏布局: 内容区伸长(限宽 1440→1600), 导航标题/搜索贴近左侧
  * 官方 scoped 规则特异性 0,2,0, 用双类名同特异度且后加载覆盖 */
 
@@ -21,6 +31,24 @@
 #app .VPNavBarTitle .title {
   width: auto;
   padding-left: 16px;
+}
+
+/* 暗色模式下隐藏标题下划线(与导航栏底部边框重叠产生双线), 保留浅色模式的样式 */
+.dark #app .VPNavBarTitle .title {
+  border-bottom-color: transparent;
+}
+
+/* ==高亮== 的 mark: 浏览器默认纯黄太刺眼, 换暖黄; 深浅色分别调 */
+.vp-doc mark {
+  background-color: rgba(245, 197, 24, 0.32);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.dark .vp-doc mark {
+  background-color: rgba(245, 197, 24, 0.22);
+  color: #e8d48b;
 }
 @media (min-width: 960px) {
   .VPNavBar.VPNavBar.has-sidebar .title {

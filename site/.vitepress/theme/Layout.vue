@@ -17,6 +17,7 @@ let zoom = 1
 let panX = 0
 let panY = 0
 let dragging = false
+let dragMoved = false
 let dragStart = { x: 0, y: 0, px: 0, py: 0 }
 
 function clampZoom(v: number) {
@@ -48,6 +49,14 @@ function closeLightbox() {
   lightboxOpen.value = false
   dragging = false
 }
+// 拖动过图片后, 松开时落在背景上的 click 不应关闭(拖动≠点击)
+function onBackdropClick() {
+  if (dragMoved) {
+    dragMoved = false
+    return
+  }
+  closeLightbox()
+}
 
 function zoomAt(cx: number, cy: number, factor: number) {
   const next = clampZoom(zoom * factor)
@@ -66,12 +75,14 @@ function onWheel(e: WheelEvent) {
 
 function onPointerDown(e: PointerEvent) {
   dragging = true
+  dragMoved = false
   dragStart = { x: e.clientX, y: e.clientY, px: panX, py: panY }
   ;(e.currentTarget as HTMLElement).setPointerCapture?.(e.pointerId)
 }
 
 function onPointerMove(e: PointerEvent) {
   if (!dragging) return
+  dragMoved = true
   panX = dragStart.px + (e.clientX - dragStart.x)
   panY = dragStart.py + (e.clientY - dragStart.y)
   applyTransform()
@@ -233,7 +244,7 @@ watch(isDark, () => {
       @pointerup="endDrag"
       @pointercancel="endDrag"
       @pointerleave="endDrag"
-      @click.self="closeLightbox"
+      @click.self="onBackdropClick"
     >
       <div class="lightbox-toolbar" @pointerdown.stop @click.stop>
         <span class="lightbox-title">脉络图</span>

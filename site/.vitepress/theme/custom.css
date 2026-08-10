@@ -36,14 +36,15 @@
 }
 
 /* ---------- 3. 导航标题与侧栏对齐 ---------- */
-/* 内层 <a>: 宽度 auto 填满 wrapper(宽度 = --vp-sidebar-width, 由官方 .VPNavBarTitle
- * 控制), 文字 padding-left 16px, 使标题横线完整覆盖侧栏 0→272 区域
- * (与侧栏右缘严格对齐)。
- * 注意: 这里的特异性(id + class)高于 .VPNavBar.VPNavBar.has-sidebar .title,
- * 因此下面 media 块里无需重复声明 width/padding。 */
-#app .VPNavBarTitle .title {
-  width: auto;
-  padding-left: 16px;
+/* 桌面端: 标题横线覆盖侧栏 0→272 区域(宽度钉死为侧栏宽度, 文字 16px 缩进)。
+ * 注意: title 在 hydration 后为 absolute 定位, width:auto 会收缩为文字宽度,
+ * 必须显式设宽; 用 .VPNavBarTitle.has-sidebar 限定仅子页(首页无侧栏);
+ * 移动端(<960)无需覆盖, 交给官方样式。 */
+@media (min-width: 960px) {
+  #app .VPNavBarTitle.has-sidebar .title {
+    width: var(--vp-sidebar-width);
+    padding-left: 16px;
+  }
 }
 
 /* 暗色模式下隐藏标题下划线(与导航栏底部边框重叠产生双线) */
@@ -51,12 +52,41 @@
   border-bottom-color: transparent;
 }
 
-/* 桌面端: 标题行取消自身 padding(由侧栏宽度与 16px 留白接管);
- * 注意: 官方 .VPNavBarTitle wrapper 的宽度基于 --vp-layout-max-width 计算,
- * 必须用下面的 width 覆盖, 否则宽屏下标题横线与侧栏右缘错位 */
+/* 桌面端: 标题行取消自身 padding(由侧栏宽度与 16px 留白接管) */
 @media (min-width: 960px) {
   .VPNavBar.VPNavBar.has-sidebar .title {
     padding: 0;
+  }
+}
+
+/* ---------- 3.1 首帧布局防跳变(hydration 前) ----------
+ * 官方 SSR 的 .VPNavBar 不带 has-sidebar 类(Vue 挂载后才补), 但
+ * .VPNavBarTitle.has-sidebar 在 SSR HTML 中就存在。hydration 前 nav 会按
+ * 首页(无侧栏)布局渲染: 搜索按钮贴左、随视口居中, 样式就绪后跳变。
+ * 用 :has() 以 SSR 锚点复刻官方 has-sidebar 关键布局, 首帧即子页布局。 */
+@media (min-width: 960px) {
+  .VPNavBar:has(.VPNavBarTitle.has-sidebar) .wrapper {
+    padding: 0;
+  }
+  .VPNavBar:has(.VPNavBarTitle.has-sidebar) .container {
+    max-width: 100%;
+  }
+  .VPNavBar:has(.VPNavBarTitle.has-sidebar) .title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    padding: 0 32px;
+    height: var(--vp-nav-height);
+  }
+  .VPNavBar:has(.VPNavBarTitle.has-sidebar) .content {
+    position: relative;
+    z-index: 1;
+    padding-right: 32px;
+    padding-left: var(--vp-sidebar-width);
+  }
+  .VPNavBar:has(.VPNavBarTitle.has-sidebar) .divider {
+    padding-left: var(--vp-sidebar-width);
   }
 }
 
@@ -69,6 +99,14 @@
   /* 覆盖官方基于 --vp-layout-max-width 的 title 宽度计算, 钉死为侧栏宽度 */
   .VPNavBar.VPNavBar.has-sidebar .title {
     width: var(--vp-sidebar-width);
+  }
+
+  /* 搜索区左缘与正文左缘对齐(官方按 --vp-layout-max-width 居中计算,
+   * 伸缩窗口时会与固定的正文/侧栏错位)。按钮自身带 32px padding,
+   * 故此处只补 sidebar+16, 含 hydration 前的 :has 锚点版本 */
+  .VPNavBar:has(.VPNavBarTitle.has-sidebar) .content,
+  .VPNavBar.VPNavBar.has-sidebar .content {
+    padding-left: calc(var(--vp-sidebar-width) + 16px);
   }
 
   .VPSidebar.VPSidebar {

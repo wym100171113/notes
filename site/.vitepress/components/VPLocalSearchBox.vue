@@ -232,6 +232,12 @@ function quickSearch() {
 const orFallbackUsed = ref(false)
 function fullSearch() {
   enableNoResults.value = true
+  if (!query.value.trim()) {
+    // 空查询不提示"过于宽泛"(打开弹窗/切到全文但尚未输入)
+    results.value = []
+    queryTooBroad.value = false
+    return
+  }
   if (!fullIndexCache) { results.value = []; return }
   // 过滤单字停用词: 避免搜"你"命中一堆正文(与索引端共用同一分词器)
   const tokens = tokenizeSearch(query.value).filter((t2) => !(t2.length === 1 && SEARCH_STOP_WORDS.has(t2)))
@@ -334,13 +340,17 @@ function onKey(e: KeyboardEvent) {
 }
 onMounted(() => {
   focusInput()
-  // 打开即预取: 标题/摘录/全文索引(后台预热, 点全文时已就绪)
-  // 预取完成时若用户已输入, 补一次搜索, 避免"立即输入"被空结果误报
+  // 打开即预取: 标题/摘录/全文索引。全文索引 gunzip+parse(数 MB)会阻塞主线程,
+  // 放到浏览器空闲时段加载, 避免打开弹窗时输入卡死; 用户切"全文"时若未就绪,
+  // switchMode 会等它完成(有 loading 提示)
   loadTitles().then(() => {
     if (query.value.trim()) runSearch()
   }).catch(() => {})
   loadExcerpts().catch(() => {})
-  warmFullIndex()
+  const scheduleIdle: typeof requestIdleCallback | ((cb: () => void, opts?: { timeout?: number }) => number) =
+    window.requestIdleCallback ??
+    ((cb: () => void, opts?: { timeout?: number }) => setTimeout(cb, opts?.timeout ?? 2000) as unknown as number)
+  scheduleIdle(() => warmFullIndex(), { timeout: 2000 })
 })
 onBeforeUnmount(() => clearTimeout(searchTimer))
 

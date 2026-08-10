@@ -12,23 +12,40 @@ const page = ref<HTMLElement>()
 const lightbox = ref<InstanceType<typeof MermaidLightbox>>()
 
 /* ===== 公式渲染(KaTeX, 浏览器端) ===== */
+const KATEX_OPTIONS = {
+  delimiters: [
+    { left: '$$', right: '$$', display: true },
+    { left: '$', right: '$', display: false },
+    { left: '\\[', right: '\\]', display: true },
+    { left: '\\(', right: '\\)', display: false },
+  ],
+  throwOnError: false,
+  strict: 'ignore',
+} as const
+
+let mathRendering = false
 async function renderMath() {
-  const el = page.value?.querySelector('.vp-doc')
-  if (!el) return
+  if (mathRendering) return
+  mathRendering = true
   try {
-    renderMathInElement(el, {
-      delimiters: [
-        { left: '$$', right: '$$', display: true },
-        { left: '$', right: '$', display: false },
-        { left: '\\[', right: '\\]', display: true },
-        { left: '\\(', right: '\\)', display: false },
-      ],
-      throwOnError: false,
-      strict: 'ignore',
-    })
-  } catch (err) {
-    // 单个公式渲染失败不影响页面
-    console.error('[katex]', err)
+    const el = page.value?.querySelector('.vp-doc')
+    if (!el) return
+    // 按顶层块分批渲染, 每批让出主线程: 长公式页(数百个公式)若一次性同步渲染,
+    // 会以 200ms+ 长任务阻塞输入与滚动(刷新后"瘫痪 2 秒"的元凶)
+    const blocks = [...el.children].filter((c) => c.querySelector?.('*'))
+    for (let i = 0; i < blocks.length; i++) {
+      try {
+        renderMathInElement(blocks[i] as HTMLElement, KATEX_OPTIONS)
+      } catch (err) {
+        // 单个公式渲染失败不影响页面
+        console.error('[katex]', err)
+      }
+      if (i % 8 === 7) {
+        await new Promise((resolve) => setTimeout(resolve, 0))
+      }
+    }
+  } finally {
+    mathRendering = false
   }
 }
 

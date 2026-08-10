@@ -1,615 +1,248 @@
-<script lang="ts" setup>
+<script setup lang="ts">
+import { computed, ref, watch, onMounted, onBeforeUnmount, nextTick } from 'vue'
+import { useRouter, useData } from 'vitepress'
+import MiniSearch from 'minisearch'
 import localSearchIndex from '@localSearchIndex'
-import titleIndexData from 'virtual:title-index'
-import {
-  computedAsync,
-  debouncedWatch,
-  onKeyStroke,
-  useEventListener,
-  useLocalStorage,
-  useScrollLock,
-  useSessionStorage
-} from '@vueuse/core'
-import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
-import Mark from 'mark.js/src/vanilla.js'
-import MiniSearch, { type SearchResult } from 'minisearch'
-import { dataSymbol, inBrowser, useData, useRouter, withBase } from 'vitepress'
-import {
-  computed,
-  createApp,
-  markRaw,
-  nextTick,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  shallowRef,
-  watch,
-  watchEffect,
-  type Ref
-} from 'vue'
-import { pathToFile } from 'vitepress/dist/client/app/utils'
-import { escapeRegExp } from 'vitepress/dist/client/shared'
-import { LRUCache } from 'vitepress/dist/client/theme-default/support/lru'
-import { createSearchTranslate } from 'vitepress/dist/client/theme-default/support/translation'
 
-interface ModalTranslations {
-  displayDetails?: string
-  resetButtonTitle?: string
-  backButtonTitle?: string
-  noResultsText?: string
-  footer?: {
-    selectText?: string
-    selectKeyAriaLabel?: string
-    navigateText?: string
-    navigateUpKeyAriaLabel?: string
-    navigateDownKeyAriaLabel?: string
-    closeText?: string
-    closeKeyAriaLabel?: string
-  }
+const emit = defineEmits<{ (e: 'close'): void }>()
+const router = useRouter()
+const { localeIndex, theme } = useData()
+
+/* ============ 数据层: 模块级缓存, 组件重挂载不重复加载 ============ */
+const BASE = import.meta.env.BASE_URL as string
+let titleCache: { id: string; title: string; titles: string[] }[] | null = null
+let excerptsCache: Record<string, { t: string; x: string }[]> | null = null
+let fullIndexCache: MiniSearch | null = null
+let fullIndexPromise: Promise<MiniSearch> | null = null
+
+async function loadTitles() {
+  if (titleCache) return titleCache
+  const res = await fetch(`${BASE}search-data/title.json`)
+  titleCache = await res.json()
+  return titleCache
+}
+async function loadExcerpts() {
+  if (excerptsCache) return excerptsCache
+  const res = await fetch(`${BASE}search-data/excerpts.json`)
+  excerptsCache = await res.json()
+  return excerptsCache
+}
+async function loadFullIndex(): Promise<MiniSearch> {
+  if (fullIndexCache) return fullIndexCache
+  if (fullIndexPromise) return fullIndexPromise
+  fullIndexPromise = (async () => {
+    const data = (await localSearchIndex[localeIndex.value]?.())?.default as string
+    const opts = theme.value.search?.provider === 'local' ? theme.value.search.options : undefined
+    return MiniSearch.loadJSON(data, {
+      fields: ['title', 'titles', 'text'],
+      storeFields: ['title', 'titles'],
+      searchOptions: {
+        combineWith: 'AND',
+        fuzzy: false,
+        prefix: true,
+        boost: { title: 4, text: 2, titles: 1 },
+        ...(opts?.miniSearch?.searchOptions || {}),
+      },
+      ...(opts?.miniSearch?.options || {}),
+    })
+  })()
+  fullIndexCache = await fullIndexPromise
+  return fullIndexCache
 }
 
-const emit = defineEmits<{
-  (e: 'close'): void
-}>()
-
-/* ====== 两档模式 ======
- * quick  : 标题快速搜索 —— 使用随组件打包的轻量标题索引(数 KB), 秒开、免下载大索引
- * full   : 全文精细搜索 —— 懒加载压缩后的 MiniSearch 索引(约 2.5MB, 首次点击该档才下载)
- */
-type SearchMode = 'quick' | 'full'
-const mode = ref<SearchMode>('quick')
-// 分段控件滑动拇指: 全文档时右移一格(弹性缓动由 CSS transition 完成)
-const SEG_WIDTH = 68
-const segThumbStyle = computed(() => ({
-  transform:
-    mode.value === 'full' ? `translateX(${SEG_WIDTH}px)` : 'translateX(0px)'
-}))
-
-// 与 config.mts 的 tokenizeForSearch 保持一致(词典分词, 兼容 bigram 兜底)
-function tokenizeQuery(text: string): string[] {
-  const tokens: string[] = []
-  const seg = new Intl.Segmenter('zh', { granularity: 'word' })
-  for (const part of seg.segment(text)) {
-    const t = part.segment.trim()
-    if (!t) continue
-    if (/^[\u4e00-\u9fff]+$/u.test(t)) {
-      // 中文: 词典分词结果直接作为词项
-      tokens.push(t)
-    } else {
-      tokens.push(...t.split(/[^\p{L}\p{N}]+/u).filter(Boolean))
-    }
-  }
-  // 若词典分词把整个查询当成一个词(未知词), 退回 bigram 以提高召回
-  if (tokens.length === 1 && /^[\u4e00-\u9fff]{4,}$/u.test(tokens[0])) {
-    const chars = Array.from(tokens[0])
-    const bigrams: string[] = []
-    for (let i = 0; i < chars.length - 1; i++) bigrams.push(chars[i] + chars[i + 1])
-    return bigrams
-  }
-  return tokens
-}
-
-const el = shallowRef<HTMLElement>()
-const resultsEl = shallowRef<HTMLElement>()
-
-/* Full search (原文实现) */
-const searchIndexData = shallowRef(localSearchIndex)
-if (import.meta.hot) {
-  import.meta.hot.accept('/@localSearchIndex', (m) => {
-    if (m) searchIndexData.value = m.default
-  })
-}
-interface Result {
-  title: string
-  titles: string[]
-  text?: string
-}
-const vitePressData = useData()
-const { activate } = useFocusTrap(el, {
-  immediate: true,
-  allowOutsideClick: true,
-  clickOutsideDeactivates: true,
-  escapeDeactivates: true
-})
-const { localeIndex, theme } = vitePressData
-// 全文索引: 显式懒加载 + 模块级缓存
-// (搜索弹窗每次打开都会重建组件实例; 索引 JSON 7MB, 解压+loadJSON 较耗时,
-//  因此把解析好的 MiniSearch 实例缓存在模块作用域, 第二次打开直接复用, 零等待)
-let fullIndexCache: MiniSearch<Result> | undefined = undefined
-const fullIndex = shallowRef<MiniSearch<Result> | undefined>(undefined)
-const fullIndexLoading = ref(false)
-const fullIndexFailed = ref(false)
-async function loadFullIndex() {
-  if (fullIndexCache !== undefined) {
-    fullIndex.value = fullIndexCache
-    return
-  }
-  if (fullIndexLoading.value) return
-  fullIndexLoading.value = true
-  fullIndexFailed.value = false
-  try {
-    const data = (await searchIndexData.value[localeIndex.value]?.())?.default
-    if (!data) throw new Error('search index empty')
-    fullIndexCache = markRaw(
-      MiniSearch.loadJSON<Result>(data, {
-        fields: ['title', 'titles', 'text'],
-        storeFields: ['title', 'titles'],
-        searchOptions: {
-          fuzzy: false,
-          prefix: true,
-          boost: { title: 4, text: 2, titles: 1 },
-          ...(theme.value.search?.provider === 'local' &&
-            theme.value.search.options?.miniSearch?.searchOptions)
-        },
-        ...(theme.value.search?.provider === 'local' &&
-          theme.value.search.options?.miniSearch?.options)
-      })
-    )
-    fullIndex.value = fullIndexCache
-  } catch (e) {
-    console.error(e)
-    fullIndexFailed.value = true
-  } finally {
-    fullIndexLoading.value = false
-  }
-}
-
-// 模式行提示文案: 随"模式 + 加载状态"联动, 避免与加载指示同时出现
-const hintText = computed(() => {
+/* ============ 状态 ============ */
+type Mode = 'quick' | 'full'
+const mode = ref<Mode>('quick')
+const query = ref('')
+const results = ref<any[]>([])
+const selectedIndex = ref(-1)
+const enableNoResults = ref(false)
+const expanded = ref(false)
+const useFuzzy = ref(false)
+const fullLoading = ref(false)
+const fullFailed = ref(false)
+const hint = computed(() => {
   if (mode.value === 'quick') return '即时检索标题 · 切"全文"可搜正文'
-  if (fullIndexLoading.value) return ''
-  if (fullIndexFailed.value) return ''
+  if (fullLoading.value || fullFailed.value) return ''
   return '全文索引已缓存 · 深度检索'
 })
-
-const disableQueryPersistence = computed(() => {
-  return (
-    theme.value.search?.provider === 'local' &&
-    theme.value.search.options?.disableQueryPersistence === true
-  )
-})
-const filterText = disableQueryPersistence.value
-  ? ref('')
-  : useSessionStorage('vitepress:local-search-filter', '')
-
-const showDetailedList = useLocalStorage(
-  'vitepress:local-search-detailed-list',
-  theme.value.search?.provider === 'local' &&
-    theme.value.search.options?.detailedView === true
-)
-// 高级搜索: 模糊匹配开关(按次搜索覆盖 MiniSearch 参数, 无需重建索引)
-const useFuzzy = useLocalStorage('vitepress:local-search-fuzzy', false)
-// 全文搜索参数: 默认精确(前缀匹配); 开启模糊时附加 fuzzy 容错
-function fullSearchOptions() {
-  return { fuzzy: useFuzzy.value ? 0.2 : false, prefix: true }
-}
-const disableDetailedView = computed(() => {
-  return (
-    theme.value.search?.provider === 'local' &&
-    (theme.value.search.options?.disableDetailedView === true ||
-      theme.value.search.options?.detailedView === false)
-  )
-})
-const buttonText = computed(() => {
-  const options = theme.value.search?.options ?? theme.value.algolia
-  return (
-    options?.locales?.[localeIndex.value]?.translations?.button?.buttonText ||
-    options?.translations?.button?.buttonText ||
-    'Search'
-  )
-})
-watchEffect(() => {
-  if (disableDetailedView.value) showDetailedList.value = false
-})
-
-const results: Ref<(SearchResult & Result)[]> = shallowRef([])
-const enableNoResults = ref(false)
-watch(filterText, () => {
-  enableNoResults.value = false
-})
-
-const mark = computedAsync(async () => {
-  if (!resultsEl.value) return
-  return markRaw(new Mark(resultsEl.value))
-}, null)
-const cache = new LRUCache<string, Map<string, string>>(16)
-
-/* 标题索引(快速档) */
-interface QuickEntry {
-  id: string
-  title: string
-  titles: string[]
-}
-const quickIndex = computed<QuickEntry[]>(() => {
-  const d = (titleIndexData as unknown) as QuickEntry[]
-  return d
-})
-function quickSearch(q: string): (QuickEntry & { score: number })[] {
-  const query = q.trim().toLowerCase()
-  if (!query) return []
-  const hit = (s: string) => s.toLowerCase().includes(query)
-  const entries: (QuickEntry & { score: number })[] = []
-  for (const e of quickIndex.value) {
-    const titleHit = hit(e.title)
-    const pathHit = hit(e.id)
-    const parentHit = e.titles.some(hit)
-    if (titleHit || pathHit || parentHit) {
-      let score = 0
-      if (e.title.toLowerCase().startsWith(query)) score = 4
-      else if (titleHit) score = 3
-      else if (pathHit) score = 2
-      else score = 1
-      entries.push({ ...e, score })
-    }
-  }
-  return entries.sort((a, b) => b.score - a.score).slice(0, 16)
+const SEG_W = 76
+const segThumb = computed(() => ({
+  transform: mode.value === 'full' ? `translateX(${SEG_W}px)` : 'translateX(0)',
+}))
+const inputEl = ref<HTMLInputElement>()
+const listEl = ref<HTMLElement>()
+function focusInput(select = true) {
+  inputEl.value?.focus()
+  if (select) inputEl.value?.select()
 }
 
-/* 模式切换 */
-async function switchMode(m: SearchMode) {
-  mode.value = m
-  if (m === 'full') {
-    await loadFullIndex()
-  }
-  enableNoResults.value = false
-  runSearch()
-}
-
+/* ============ 搜索 ============ */
 let searchTimer: ReturnType<typeof setTimeout> | undefined
 function runSearch() {
   clearTimeout(searchTimer)
   searchTimer = setTimeout(() => {
-    if (mode.value === 'quick') {
-      const q = filterText.value
-      results.value = quickSearch(q) as unknown as (SearchResult & Result)[]
-      enableNoResults.value = true
-    } else {
-      if (!fullIndex.value) return
-      results.value = fullIndex.value
-        .search(filterText.value, fullSearchOptions())
-        .slice(0, 16) as (SearchResult & Result)[]
-      enableNoResults.value = true
+    if (mode.value === 'quick') quickSearch()
+    else fullSearch()
+  }, mode.value === 'quick' ? 0 : 120)
+}
+function quickSearch() {
+  const q = query.value.trim().toLowerCase()
+  enableNoResults.value = true
+  if (!q) { results.value = []; return }
+  const hit = (s: string) => s.toLowerCase().includes(q)
+  const out: any[] = []
+  for (const e of titleCache || []) {
+    const titleHit = hit(e.title)
+    const pathHit = hit(e.id)
+    if (titleHit || pathHit) {
+      let score = 0
+      if (e.title.toLowerCase().startsWith(q)) score = 4
+      else if (titleHit) score = 3
+      else score = 2
+      out.push({ id: e.id, title: e.title, titles: e.titles || [], score })
     }
-  }, 0)
+  }
+  results.value = out.sort((a, b) => b.score - a.score).slice(0, 16)
+}
+function fullSearch() {
+  enableNoResults.value = true
+  if (!fullIndexCache) { results.value = []; return }
+  const fuzzyOpt = useFuzzy.value ? 0.2 : false
+  results.value = (fullIndexCache.search(query.value, { fuzzy: fuzzyOpt, prefix: true }) as any[])
+    .slice(0, 16)
+    .map((r) => ({ id: r.id, title: r.title, titles: r.titles || [] }))
 }
 
-watch([mode, filterText, useFuzzy], () => {
+/* ============ 展开详情(摘录来自静态 excerpts.json) ============ */
+async function toggleExpand() {
+  if (mode.value === 'quick') {
+    expanded.value = true
+    await switchMode('full')
+    return
+  }
+  expanded.value = !expanded.value
+}
+function excerptFor(id: string): { t: string; x: string } | null {
+  const base = BASE.replace(/\/$/, '')
+  const path = id.split('#')[0]
+  const key = path.startsWith(base) ? path.slice(base.length) : path
+  const secs = excerptsCache?.[key]
+  if (!secs?.length) return null
+  const q = query.value.trim()
+  if (q) {
+    for (const s of secs) if ((s.t + s.x).includes(q)) return s
+  }
+  return secs[0]
+}
+
+/* ============ 模式切换 ============ */
+async function switchMode(m: Mode) {
+  mode.value = m
+  if (m === 'full' && !fullIndexCache && !fullLoading.value) {
+    fullLoading.value = true
+    fullFailed.value = false
+    try {
+      await loadFullIndex()
+    } catch (e) {
+      console.error('[search]', e)
+      fullFailed.value = true
+    } finally {
+      fullLoading.value = false
+    }
+  }
+  runSearch()
+}
+watch([mode, query, useFuzzy], () => {
   enableNoResults.value = false
   runSearch()
 })
 
-/* 高亮与摘录(仅全文档需要) */
-debouncedWatch(
-  () => [fullIndex.value, filterText.value, showDetailedList.value, useFuzzy.value] as const,
-  async ([index, filterTextValue, showDetailedListValue], old, onCleanup) => {
-    if (mode.value !== 'full') return
-    if (old?.[0] !== index) cache.clear()
-    let canceled = false
-    onCleanup(() => {
-      canceled = true
-    })
-    if (!index) return
-    const fullResults = index
-      .search(filterTextValue, fullSearchOptions())
-      .slice(0, 16) as (SearchResult & Result)[]
-    const mods = showDetailedListValue
-      ? await Promise.all(fullResults.map((r) => fetchExcerpt(r.id)))
-      : []
-    if (canceled) return
-    for (const { id, mod } of mods) {
-      const mapId = id.slice(0, id.indexOf('#'))
-      let map = cache.get(mapId)
-      if (map) continue
-      map = new Map()
-      cache.set(mapId, map)
-      const comp = mod.default ?? mod
-      if (comp?.render || comp?.setup) {
-        const app = createApp(comp)
-        app.config.warnHandler = () => {}
-        app.provide(dataSymbol, vitePressData)
-        Object.defineProperties(app.config.globalProperties, {
-          $frontmatter: {
-            get() {
-              return vitePressData.frontmatter.value
-            }
-          },
-          $params: {
-            get() {
-              return vitePressData.page.value.params
-            }
-          }
-        })
-        const div = document.createElement('div')
-        app.mount(div)
-          let h = div.querySelector('h1, h2, h3, h4, h5, h6') as HTMLElement | null
-          while (h) {
-            const href = h.querySelector('a')?.getAttribute('href')
-            const anchor = href?.startsWith('#') && href.slice(1)
-            if (!anchor) break
-            // 摘录包含小节标题本身(带锚点), 渲染标题层级
-            let html = h.outerHTML
-            let sib = h.nextElementSibling
-            while (sib && !/^h[1-6]$/i.test(sib.tagName)) {
-              html += sib.outerHTML
-              sib = sib.nextElementSibling
-            }
-            map.set(anchor, html)
-            h = sib
-          }
-        app.unmount()
-      }
-      if (canceled) return
-    }
-    // 高亮词 = 查询本身的分词(而非索引命中的模糊词项), 保证高亮内容与输入一致
-    const terms = new Set(tokenizeQuery(filterTextValue))
-    results.value = fullResults.map((r) => {
-      const [id, anchor] = r.id.split('#')
-      const text = cache.get(id)?.get(anchor) ?? ''
-      return { ...r, text }
-    })
-    await nextTick()
-    if (canceled) return
-    await new Promise((r) => {
-      mark.value?.unmark({
-        done: () => {
-          mark.value?.markRegExp(formMarkRegex(terms), { done: r })
-        }
-      })
-    })
-    const excerpts = el.value?.querySelectorAll('.result .excerpt') ?? []
-    for (const excerpt of excerpts) {
-      excerpt
-        .querySelector('mark[data-markjs="true"]')
-        ?.scrollIntoView({ block: 'center' })
-    }
-    resultsEl.value?.firstElementChild?.scrollIntoView({ block: 'start' })
-  },
-  { debounce: 60, immediate: true }
-)
-
-async function fetchExcerpt(id: string) {
-  const file = pathToFile(id.slice(0, id.indexOf('#')))
-  try {
-    if (!file) throw new Error(`Cannot find file for id: ${id}`)
-    return { id, mod: await import(/*@vite-ignore*/ file) }
-  } catch (e) {
-    console.error(e)
-    return { id, mod: {} }
-  }
+/* ============ 键盘与焦点 ============ */
+function scrollSelected() {
+  nextTick(() => {
+    listEl.value?.querySelector('.result.selected')?.scrollIntoView({ block: 'nearest' })
+  })
 }
-
-/* 输入聚焦 */
-const searchInput = ref<HTMLInputElement>()
-const disableReset = computed(() => filterText.value?.length <= 0)
-function focusSearchInput(select = true) {
-  searchInput.value?.focus()
-  select && searchInput.value?.select()
-}
-onMounted(() => focusSearchInput())
-// 展开详情: 标题档无摘录, 自动切换到全文档再展开
-function toggleDetailedList() {
-  if (!results.value.length) return
-  if (mode.value === 'quick') {
-    showDetailedList.value = true
-    switchMode('full')
-    return
-  }
-  showDetailedList.value = !showDetailedList.value
-}
-
-// 正文命中标记: 标题/目录不含查询词, 说明命中的是正文内容
-function isBodyHit(p: { title: string; titles: string[] }, q: string) {
-  if (!q || !q.trim()) return false
-  const hay = (p.title || '') + ' ' + ((p.titles || []) as string[]).join(' ')
-  return !hay.includes(q.trim())
-}
-
-function onSearchBarClick(event: PointerEvent) {
-  if (event.pointerType === 'mouse') {
-    focusSearchInput()
-  }
-}
-
-/* 键盘选择 */
-const selectedIndex = ref(-1)
-const disableMouseOver = ref(true)
 watch(results, (r) => {
   selectedIndex.value = r.length ? 0 : -1
-  scrollToSelectedResult()
+  scrollSelected()
 })
-function scrollToSelectedResult() {
-  nextTick(() => {
-    document.querySelector('.result.selected')?.scrollIntoView({ block: 'nearest' })
-  })
-}
-onKeyStroke('ArrowUp', (event) => {
-  event.preventDefault()
-  selectedIndex.value--
-  if (selectedIndex.value < 0) selectedIndex.value = results.value.length - 1
-  disableMouseOver.value = true
-  scrollToSelectedResult()
-})
-onKeyStroke('ArrowDown', (event) => {
-  event.preventDefault()
-  selectedIndex.value++
-  if (selectedIndex.value >= results.value.length) selectedIndex.value = 0
-  disableMouseOver.value = true
-  scrollToSelectedResult()
-})
-const router = useRouter()
-onKeyStroke('Enter', (e) => {
-  if (e.isComposing) return
-  if (e.target instanceof HTMLButtonElement && e.target.type !== 'submit') return
-  const selectedPackage = results.value[selectedIndex.value]
-  if (e.target instanceof HTMLInputElement && !selectedPackage) {
+function onKey(e: KeyboardEvent) {
+  if (e.key === 'ArrowDown') {
     e.preventDefault()
-    return
-  }
-  if (selectedPackage) {
-    router.go(withBase(selectedPackage.id))
+    selectedIndex.value = Math.min(results.value.length - 1, selectedIndex.value + 1)
+    scrollSelected()
+  } else if (e.key === 'ArrowUp') {
+    e.preventDefault()
+    selectedIndex.value = Math.max(0, selectedIndex.value - 1)
+    scrollSelected()
+  } else if (e.key === 'Enter') {
+    if (e.isComposing) return
+    const r = results.value[selectedIndex.value]
+    if (r) { router.go(r.id); emit('close') }
+  } else if (e.key === 'Escape') {
     emit('close')
   }
-})
-onKeyStroke('Escape', () => emit('close'))
-
-/* 文案 */
-const defaultTranslations: { modal: ModalTranslations } = {
-  modal: {
-    displayDetails: 'Display detailed list',
-    resetButtonTitle: 'Reset search',
-    backButtonTitle: 'Close search',
-    noResultsText: 'No results for',
-    footer: {
-      selectText: 'to select',
-      selectKeyAriaLabel: 'enter',
-      navigateText: 'to navigate',
-      navigateUpKeyAriaLabel: 'up arrow',
-      navigateDownKeyAriaLabel: 'down arrow',
-      closeText: 'to close',
-      closeKeyAriaLabel: 'escape'
-    }
-  }
 }
-const translate = createSearchTranslate(defaultTranslations)
-
-onMounted(() => window.history.pushState(null, '', null))
-useEventListener('popstate', (event) => {
-  event.preventDefault()
-  emit('close')
-})
-const isLocked = useScrollLock(inBrowser ? document.body : null)
 onMounted(() => {
-  nextTick(() => {
-    isLocked.value = true
-    nextTick().then(() => activate())
-  })
+  focusInput()
+  // 打开即预取轻量数据(标题/摘录), 全文索引懒加载
+  loadTitles().catch(() => {})
+  loadExcerpts().catch(() => {})
 })
-onBeforeUnmount(() => {
-  isLocked.value = false
-})
-function resetSearch() {
-  filterText.value = ''
-  nextTick().then(() => focusSearchInput(false))
+onBeforeUnmount(() => clearTimeout(searchTimer))
+
+/* ============ 高亮(安全转义后自实现) ============ */
+function esc(s: string) {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 }
-function formMarkRegex(terms: Set<string>) {
-  return new RegExp(
-    [...terms]
-      .sort((a, b) => b.length - a.length)
-      .map((term) => `(${escapeRegExp(term)})`)
-      .join('|'),
-    'gi'
-  )
+function highlight(s: string, q: string) {
+  const t = esc(s)
+  const k = esc(q).trim()
+  if (!k) return t
+  const re = new RegExp(k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')
+  return t.replace(re, (m) => `<mark>${m}</mark>`)
 }
-function onMouseMove(e: MouseEvent) {
-  if (!disableMouseOver.value) return
-  const el2 = (e.target as HTMLElement)?.closest<HTMLAnchorElement>('.result')
-  const index = Number.parseInt(el2?.dataset.index!)
-  if (index >= 0 && index !== selectedIndex.value) {
-    selectedIndex.value = index
-  }
-  disableMouseOver.value = false
+function isBodyHit(r: any) {
+  const q = query.value.trim()
+  if (!q) return false
+  const hay = (r.title || '') + ' ' + ((r.titles || []) as string[]).join(' ')
+  return !hay.includes(q)
 }
 </script>
 
 <template>
   <Teleport to="body">
-    <div
-      ref="el"
-      role="button"
-      :aria-owns="results?.length ? 'localsearch-list' : undefined"
-      aria-expanded="true"
-      aria-haspopup="listbox"
-      aria-labelledby="localsearch-label"
-      class="VPLocalSearchBox"
-    >
-      <div class="backdrop" @click="$emit('close')" />
-
-      <div class="shell">
-        <form
-          class="search-bar"
-          @pointerup="onSearchBarClick($event)"
-          @submit.prevent=""
-        >
-          <label
-            :title="buttonText"
-            id="localsearch-label"
-            for="localsearch-input"
-          >
-            <span aria-hidden="true" class="vpi-search search-icon local-search-icon" />
-          </label>
-          <div class="search-actions before">
-            <button
-              class="back-button"
-              :title="translate('modal.backButtonTitle')"
-              @click="$emit('close')"
-            >
-              <span class="vpi-arrow-left local-search-icon" />
-            </button>
-          </div>
+    <div class="search-modal" role="dialog" aria-modal="true" aria-label="搜索" @pointerdown.self="emit('close')">
+      <div class="search-shell" @keydown="onKey">
+        <div class="search-bar">
+          <span class="vpi-search search-icon" aria-hidden="true" />
           <input
-            ref="searchInput"
-            v-model="filterText"
-            :aria-activedescendant="selectedIndex > -1 ? ('localsearch-item-' + selectedIndex) : undefined"
-            aria-autocomplete="both"
-            :aria-controls="results?.length ? 'localsearch-list' : undefined"
-            aria-labelledby="localsearch-label"
-            autocapitalize="off"
+            ref="inputEl"
+            v-model="query"
+            class="search-input"
+            type="search"
+            placeholder="搜索笔记…"
+            maxlength="64"
             autocomplete="off"
             autocorrect="off"
-            class="search-input"
-            id="localsearch-input"
-            enterkeyhint="go"
-            maxlength="64"
-            :placeholder="buttonText"
             spellcheck="false"
-            type="search"
+            enterkeyhint="go"
           />
-          <div class="search-actions">
-            <button
-              v-if="!disableDetailedView"
-              class="toggle-layout-button"
-              type="button"
-              :class="{ 'detailed-list': showDetailedList }"
-              :title="translate('modal.displayDetails')"
-              @click="toggleDetailedList"
-            >
-              <span class="vpi-layout-list local-search-icon" />
-            </button>
-            <button
-              class="clear-button"
-              type="reset"
-              :disabled="disableReset"
-              :title="translate('modal.resetButtonTitle')"
-              @click="resetSearch"
-            >
-              <span class="vpi-delete local-search-icon" />
-            </button>
-          </div>
-        </form>
+          <button class="clear-btn" type="button" :disabled="!query" title="清空" @click="query = ''; focusInput(false)">
+            <span class="vpi-delete" aria-hidden="true" />
+          </button>
+        </div>
 
         <div class="mode-row">
           <div class="segmented" role="tablist" aria-label="搜索范围">
-            <div class="seg-thumb" :style="segThumbStyle" />
-            <button
-              type="button"
-              role="tab"
-              class="seg-btn"
-              :class="{ active: mode === 'quick' }"
-              @click="switchMode('quick')"
-            >
-              标题
-            </button>
-            <button
-              type="button"
-              role="tab"
-              class="seg-btn"
-              :class="{ active: mode === 'full' }"
-              @click="switchMode('full')"
-            >
-              全文
-            </button>
+            <div class="seg-thumb" :style="segThumb" />
+            <button type="button" role="tab" class="seg-btn" :class="{ active: mode === 'quick' }" @click="switchMode('quick')">标题</button>
+            <button type="button" role="tab" class="seg-btn" :class="{ active: mode === 'full' }" @click="switchMode('full')">全文</button>
           </div>
-          <span v-if="hintText" class="mode-hint">{{ hintText }}</span>
+          <span v-if="hint" class="mode-hint">{{ hint }}</span>
+          <button type="button" class="detail-btn" :class="{ on: expanded }" title="显示/隐藏正文片段" @click="toggleExpand">详情</button>
           <label v-if="mode === 'full'" class="fuzzy-toggle" :class="{ on: useFuzzy }" title="近似匹配: 容忍错字/形近词">
             <input v-model="useFuzzy" type="checkbox" />
             <span class="fuzzy-track"><span class="fuzzy-knob" /></span>
@@ -617,96 +250,41 @@ function onMouseMove(e: MouseEvent) {
           </label>
         </div>
 
-        <div v-if="fullIndexLoading" class="index-loading">
-          <span class="spinner" />
-          正在加载全文索引…
-        </div>
-        <div v-else-if="fullIndexFailed" class="index-loading error">
-          全文索引加载失败
-        </div>
+        <div v-if="fullLoading" class="state-row"><span class="spinner" />正在加载全文索引…</div>
+        <div v-else-if="fullFailed" class="state-row error">全文索引加载失败, 请刷新重试</div>
 
-        <ul
-          ref="resultsEl"
-          :id="results?.length ? 'localsearch-list' : undefined"
-          :role="results?.length ? 'listbox' : undefined"
-          :aria-labelledby="results?.length ? 'localsearch-label' : undefined"
-          class="results"
-          @mousemove="onMouseMove"
-        >
+        <ul v-if="results.length" ref="listEl" class="results">
           <li
-            v-for="(p, index) in results"
+            v-for="(p, i) in results"
             :key="p.id"
-            :id="'localsearch-item-' + index"
-            :aria-selected="selectedIndex === index ? 'true' : 'false'"
-            role="option"
+            class="result-item"
+            :class="{ selected: i === selectedIndex }"
+            @mousemove="selectedIndex = i"
           >
-            <a
-              :href="p.id"
-              class="result"
-              :class="{ selected: selectedIndex === index }"
-              :aria-label="[...p.titles, p.title].join(' > ')"
-              @mouseenter="!disableMouseOver && (selectedIndex = index)"
-              @focusin="selectedIndex = index"
-              @click="$emit('close')"
-              :data-index="index"
-            >
-              <div>
-                <div class="titles">
-                  <span class="title-icon">#</span>
-                  <span
-                    v-for="(t, index) in p.titles"
-                    :key="index"
-                    class="title"
-                  >
-                    <span class="text" v-html="t" />
-                    <span class="vpi-chevron-right local-search-icon" />
-                  </span>
-                  <span class="title main">
-                    <span class="text" v-html="p.title" />
-                  </span>
-                  <span v-if="mode === 'quick'" class="quick-path">{{ p.id }}</span>
-                  <span v-else-if="isBodyHit(p as any, filterText)" class="body-hit">正文命中</span>
-                </div>
-
-                <div v-if="showDetailedList && mode === 'full'" class="excerpt-wrapper">
-                  <div v-if="p.text" class="excerpt" inert>
-                    <div class="vp-doc" v-html="p.text" />
-                  </div>
-                  <div class="excerpt-gradient-bottom" />
-                  <div class="excerpt-gradient-top" />
-                </div>
+            <a :href="p.id" class="result" :aria-label="p.title" @click.prevent="router.go(p.id); emit('close')">
+              <div class="result-head">
+                <span class="title" v-html="highlight(p.title, query)" />
+                <span v-if="mode === 'quick'" class="quick-path">{{ p.id }}</span>
+                <span v-else-if="isBodyHit(p)" class="body-hit">正文命中</span>
+              </div>
+              <div v-if="expanded && mode === 'full'" class="excerpt">
+                <template v-if="excerptFor(p.id)">
+                  <div class="excerpt-title" v-html="highlight(excerptFor(p.id)!.t, query)" />
+                  <div class="excerpt-text" v-html="highlight(excerptFor(p.id)!.x, query)" />
+                </template>
+                <div v-else class="excerpt-text muted">(该页无正文片段)</div>
               </div>
             </a>
           </li>
-          <li
-            v-if="filterText && !results.length && enableNoResults && !fullIndexLoading"
-            class="no-results"
-          >
-            {{ translate('modal.noResultsText') }} "<strong>{{ filterText }}</strong
-            >"
-          </li>
         </ul>
+        <div v-else-if="query && enableNoResults && !fullLoading" class="no-results">
+          未找到与 "<strong>{{ query }}</strong>" 相关的结果
+        </div>
 
-        <div class="search-keyboard-shortcuts">
-          <span>
-            <kbd :aria-label="translate('modal.footer.navigateUpKeyAriaLabel')">
-              <span class="vpi-arrow-up navigate-icon" />
-            </kbd>
-            <kbd :aria-label="translate('modal.footer.navigateDownKeyAriaLabel')">
-              <span class="vpi-arrow-down navigate-icon" />
-            </kbd>
-            {{ translate('modal.footer.navigateText') }}
-          </span>
-          <span>
-            <kbd :aria-label="translate('modal.footer.selectKeyAriaLabel')">
-              <span class="vpi-corner-down-left navigate-icon" />
-            </kbd>
-            {{ translate('modal.footer.selectText') }}
-          </span>
-          <span>
-            <kbd :aria-label="translate('modal.footer.closeKeyAriaLabel')">esc</kbd>
-            {{ translate('modal.footer.closeText') }}
-          </span>
+        <div class="footer">
+          <span><kbd>↑</kbd><kbd>↓</kbd> 选择</span>
+          <span><kbd>Enter</kbd> 打开</span>
+          <span><kbd>Esc</kbd> 关闭</span>
         </div>
       </div>
     </div>
@@ -714,499 +292,128 @@ function onMouseMove(e: MouseEvent) {
 </template>
 
 <style scoped>
-.VPLocalSearchBox {
+.search-modal {
   position: fixed;
-  z-index: 100;
+  z-index: 200;
   inset: 0;
   display: flex;
-}
-
-.backdrop {
-  position: absolute;
-  inset: 0;
+  justify-content: center;
+  padding-top: 12vh;
   background: var(--vp-backdrop-bg-color);
-  transition: opacity 0.5s;
+  animation: fade-in 0.2s ease;
 }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
 
-.shell {
-  position: relative;
-  padding: 12px;
-  margin: 64px auto;
+.search-shell {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  background: var(--vp-local-search-bg);
-  width: min(100vw - 60px, 900px);
-  height: min-content;
-  max-height: min(100vh - 128px, 900px);
-  border-radius: 6px;
+  gap: 12px;
+  width: min(100vw - 48px, 760px);
+  max-height: min(80vh, 700px);
+  padding: 14px;
+  background: var(--vp-c-bg);
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 12px;
+  box-shadow: var(--vp-shadow-3);
+  animation: pop-in 0.22s cubic-bezier(0.16, 1, 0.3, 1);
 }
-
-@media (max-width: 767px) {
-  .shell {
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
-    max-height: none;
-    border-radius: 0;
-  }
-}
+@keyframes pop-in { from { opacity: 0; transform: translateY(-10px) scale(0.98); } to { opacity: 1; transform: none; } }
 
 .search-bar {
-  border: 1px solid var(--vp-c-divider);
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  padding: 0 12px;
-  cursor: text;
-}
-
-@media (max-width: 767px) {
-  .search-bar {
-    padding: 0 8px;
-  }
-}
-
-.search-bar:focus-within {
-  border-color: var(--vp-c-brand-1);
-}
-
-.local-search-icon {
-  display: block;
-  font-size: 18px;
-}
-
-.navigate-icon {
-  display: block;
-  font-size: 14px;
-}
-
-.search-icon {
-  margin: 8px;
-}
-
-@media (max-width: 767px) {
-  .search-icon {
-    display: none;
-  }
-}
-
-.search-input {
-  padding: 6px 12px;
-  font-size: inherit;
-  width: 100%;
-}
-
-@media (max-width: 767px) {
-  .search-input {
-    padding: 6px 4px;
-  }
-}
-
-.search-actions {
-  display: flex;
-  gap: 4px;
-}
-
-@media (any-pointer: coarse) {
-  .search-actions {
-    gap: 8px;
-  }
-}
-
-@media (min-width: 769px) {
-  .search-actions.before {
-    display: none;
-  }
-}
-
-.search-actions button {
-  padding: 8px;
-}
-
-.search-actions button:not([disabled]):hover,
-.toggle-layout-button.detailed-list {
-  color: var(--vp-c-brand-1);
-}
-
-.search-actions button.clear-button:disabled {
-  opacity: 0.37;
-}
-
-.search-keyboard-shortcuts {
-  font-size: 0.8rem;
-  opacity: 75%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  line-height: 14px;
-}
-
-.search-keyboard-shortcuts span {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-@media (max-width: 767px) {
-  .search-keyboard-shortcuts {
-    display: none;
-  }
-}
-
-.search-keyboard-shortcuts kbd {
-  background: rgba(128, 128, 128, 0.1);
-  border-radius: 4px;
-  padding: 3px 6px;
-  min-width: 24px;
-  display: inline-block;
-  text-align: center;
-  vertical-align: middle;
-  border: 1px solid rgba(128, 128, 128, 0.15);
-  box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.1);
-}
-
-.results {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  overflow-x: hidden;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
-
-.result {
   display: flex;
   align-items: center;
   gap: 8px;
-  border-radius: 4px;
-  transition: none;
-  line-height: 1rem;
-  border: solid 2px var(--vp-local-search-result-border);
+  padding: 0 10px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  background: var(--vp-c-bg-soft);
+}
+.search-bar:focus-within { border-color: var(--vp-c-brand-1); }
+.search-icon { font-size: 17px; color: var(--vp-c-text-2); flex-shrink: 0; }
+.search-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 4px;
+  border: none;
+  background: transparent;
+  color: var(--vp-c-text-1);
+  font-size: 15px;
   outline: none;
 }
-
-.result > div {
-  margin: 12px;
-  width: 100%;
-  overflow: hidden;
-}
-
-@media (max-width: 767px) {
-  .result > div {
-    margin: 8px;
-  }
-}
-
-.titles {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px;
-  position: relative;
-  z-index: 1001;
-  padding: 2px 0;
-}
-
-.title {
+.clear-btn {
   display: flex;
   align-items: center;
-  gap: 4px;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--vp-c-text-3);
+  cursor: pointer;
+  flex-shrink: 0;
 }
+.clear-btn:hover:not(:disabled) { color: var(--vp-c-brand-1); background: var(--vp-c-default-soft); }
+.clear-btn:disabled { opacity: 0.35; cursor: default; }
 
-.title.main {
-  font-weight: 500;
+.mode-row { display: flex; align-items: center; gap: 12px; min-height: 26px; }
+.segmented { position: relative; display: inline-flex; flex-shrink: 0; padding: 3px; border-radius: 8px; background: var(--vp-c-default-soft); }
+.seg-thumb {
+  position: absolute; top: 3px; left: 3px; width: 76px; height: calc(100% - 6px);
+  border-radius: 6px; background: var(--vp-c-bg); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  transition: transform 0.26s cubic-bezier(0.22, 0.61, 0.36, 1); pointer-events: none;
 }
+.seg-btn { position: relative; z-index: 1; width: 76px; padding: 5px 0; border: none; background: transparent; color: var(--vp-c-text-2); font-size: 0.82rem; cursor: pointer; transition: color 0.2s ease; }
+.seg-btn:hover { color: var(--vp-c-text-1); }
+.seg-btn.active { color: var(--vp-c-brand-1); font-weight: 600; }
+.detail-btn {
+  flex-shrink: 0;
+  padding: 4px 10px;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 6px;
+  background: var(--vp-c-default-soft);
+  color: var(--vp-c-text-2);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.detail-btn:hover { color: var(--vp-c-brand-1); border-color: var(--vp-c-brand-1); }
+.detail-btn.on { color: var(--vp-c-brand-1); border-color: var(--vp-c-brand-1); font-weight: 600; }
+.mode-hint { font-size: 0.75rem; color: var(--vp-c-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
-.title-icon {
-  opacity: 0.5;
-  font-weight: 500;
+.fuzzy-toggle { display: inline-flex; align-items: center; gap: 6px; margin-left: auto; flex-shrink: 0; cursor: pointer; user-select: none; }
+.fuzzy-toggle input { position: absolute; opacity: 0; pointer-events: none; }
+.fuzzy-track { position: relative; width: 28px; height: 16px; border-radius: 999px; background: var(--vp-c-divider); transition: background 0.2s ease; }
+.fuzzy-knob { position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--vp-c-bg); box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2); transition: transform 0.2s cubic-bezier(0.22, 0.61, 0.36, 1); }
+.fuzzy-toggle.on .fuzzy-track { background: var(--vp-c-brand-1); }
+.fuzzy-toggle.on .fuzzy-knob { transform: translateX(12px); }
+.fuzzy-label { font-size: 0.75rem; color: var(--vp-c-text-2); }
+.fuzzy-toggle.on .fuzzy-label { color: var(--vp-c-brand-1); font-weight: 600; }
+
+.state-row { display: flex; align-items: center; gap: 8px; padding: 6px 10px; font-size: 0.85rem; color: var(--vp-c-text-2); }
+.state-row.error { color: var(--vp-c-danger-1); }
+.spinner { width: 14px; height: 14px; border: 2px solid var(--vp-c-divider); border-top-color: var(--vp-c-brand-1); border-radius: 50%; animation: spin 0.8s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.results { list-style: none; margin: 0; padding: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 4px; }
+.result-item { border-radius: 8px; }
+.result-item.selected { background: var(--vp-c-default-soft); }
+.result { display: block; padding: 8px 12px; border-radius: 8px; text-decoration: none; color: var(--vp-c-text-1); }
+.result-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.title { font-size: 0.92rem; font-weight: 600; }
+.title :deep(mark), .excerpt-title :deep(mark), .excerpt-text :deep(mark) {
+  background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
-}
-
-.title svg {
-  opacity: 0.5;
-}
-
-.result.selected {
-  --vp-local-search-result-bg: var(--vp-local-search-result-selected-bg);
-  border-color: var(--vp-local-search-result-selected-border);
-}
-
-.excerpt-wrapper {
-  position: relative;
-}
-
-.excerpt {
-  opacity: 50%;
-  pointer-events: none;
-  max-height: 140px;
-  overflow: hidden;
-  position: relative;
-  margin-top: 4px;
-}
-
-.result.selected .excerpt {
-  opacity: 1;
-}
-
-.excerpt :deep(*) {
-  font-size: 0.8rem !important;
-  line-height: 130% !important;
-}
-
-.titles :deep(mark),
-.excerpt :deep(mark) {
-  background-color: var(--vp-local-search-highlight-bg);
-  color: var(--vp-local-search-highlight-text);
   border-radius: 2px;
   padding: 0 2px;
 }
-
-.excerpt :deep(.vp-code-group) .tabs {
-  display: none;
-}
-
-.excerpt :deep(.vp-code-group) div[class*='language-'] {
-  border-radius: 8px !important;
-}
-
-.excerpt-gradient-bottom {
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background: linear-gradient(transparent, var(--vp-local-search-result-bg));
-  z-index: 1000;
-}
-
-.excerpt-gradient-top {
-  position: absolute;
-  top: -1px;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background: linear-gradient(var(--vp-local-search-result-bg), transparent);
-  z-index: 1000;
-}
-
-.result.selected .titles,
-.result.selected .title-icon {
-  color: var(--vp-c-brand-1) !important;
-}
-
-.no-results {
-  font-size: 0.9rem;
-  text-align: center;
-  padding: 12px;
-}
-
-svg {
-  flex: none;
-}
-
-
-/* ===== 两档搜索: 分段控件 / 加载状态 / 快速档路径 ===== */
-/* 分段控件: Apple 风格胶囊, 滑动拇指指示器 */
-.mode-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0 2px;
-}
-
-.segmented {
-  position: relative;
-  display: inline-flex;
-  flex-shrink: 0;
-  padding: 3px;
-  border-radius: 8px;
-  background: var(--vp-c-default-soft);
-}
-
-.seg-thumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  width: 68px;
-  height: calc(100% - 6px);
-  border-radius: 6px;
-  background: var(--vp-c-bg);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
-  transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
-  pointer-events: none;
-}
-
-.seg-btn {
-  position: relative;
-  z-index: 1;
-  width: 68px;
-  padding: 5px 0;
-  border: none;
-  background: transparent;
-  color: var(--vp-c-text-2);
-  font-size: 0.8rem;
-  cursor: pointer;
-  transition: color 0.2s ease;
-}
-
-.seg-btn:hover {
-  color: var(--vp-c-text-1);
-}
-
-.seg-btn.active {
-  color: var(--vp-c-brand-1);
-  font-weight: 600;
-}
-
-.mode-hint {
-  font-size: 0.75rem;
-  color: var(--vp-c-text-3);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* 弹窗入场: 淡入 + 轻微上移缩放 */
-.shell {
-  animation: vp-search-in 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-@keyframes vp-search-in {
-  from {
-    opacity: 0;
-    transform: translateY(-8px) scale(0.98);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* 正文命中徽标 */
-.body-hit {
-  margin-left: 6px;
-  padding: 1px 6px;
-  border-radius: 4px;
-  background: var(--vp-c-brand-soft);
-  color: var(--vp-c-brand-1);
-  font-size: 0.7rem;
-  font-weight: 500;
-  flex-shrink: 0;
-}
-
-/* 模糊匹配开关(高级搜索): 迷你胶囊开关 */
-.fuzzy-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  margin-left: auto;
-  flex-shrink: 0;
-  cursor: pointer;
-  user-select: none;
-}
-
-.fuzzy-toggle input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.fuzzy-track {
-  position: relative;
-  width: 28px;
-  height: 16px;
-  border-radius: 999px;
-  background: var(--vp-c-divider);
-  transition: background 0.2s ease;
-}
-
-.fuzzy-knob {
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  width: 12px;
-  height: 12px;
-  border-radius: 50%;
-  background: var(--vp-c-bg);
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
-}
-
-.fuzzy-toggle.on .fuzzy-track {
-  background: var(--vp-c-brand-1);
-}
-
-.fuzzy-toggle.on .fuzzy-knob {
-  transform: translateX(12px);
-}
-
-.fuzzy-label {
-  font-size: 0.75rem;
-  color: var(--vp-c-text-2);
-}
-
-.fuzzy-toggle.on .fuzzy-label {
-  color: var(--vp-c-brand-1);
-  font-weight: 600;
-}
-
-/* 输入框弹性收缩, 防止操作按钮被挤出搜索栏 */
-.search-input {
-  flex: 1 1 auto;
-  min-width: 0;
-  width: auto;
-}
-
-.index-loading {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  font-size: 0.85rem;
-  color: var(--vp-c-text-2);
-}
-
-.index-loading.error {
-  color: var(--vp-c-danger-1);
-}
-
-.spinner {
-  width: 14px;
-  height: 14px;
-  border: 2px solid var(--vp-c-divider);
-  border-top-color: var(--vp-c-brand-1);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-/* 摘录内小节标题: 恢复层级与字号, 避免被 .excerpt :deep(*) 统一缩小 */
-.excerpt :deep(h1),
-.excerpt :deep(h2),
-.excerpt :deep(h3),
-.excerpt :deep(h4) {
-  font-size: 0.95rem !important;
-  font-weight: 600 !important;
-  line-height: 1.4 !important;
-  margin: 0.5em 0 0.25em !important;
-  letter-spacing: 0 !important;
-  border: none !important;
-  padding: 0 !important;
-}
-
-.quick-path {
-  margin-left: 6px;
-  font-size: 0.75rem;
-  color: var(--vp-c-text-3);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 300px;
-}
+.quick-path { font-size: 0.72rem; color: var(--vp-c-text-3); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 280px; }
+.body-hit { margin-left: auto; padding: 1px 6px; border-radius: 4px; background: var(--vp-c-brand-soft); color: var(--vp-c-brand-1); font-size: 0.7rem; font-weight: 500; }
+.excerpt { margin-top: 6px; padding: 6px 10px; border-left: 2px solid var(--vp-c-brand-soft); background: var(--vp-c-bg-soft); border-radius: 0 6px 6px 0; }
+.excerpt-title { font-size: 0.82rem; font-weight: 600; color: var(--vp-c-text-1); margin-bottom: 3px; }
+.excerpt-text { font-size: 0.8rem; line-height: 1.55; color: var(--vp-c-text-2); }
+.excerpt-text.muted { color: var(--vp-c-text-3); }
+.no-results { padding: 18px; text-align: center; font-size: 0.88rem; color: var(--vp-c-text-2); }
+.footer { display: flex; gap: 16px; padding-top: 8px; border-top: 1px solid var(--vp-c-divider); font-size: 0.72rem; color: var(--vp-c-text-3); }
+.footer kbd { display: inline-block; min-width: 18px; padding: 1px 4px; margin-right: 2px; border: 1px solid var(--vp-c-divider); border-radius: 4px; background: var(--vp-c-bg-alt); font-family: inherit; font-size: 0.7rem; text-align: center; }
 </style>

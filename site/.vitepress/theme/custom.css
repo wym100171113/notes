@@ -14,15 +14,10 @@
 }
 
 /* 侧栏: 去掉最左侧 32px 空白的视觉瑕疵(内容与导航对齐更紧凑)
- * 注意: 官方 scoped 规则是 .VPSidebar[data-v-xxx](特异性 0,2,0), 需要更高特异性才能覆盖 */
+ * 注意: 官方 scoped 规则是 .VPSidebar[data-v-xxx](特异性 0,2,0), 需要更高特异性才能覆盖
+ * 不再为 ≥1440px 单独放大 padding(原公式在超宽屏会产生巨大留白) */
 @media (min-width: 960px) {
   .VPSidebar.VPSidebar {
     padding-left: 16px;
-  }
-}
-
-@media (min-width: 1440px) {
-  .VPSidebar.VPSidebar {
-    padding-left: max(16px, calc((100% - (var(--vp-layout-max-width) - 64px)) / 2 + 16px));
   }
 }

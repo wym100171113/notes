@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitepress'
-import { readdirSync, existsSync, readFileSync } from 'node:fs'
+import { readdirSync, existsSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import markdownItMark from 'markdown-it-mark'
@@ -229,20 +229,6 @@ export default defineConfig({
   vite: {
     plugins: [
       await compactSearchIndex(),
-      // 虚拟模块: 快速搜索的标题索引(构建期从 generated/title-index.json 读取)
-      {
-        name: 'virtual-title-index',
-        resolveId(id) {
-          if (id === 'virtual:title-index') return '\0virtual:title-index'
-        },
-        load(id) {
-          if (id === '\0virtual:title-index') {
-            const f = join(here, 'generated', 'title-index.json')
-            const data = existsSync(f) ? readFileSync(f, 'utf8') : '[]'
-            return `export default ${data}`
-          }
-        },
-      },
       // 用两档搜索组件替换默认 VPLocalSearchBox(直接拦 VPNavBarSearch 的相对导入)
       {
         name: 'override-local-search-box',

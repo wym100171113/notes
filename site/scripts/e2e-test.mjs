@@ -55,7 +55,7 @@ await page.goto(BASE + '/物理/物理竞赛/力学/01-运动学.html', { waitUn
 await sleep(800)
 await page.keyboard.down('Meta'); await page.keyboard.press('k'); await page.keyboard.up('Meta')
 await sleep(600)
-const boxVisible = await page.evaluate(() => !!document.querySelector('.VPLocalSearchBox'))
+const boxVisible = await page.evaluate(() => !!document.querySelector('.search-modal'))
 record('搜索框弹出', boxVisible)
 
 await page.type('.search-input', '洛伦兹力')
@@ -75,7 +75,7 @@ record('全文档搜索', fullCount > 0 && !loadingVisible, `结果数=${fullCou
 
 // 展开详情
 await page.evaluate(() => {
-  const btn = document.querySelector('.toggle-layout-button')
+  const btn = document.querySelector('.detail-btn')
   btn?.click()
 })
 await sleep(2000)
@@ -91,8 +91,10 @@ await page.evaluate(() => {
   const btn = [...document.querySelectorAll('.seg-btn')].find((b) => b.textContent.includes('全文'))
   btn?.click()
 })
+await sleep(300)
+const loading2 = await page.evaluate(() => !!document.querySelector('.state-row'))
+await page.type('.search-input', '洛伦兹力')
 await sleep(600)
-const loading2 = await page.evaluate(() => !!document.querySelector('.index-loading'))
 const res2 = await page.evaluate(() => document.querySelectorAll('.result').length)
 record('重开全文无加载(索引缓存)', !loading2 && res2 > 0, `加载中=${loading2} 结果=${res2}`)
 await page.keyboard.press('Escape')

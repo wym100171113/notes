@@ -437,13 +437,12 @@ if (existsSync(pdfPublicDir)) {
 
 console.log(`[prepare] 完成: ${mdFiles.length} 个笔记 → ${docsDir}`);
 
-// ---------- 7. 标题索引(快速搜索用) ----------
-// 为"快速/标题"档搜索生成轻量索引: {id, title, titles} 每页一条,
-// 由 VPLocalSearchBox.vue 通过 virtual:title-index 静态引入(数 KB, 随组件打包, 秒开)。
-const generatedDir = join(siteDir, '.vitepress', 'generated');
-mkdirSync(generatedDir, { recursive: true });
+// ---------- 7. 搜索数据(标题索引 + 摘录索引) ----------
+// 输出到 docs/public/search-data/, 由 SearchModal 组件 fetch 加载(浏览器/SW 缓存)。
 // 站点 base 路径, 与 config.mts 的 base 保持一致(修改时需同步)
 const BASE_URL = '/notes/';
+const searchDataDir = join(docsDir, 'public', 'search-data');
+mkdirSync(searchDataDir, { recursive: true });
 function extractTitle(absPath) {
   let content = readFileSync(absPath, 'utf8');
   const fm = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -459,15 +458,55 @@ const titleIndex = [];
 for (const f of mdFiles) {
   const abs = f.absSrc;
   const rel = f.relDst.replace(/\.md$/, '');
-  // id 必须带 base 前缀, 否则前端 router.go 拼接出错误路径导致 404
+  // id 必须带 base 前缀, 否则导航拼出错误路径导致 404
   titleIndex.push({ id: `${BASE_URL}${rel}`, title: extractTitle(abs), titles: [] });
 }
-// 目录页(各 subject 的 index.md)也加入
 for (const { dst } of SUBJECTS) {
   const idxFile = join(docsDir, dst, 'index.md');
   if (existsSync(idxFile)) {
     titleIndex.push({ id: `${BASE_URL}${dst}/`, title: extractTitle(idxFile), titles: [] });
   }
 }
-writeFileSync(join(generatedDir, 'title-index.json'), JSON.stringify(titleIndex));
-console.log(`[prepare] 标题索引: ${titleIndex.length} 条 → ${join(generatedDir, 'title-index.json')}`);
+writeFileSync(join(searchDataDir, 'title.json'), JSON.stringify(titleIndex));
+console.log(`[prepare] 标题索引: ${titleIndex.length} 条 → search-data/title.json`);
+
+// 摘录索引: 每页按标题切分成 {t: 标题, x: 正文片段}, 供搜索结果"展开详情"展示
+// (不依赖页面 chunk 动态导入, 一次 fetch 全部缓存)
+const EXCERPT_MAX = 300; // 每节正文截断字符
+const EXCERPT_MAX_SECTIONS = 12;
+function buildExcerpts(absPath) {
+  let content = readFileSync(absPath, 'utf8');
+  content = content.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, ''); // 去 frontmatter
+  const sections = [];
+  let cur = null;
+  let inFence = false;
+  for (const raw of content.split('\n')) {
+    const line = raw.trim();
+    if (line.startsWith('```')) { inFence = !inFence; continue; }
+    if (inFence) continue;
+    if (/^#{1,4}\s/.test(line)) {
+      if (cur && (cur.x || cur.t)) sections.push(cur);
+      cur = { t: line.replace(/^#+\s*/, '').trim(), x: '' };
+      if (sections.length >= EXCERPT_MAX_SECTIONS) break;
+      continue;
+    }
+    if (!cur) { cur = { t: '', x: '' }; }
+    if (/^\s*[!>|]/.test(raw) || /^\s*\$/.test(raw) || /^!\[/.test(raw) || /^\[\[/.test(raw)) continue;
+    const text = line.replace(/[#$*_`~]/g, '').trim();
+    if (text) {
+      if (cur.x) cur.x += ' ';
+      cur.x += text;
+      if (cur.x.length > EXCERPT_MAX) { cur.x = cur.x.slice(0, EXCERPT_MAX) + '…'; }
+    }
+  }
+  if (cur && (cur.x || cur.t)) sections.push(cur);
+  return sections.filter((s) => s.t || s.x);
+}
+const excerpts = {};
+for (const f of mdFiles) {
+  const rel = f.relDst.replace(/\.md$/, '');
+  const secs = buildExcerpts(f.absSrc);
+  if (secs.length) excerpts[`/${rel}`] = secs;
+}
+writeFileSync(join(searchDataDir, 'excerpts.json'), JSON.stringify(excerpts));
+console.log(`[prepare] 摘录索引: ${Object.keys(excerpts).length} 页 → search-data/excerpts.json`);

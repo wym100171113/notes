@@ -157,9 +157,5 @@
 }
 
 /* ---------- 7. 本页目录(大纲) ---------- */
-/* 大纲超高时自身可滚动, 激活项由 Layout.vue 的 initOutlineFollow 自动对齐 */
-.VPDocAsideOutline .content {
-  max-height: calc(100vh - var(--vp-nav-height) - 48px);
-  overflow-y: auto;
-  overscroll-behavior: contain;
-}
+/* 大纲滚动由官方 .aside-container(overflow-y: auto)负责, 这里不加多余滚动容器
+ * (嵌套滚动容器会截断滚动链: 大纲滚到底后滚轮透传不了页面) */

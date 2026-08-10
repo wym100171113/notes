@@ -57,24 +57,24 @@ async function renderMath() {
 }
 
 /* ===== 大纲激活项自动滚动对齐 =====
- * 大纲列表超高时(24+ 项)底部项会被滚出视野, 监听激活项类变化,
- * 将其滚动到大纲容器可视区中部 */
+ * 大纲列表超高时底部项会被滚出视野, 监听激活项类变化,
+ * 将其滚动到滚动容器(官方 .aside-container)可视区中部 */
 let outlineObserver: MutationObserver | null = null
 function initOutlineFollow() {
   outlineObserver?.disconnect()
   outlineObserver = null
-  const content = page.value?.querySelector('.VPDocAsideOutline .content')
-  if (!content) return
+  const scroller = page.value?.querySelector('.VPDoc .aside-container')
+  if (!scroller) return
   const observer = new MutationObserver(() => {
-    const active = content.querySelector('.outline-link.active')
+    const active = scroller.querySelector('.outline-link.active')
     if (!active) return
     const ar = active.getBoundingClientRect()
-    const cr = content.getBoundingClientRect()
-    if (ar.top < cr.top + 4 || ar.bottom > cr.bottom - 4) {
-      content.scrollTop += ar.top - cr.top - content.clientHeight / 2
+    const sr = scroller.getBoundingClientRect()
+    if (ar.top < sr.top + 4 || ar.bottom > sr.bottom - 4) {
+      scroller.scrollTop += ar.top - sr.top - scroller.clientHeight / 2
     }
   })
-  observer.observe(content, { subtree: true, attributes: true, attributeFilter: ['class'] })
+  observer.observe(scroller, { subtree: true, attributes: true, attributeFilter: ['class'] })
   outlineObserver = observer
 }
 

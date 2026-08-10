@@ -14,17 +14,10 @@ const docsDir = join(here, '../docs')
 // VitePress 本地搜索把"每个标题"都建成一个索引文档(12000+ 个), 序列化后可达 10+MB,
 // 打开搜索时需先下载整个索引, 导致"预加载很慢"。本插件:
 //   1. 把同一页面下的标题级文档合并为页面级文档(12000+ -> ~500)
-//   2. 将索引 JSON gzip 压缩后以 base64 内联, 运行时用内联的 fflate 同步解压
-// 不改动 MiniSearch 序列化格式(v2), 消费端 loadJSON 无需任何修改。
+//   2. 将索引 JSON gzip 后以 base64 内联进 chunk, default 导出为 base64 字符串;
+//      解压与解析(JSON.parse + MiniSearch 建树)全部在 search-worker 线程进行,
+//      主线程只做一次字符串传递(约 1.4MB, 不阻塞输入)
 async function compactSearchIndex(): Promise<Plugin> {
-  const { build } = await import('esbuild')
-  // 内联 gunzip 实现: 用 esbuild 把 fflate 的 gunzipSync 打包成独立 IIFE
-  const stub = 'import { gunzipSync } from "fflate"; globalThis.__wj_gunzip = gunzipSync;'
-  const bundled = await build({
-    stdin: { contents: stub, resolveDir: here, sourcefile: 'inflate-stub.ts' },
-    bundle: true, write: false, format: 'iife', minify: true, target: 'es2019',
-  })
-  const inflateCode = bundled.outputFiles![0].text
   return {
     name: 'compact-search-index',
     apply: 'build',
@@ -107,12 +100,10 @@ async function compactSearchIndex(): Promise<Plugin> {
           index: newIndex,
           serializationVersion: 2,
         }
-        const outJson = JSON.stringify(merged)
-        const b64 = zlib.gzipSync(Buffer.from(outJson, 'utf8')).toString('base64')
-        const newCode = `const _localSearchIndexroot = (()=>{${inflateCode}const _b64="${b64}";const _bin=Uint8Array.from(atob(_b64),c=>c.charCodeAt(0));return new TextDecoder().decode(__wj_gunzip(_bin));})();`
-        const exportLine = code.slice(end + 1)
-        chunk.code = newCode + exportLine
-        console.log(`[compact] ${fileName}: ${(code.length / 1024 / 1024).toFixed(1)}MB -> ${(chunk.code.length / 1024 / 1024).toFixed(2)}MB (${pages.size} 个页面文档)`)
+        // 3) 直接内联 gzip base64(worker 端解压), 主线程无任何解码开销
+        const b64 = zlib.gzipSync(Buffer.from(JSON.stringify(merged), 'utf8')).toString('base64')
+        chunk.code = `const _localSearchIndexroot = "${b64}";` + code.slice(end + 1)
+        console.log(`[compact] ${fileName}: ${(code.length / 1024 / 1024).toFixed(1)}MB -> ${(b64.length / 1024 / 1024).toFixed(2)}MB (${pages.size} 个页面文档)`)
       }
     },
   }

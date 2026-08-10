@@ -1,5 +1,4 @@
 <script lang="ts">
-import MiniSearch from 'minisearch'
 import localSearchIndex from '@localSearchIndex'
 import { tokenizeSearch, SEARCH_STOP_WORDS } from '../search-tokenizer'
 
@@ -7,18 +6,90 @@ import { tokenizeSearch, SEARCH_STOP_WORDS } from '../search-tokenizer'
 const BASE = import.meta.env.BASE_URL as string
 let titleCache: TitleEntry[] | null = null
 let excerptsCache: Record<string, { t: string; x: string }[]> | null = null
-let fullIndexCache: MiniSearch | null = null
-let fullIndexPromise: Promise<MiniSearch> | null = null
 let buildVersion = ''
 let currentLocale = 'root'
-let currentSearchOptions: any = undefined
 
-export function setSearchEnv(locale: string, searchOptions: any) {
+/* 全文检索走 Web Worker(search-worker.ts): 索引的 gunzip+parse+建树
+ * 全部在 worker 线程, 主线程只收发消息, 刷新后打开搜索不再卡输入。
+ * 消息结果经 searchListener 回调到当前挂载的弹窗实例(setup 块注册)。 */
+let searchWorker: Worker | null = null
+let workerReady = false
+let workerLoading = false
+let searchRequestId = 0
+interface WorkerResult {
+  tooBroad: boolean
+  fallback: boolean
+  results: SearchResult[]
+}
+let searchListener: {
+  onResult: (r: WorkerResult) => void
+  onReady: () => void
+  onFailed: () => void
+} | null = null
+
+export function setSearchEnv(locale: string) {
   currentLocale = locale
-  currentSearchOptions = searchOptions
+}
+export function setSearchListener(l: typeof searchListener) {
+  searchListener = l
 }
 export function warmFullIndex() {
-  loadFullIndex().catch(() => {})
+  ensureFullIndexWorker()
+}
+
+// 创建全文检索 worker 并启动后台加载(索引数据: IDB 缓存优先, 否则导入构建 chunk)
+// 数据本身只是 gzip base64 字符串, 解压与解析都在 worker 内进行
+function ensureFullIndexWorker() {
+  if (searchWorker || workerLoading) return
+  if (typeof Worker === 'undefined') return
+  workerLoading = true
+  const worker = new Worker(new URL('../search-worker.ts', import.meta.url), { type: 'module' })
+  searchWorker = worker
+  worker.onmessage = (e) => {
+    const msg = e.data
+    if (msg.type === 'ready') {
+      workerReady = true
+      workerLoading = false
+      searchListener?.onReady()
+    } else if (msg.type === 'result') {
+      // 只接受最新一次请求的结果
+      if (msg.requestId !== searchRequestId) return
+      searchListener?.onResult(msg)
+    } else if (msg.type === 'error') {
+      console.error('[search]', msg.message)
+      failWorker()
+    }
+  }
+  worker.onerror = () => failWorker()
+  ;(async () => {
+    let data = ''
+    try {
+      const v = await getBuildVersion()
+      data = (await idbGet('search-index-' + v)) || ''
+    } catch {
+      data = ''
+    }
+    if (!data) {
+      try {
+        data = (await localSearchIndex[currentLocale]?.())?.default as string
+        const v = await getBuildVersion()
+        await idbSet('search-index-' + v, data)
+        idbCleanOld('search-index-' + v)
+      } catch {
+        /* 忽略 */
+      }
+    }
+    if (searchWorker) searchWorker.postMessage({ type: 'load', data })
+  })()
+}
+
+// worker 失败: 标记失败并销毁, 下次切换全文时重建重试
+function failWorker() {
+  workerReady = false
+  workerLoading = false
+  searchWorker?.terminate()
+  searchWorker = null
+  searchListener?.onFailed()
 }
 
 async function loadTitles() {
@@ -96,53 +167,6 @@ async function idbCleanOld(keepKey: string): Promise<void> {
     /* 忽略 */
   }
 }
-async function loadFullIndex(): Promise<MiniSearch> {
-  if (fullIndexCache) return fullIndexCache
-  if (fullIndexPromise) return fullIndexPromise
-  fullIndexPromise = (async () => {
-    let data = ''
-    try {
-      const v = await getBuildVersion()
-      data = (await idbGet('search-index-' + v)) || ''
-    } catch {
-      data = ''
-    }
-    if (!data) {
-      data = (await localSearchIndex[currentLocale]?.())?.default as string
-      try {
-        const v = await getBuildVersion()
-        await idbSet('search-index-' + v, data)
-        idbCleanOld('search-index-' + v)
-      } catch {
-        /* 忽略 */
-      }
-    }
-    return MiniSearch.loadJSON(data, {
-      fields: ['title', 'titles', 'text'],
-      storeFields: ['title', 'titles'],
-      // 与索引端(config.mts)共用同一分词器: 消除 siteData 序列化丢函数导致的查询/索引分词漂移
-      tokenize: tokenizeSearch,
-      searchOptions: {
-        combineWith: 'AND',
-        fuzzy: false,
-        prefix: true,
-        boost: { title: 4, text: 2, titles: 1 },
-        ...(currentSearchOptions?.miniSearch?.searchOptions || {}),
-      },
-      ...(currentSearchOptions?.miniSearch?.options || {}),
-      // 强制单一分词来源(放在展开之后, 防止 siteData 里的函数丢失/误配再次引入漂移)
-      tokenize: tokenizeSearch,
-    })
-  })()
-  try {
-    fullIndexCache = await fullIndexPromise
-  } catch (err) {
-    // 一次瞬时失败(缓存损坏/网络)不应让整个会话永久失败: 允许下次重试
-    fullIndexPromise = null
-    throw err
-  }
-  return fullIndexCache
-}
 </script>
 
 <script setup lang="ts">
@@ -151,11 +175,8 @@ import { useRouter, useData } from 'vitepress'
 
 const emit = defineEmits<{ (e: 'close'): void }>()
 const router = useRouter()
-const { localeIndex, theme } = useData()
-setSearchEnv(
-  localeIndex.value,
-  theme.value.search?.provider === 'local' ? theme.value.search.options : undefined
-)
+const { localeIndex } = useData()
+setSearchEnv(localeIndex.value)
 
 /* ============ 状态 ============ */
 type Mode = 'quick' | 'full'
@@ -238,27 +259,21 @@ function fullSearch() {
     queryTooBroad.value = false
     return
   }
-  if (!fullIndexCache) { results.value = []; return }
-  // 过滤单字停用词: 避免搜"你"命中一堆正文(与索引端共用同一分词器)
-  const tokens = tokenizeSearch(query.value).filter((t2) => !(t2.length === 1 && SEARCH_STOP_WORDS.has(t2)))
-  if (!tokens.length) {
-    queryTooBroad.value = true
+  if (!workerReady) {
+    // 索引未就绪: 启动 worker 后台加载, 显示 loading, ready 后自动补搜
+    fullLoading.value = true
+    fullFailed.value = false
+    ensureFullIndexWorker()
     results.value = []
     return
   }
-  queryTooBroad.value = false
-  const fuzzyOpt = useFuzzy.value ? 0.2 : false
-  const queryStr = tokens.join(' ')
-  let hits = fullIndexCache.search(queryStr, { fuzzy: fuzzyOpt, prefix: true }) as any[]
-  // AND 全词匹配 0 结果时自动降级为 OR(任一命中), 避免多词查询因一页缺一个词而整体落空
-  orFallbackUsed.value = false
-  if (!hits.length) {
-    hits = fullIndexCache.search(queryStr, { fuzzy: fuzzyOpt, prefix: true, combineWith: 'OR' }) as any[]
-    orFallbackUsed.value = hits.length > 0
-  }
-  results.value = hits
-    .slice(0, 16)
-    .map((r) => ({ id: r.id as string, title: r.title as string, titles: (r.titles as string[]) || [] }))
+  fullLoading.value = false
+  searchWorker?.postMessage({
+    type: 'search',
+    requestId: ++searchRequestId,
+    query: query.value,
+    fuzzy: useFuzzy.value,
+  })
 }
 
 /* ============ 查询分词与停用词过滤(共享 .vitepress/search-tokenizer.ts) ============ */
@@ -286,24 +301,9 @@ function excerptFor(id: string): { t: string; x: string } | null {
   return secs[0]
 }
 
-/* ============ 模式切换 ============ */
-async function switchMode(m: Mode) {
+/* ============ 模式切换(搜索触发由下方 watch 统一处理) ============ */
+function switchMode(m: Mode) {
   mode.value = m
-  if (m === 'full' && !fullIndexCache && !fullLoading.value) {
-    fullLoading.value = true
-    fullFailed.value = false
-    try {
-      await loadFullIndex()
-      // 索引就绪时若已输入关键词, 补一次搜索(此前的搜索因索引未就绪而落空)
-      if (query.value.trim()) runSearch()
-    } catch (e) {
-      console.error('[search]', e)
-      fullFailed.value = true
-    } finally {
-      fullLoading.value = false
-    }
-  }
-  // mode 变更已由下方 watch 触发 runSearch, 这里不再重复调用
 }
 watch([mode, query, useFuzzy], () => {
   enableNoResults.value = false
@@ -340,9 +340,25 @@ function onKey(e: KeyboardEvent) {
 }
 onMounted(() => {
   focusInput()
-  // 打开即预取: 标题/摘录/全文索引。全文索引 gunzip+parse(数 MB)会阻塞主线程,
-  // 放到浏览器空闲时段加载, 避免打开弹窗时输入卡死; 用户切"全文"时若未就绪,
-  // switchMode 会等它完成(有 loading 提示)
+  // 注册 worker 消息回调(组件卸载时注销, worker 常驻供下次打开复用)
+  setSearchListener({
+    onResult: ({ tooBroad, fallback, results: r }) => {
+      queryTooBroad.value = tooBroad
+      orFallbackUsed.value = fallback
+      results.value = r
+      fullLoading.value = false
+    },
+    onReady: () => {
+      fullLoading.value = false
+      if (query.value.trim() && mode.value === 'full') fullSearch()
+    },
+    onFailed: () => {
+      fullFailed.value = true
+      fullLoading.value = false
+    },
+  })
+  // 打开即预取: 标题/摘录/全文索引。索引解压与解析全在 worker 线程,
+  // 空闲时段启动即可, 不阻塞输入
   loadTitles().then(() => {
     if (query.value.trim()) runSearch()
   }).catch(() => {})
@@ -352,7 +368,10 @@ onMounted(() => {
     ((cb: () => void, opts?: { timeout?: number }) => setTimeout(cb, opts?.timeout ?? 2000) as unknown as number)
   scheduleIdle(() => warmFullIndex(), { timeout: 2000 })
 })
-onBeforeUnmount(() => clearTimeout(searchTimer))
+onBeforeUnmount(() => {
+  clearTimeout(searchTimer)
+  setSearchListener(null)
+})
 
 /* ============ 高亮(安全转义) ============ */
 function esc(s: string) {

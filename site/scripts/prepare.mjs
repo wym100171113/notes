@@ -379,12 +379,15 @@ hero:
     - theme: brand
       text: 数学笔记
       link: /数学/
-    - theme: alt
+    - theme: brand
       text: 物理笔记
       link: /物理/
-    - theme: alt
+    - theme: brand
       text: 化学笔记
       link: /化学/
+    - theme: alt
+      text: 我的博客
+      link: https://wym100171113.github.io/
 
 features:
   - title: 数学

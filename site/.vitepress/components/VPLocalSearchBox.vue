@@ -58,6 +58,12 @@ const emit = defineEmits<{
  */
 type SearchMode = 'quick' | 'full'
 const mode = ref<SearchMode>('quick')
+// 分段控件滑动拇指: 全文档时右移一格(弹性缓动由 CSS transition 完成)
+const SEG_WIDTH = 68
+const segThumbStyle = computed(() => ({
+  transform:
+    mode.value === 'full' ? `translateX(${SEG_WIDTH}px)` : 'translateX(0px)'
+}))
 
 const el = shallowRef<HTMLElement>()
 const resultsEl = shallowRef<HTMLElement>()
@@ -495,26 +501,6 @@ function onMouseMove(e: MouseEvent) {
             type="search"
           />
           <div class="search-actions">
-            <div class="mode-switch" role="tablist" aria-label="搜索范围">
-              <button
-                type="button"
-                role="tab"
-                class="mode-btn"
-                :class="{ active: mode === 'quick' }"
-                @click="switchMode('quick')"
-              >
-                标题
-              </button>
-              <button
-                type="button"
-                role="tab"
-                class="mode-btn"
-                :class="{ active: mode === 'full' }"
-                @click="switchMode('full')"
-              >
-                全文
-              </button>
-            </div>
             <button
               v-if="!disableDetailedView"
               class="toggle-layout-button"
@@ -536,6 +522,33 @@ function onMouseMove(e: MouseEvent) {
             </button>
           </div>
         </form>
+
+        <div class="mode-row">
+          <div class="segmented" role="tablist" aria-label="搜索范围">
+            <div class="seg-thumb" :style="segThumbStyle" />
+            <button
+              type="button"
+              role="tab"
+              class="seg-btn"
+              :class="{ active: mode === 'quick' }"
+              @click="switchMode('quick')"
+            >
+              标题
+            </button>
+            <button
+              type="button"
+              role="tab"
+              class="seg-btn"
+              :class="{ active: mode === 'full' }"
+              @click="switchMode('full')"
+            >
+              全文
+            </button>
+          </div>
+          <span class="mode-hint">
+            {{ mode === 'quick' ? '即时检索标题 · 切"全文"可搜正文' : '全文索引已加载 · 深度检索' }}
+          </span>
+        </div>
 
         <div v-if="fullIndexLoading" class="index-loading">
           <span class="spinner" />
@@ -626,7 +639,6 @@ function onMouseMove(e: MouseEvent) {
             <kbd :aria-label="translate('modal.footer.closeKeyAriaLabel')">esc</kbd>
             {{ translate('modal.footer.closeText') }}
           </span>
-          <span v-if="mode === 'quick'" class="mode-hint">标题档 · 即时检索; 切"全文"档可搜索正文</span>
         </div>
       </div>
     </div>
@@ -926,33 +938,88 @@ svg {
 }
 
 
-/* ===== 两档搜索: 模式切换 / 加载状态 / 快速档路径 ===== */
-.mode-switch {
+/* ===== 两档搜索: 分段控件 / 加载状态 / 快速档路径 ===== */
+/* 分段控件: Apple 风格胶囊, 滑动拇指指示器 */
+.mode-row {
   display: flex;
-  gap: 2px;
-  padding: 2px;
-  margin-right: 4px;
-  border-radius: 6px;
-  background: var(--vp-c-default-soft);
-  flex-shrink: 0;
+  align-items: center;
+  gap: 12px;
+  padding: 0 2px;
 }
 
-.mode-switch .mode-btn {
-  padding: 5px 12px;
+.segmented {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+  padding: 3px;
+  border-radius: 8px;
+  background: var(--vp-c-default-soft);
+}
+
+.seg-thumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 68px;
+  height: calc(100% - 6px);
+  border-radius: 6px;
+  background: var(--vp-c-bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  transition: transform 0.28s cubic-bezier(0.22, 0.61, 0.36, 1);
+  pointer-events: none;
+}
+
+.seg-btn {
+  position: relative;
+  z-index: 1;
+  width: 68px;
+  padding: 5px 0;
   border: none;
-  border-radius: 5px;
   background: transparent;
   color: var(--vp-c-text-2);
   font-size: 0.8rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s ease;
 }
 
-.mode-switch .mode-btn.active {
-  background: var(--vp-c-bg);
+.seg-btn:hover {
+  color: var(--vp-c-text-1);
+}
+
+.seg-btn.active {
   color: var(--vp-c-brand-1);
-  box-shadow: var(--vp-shadow-1);
   font-weight: 600;
+}
+
+.mode-hint {
+  font-size: 0.75rem;
+  color: var(--vp-c-text-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 弹窗入场: 淡入 + 轻微上移缩放 */
+.shell {
+  animation: vp-search-in 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes vp-search-in {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* 输入框弹性收缩, 防止操作按钮被挤出搜索栏 */
+.search-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  width: auto;
 }
 
 .index-loading {
@@ -991,11 +1058,5 @@ svg {
   text-overflow: ellipsis;
   white-space: nowrap;
   max-width: 300px;
-}
-
-.mode-hint {
-  margin-left: auto;
-  opacity: 60%;
-  font-size: 0.75rem;
 }
 </style>

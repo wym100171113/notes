@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import markdownItMark from 'markdown-it-mark'
 import zlib from 'node:zlib'
 import type { Plugin } from 'vite'
+import { tokenizeSearch } from './search-tokenizer'
 
 const here = dirname(fileURLToPath(import.meta.url))
 const docsDir = join(here, '../docs')
@@ -117,44 +118,9 @@ async function compactSearchIndex(): Promise<Plugin> {
   }
 }
 
-// 中文搜索分词: 优先用 Intl.Segmenter 词典分词(更接近词语, 误匹配少, 索引更小),
-// 不可用时退回 bigram; 与 VPLocalSearchBox.vue 的 tokenizeQuery 保持一致。
-// 注意: 该函数会被 VitePress 序列化进客户端包, 必须自包含(不能引用模块级常量)。
+// 中文搜索分词与 VPLocalSearchBox.vue 共用 .vitepress/search-tokenizer.ts(单一来源, 消除双份拷贝漂移)
 function tokenizeForSearch(text: string): string[] {
-  const hasSegmenter = typeof Intl !== 'undefined' && 'Segmenter' in Intl
-  const tokens: string[] = []
-  if (hasSegmenter) {
-    const seg = new Intl.Segmenter('zh', { granularity: 'word' })
-    for (const part of seg.segment(text)) {
-      const t = part.segment.trim()
-      if (!t) continue
-      if (/^[\u4e00-\u9fff]+$/u.test(t)) {
-        tokens.push(t)
-      } else {
-        tokens.push(...t.split(/[^\p{L}\p{N}]+/u).filter(Boolean))
-      }
-    }
-    // 词典把整串未知词当成一个词时, 退回 bigram 提高召回
-    if (tokens.length === 1 && /^[\u4e00-\u9fff]{4,}$/u.test(tokens[0])) {
-      const chars = Array.from(tokens[0])
-      const bigrams: string[] = []
-      for (let i = 0; i < chars.length - 1; i++) bigrams.push(chars[i] + chars[i + 1])
-      return bigrams
-    }
-    return tokens
-  }
-  // 兜底: bigram
-  const parts = text.split(/([\u4e00-\u9fff]+)/).filter(Boolean)
-  for (const part of parts) {
-    if (/^[\u4e00-\u9fff]+$/.test(part)) {
-      const chars = Array.from(part)
-      if (chars.length === 1) tokens.push(chars[0])
-      else for (let i = 0; i < chars.length - 1; i++) tokens.push(chars[i] + chars[i + 1])
-    } else {
-      tokens.push(...part.split(/[^\p{L}\p{N}]+/u).filter(Boolean))
-    }
-  }
-  return tokens
+  return tokenizeSearch(text)
 }
 
 interface SidebarItem {

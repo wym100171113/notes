@@ -1,6 +1,7 @@
 <script lang="ts">
 import MiniSearch from 'minisearch'
 import localSearchIndex from '@localSearchIndex'
+import { tokenizeSearch, SEARCH_STOP_WORDS } from '../search-tokenizer'
 
 /* ============ 模块级: 缓存与加载器(组件重挂载/切出再打开不重置) ============ */
 const BASE = import.meta.env.BASE_URL as string
@@ -75,6 +76,26 @@ async function idbSet(key: string, val: string): Promise<void> {
     /* 忽略 */
   }
 }
+// 清理非当前版本的全文索引缓存, 避免旧版本条目永久累积
+async function idbCleanOld(keepKey: string): Promise<void> {
+  try {
+    const db = await idbOpen()
+    await new Promise<void>((resolve) => {
+      const tx = db.transaction('kv', 'readwrite')
+      const store = tx.objectStore('kv')
+      const req = store.getAllKeys()
+      req.onsuccess = () => {
+        for (const k of (req.result as IDBValidKey[])) {
+          if (String(k).startsWith('search-index-') && String(k) !== keepKey) store.delete(k)
+        }
+      }
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => resolve()
+    })
+  } catch {
+    /* 忽略 */
+  }
+}
 async function loadFullIndex(): Promise<MiniSearch> {
   if (fullIndexCache) return fullIndexCache
   if (fullIndexPromise) return fullIndexPromise
@@ -91,6 +112,7 @@ async function loadFullIndex(): Promise<MiniSearch> {
       try {
         const v = await getBuildVersion()
         await idbSet('search-index-' + v, data)
+        idbCleanOld('search-index-' + v)
       } catch {
         /* 忽略 */
       }
@@ -98,6 +120,8 @@ async function loadFullIndex(): Promise<MiniSearch> {
     return MiniSearch.loadJSON(data, {
       fields: ['title', 'titles', 'text'],
       storeFields: ['title', 'titles'],
+      // 与索引端(config.mts)共用同一分词器: 消除 siteData 序列化丢函数导致的查询/索引分词漂移
+      tokenize: tokenizeSearch,
       searchOptions: {
         combineWith: 'AND',
         fuzzy: false,
@@ -106,6 +130,8 @@ async function loadFullIndex(): Promise<MiniSearch> {
         ...(currentSearchOptions?.miniSearch?.searchOptions || {}),
       },
       ...(currentSearchOptions?.miniSearch?.options || {}),
+      // 强制单一分词来源(放在展开之后, 防止 siteData 里的函数丢失/误配再次引入漂移)
+      tokenize: tokenizeSearch,
     })
   })()
   fullIndexCache = await fullIndexPromise
@@ -167,25 +193,31 @@ function quickSearch() {
   enableNoResults.value = true
   if (!q) { results.value = []; return }
   const hit = (s: string) => s.toLowerCase().includes(q)
+  const hitStart = (s: string) => s.toLowerCase().startsWith(q)
   const out: any[] = []
   for (const e of titleCache ?? []) {
     const titleHit = hit(e.title)
     const pathHit = hit(e.id)
-    if (titleHit || pathHit) {
+    const subHit = (e.titles ?? []).some(hit)
+    const subHitStart = (e.titles ?? []).some(hitStart)
+    if (titleHit || pathHit || subHit) {
       let score = 0
-      if (e.title.toLowerCase().startsWith(q)) score = 4
-      else if (titleHit) score = 3
-      else score = 2
+      if (hitStart(e.title)) score = 5
+      else if (titleHit) score = 4
+      else if (subHitStart) score = 3
+      else if (subHit) score = 2
+      else score = 1
       out.push({ id: e.id, title: e.title, titles: e.titles || [], score })
     }
   }
   results.value = out.sort((a, b) => b.score - a.score).slice(0, 16)
 }
+let orFallbackUsed = false
 function fullSearch() {
   enableNoResults.value = true
   if (!fullIndexCache) { results.value = []; return }
-  // 过滤单字停用词: 避免搜"你"命中一堆正文
-  const tokens = tokenizeQuery(query.value).filter((t2) => !(t2.length === 1 && STOP_WORDS.has(t2)))
+  // 过滤单字停用词: 避免搜"你"命中一堆正文(与索引端共用同一分词器)
+  const tokens = tokenizeSearch(query.value).filter((t2) => !(t2.length === 1 && SEARCH_STOP_WORDS.has(t2)))
   if (!tokens.length) {
     queryTooBroad.value = true
     results.value = []
@@ -193,30 +225,18 @@ function fullSearch() {
   }
   queryTooBroad.value = false
   const fuzzyOpt = useFuzzy.value ? 0.2 : false
-  results.value = (fullIndexCache.search(tokens.join(' '), { fuzzy: fuzzyOpt, prefix: true }) as any[])
-    .slice(0, 16)
-    .map((r) => ({ id: r.id, title: r.title, titles: r.titles || [] }))
+  const queryStr = tokens.join(' ')
+  let hits = fullIndexCache.search(queryStr, { fuzzy: fuzzyOpt, prefix: true }) as any[]
+  // AND 全词匹配 0 结果时自动降级为 OR(任一命中), 避免多词查询因一页缺一个词而整体落空
+  orFallbackUsed = false
+  if (!hits.length) {
+    hits = fullIndexCache.search(queryStr, { fuzzy: fuzzyOpt, prefix: true, combineWith: 'OR' }) as any[]
+    orFallbackUsed = hits.length > 0
+  }
+  results.value = hits.slice(0, 16).map((r) => ({ id: r.id, title: r.title, titles: r.titles || [] }))
 }
 
-/* ============ 查询分词与停用词过滤 ============ */
-function tokenizeQuery(text: string): string[] {
-  const tokens: string[] = []
-  if (typeof Intl !== 'undefined' && 'Segmenter' in Intl) {
-    const seg = new Intl.Segmenter('zh', { granularity: 'word' })
-    for (const part of seg.segment(text)) {
-      const t2 = part.segment.trim()
-      if (!t2) continue
-      if (/^[\u4e00-\u9fff]+$/u.test(t2)) tokens.push(t2)
-      else tokens.push(...t2.split(/[^\p{L}\p{N}]+/u).filter(Boolean))
-    }
-  } else {
-    tokens.push(...text.split(/[^\p{L}\p{N}]+/u).filter(Boolean))
-  }
-  return tokens
-}
-const STOP_WORDS = new Set(
-  Array.from('你我他她它们这那哪何谁什之的了在是有和就不人都而及与或等被他从以之其对这那也于还中为如但并者且么吧呢个点又再总各只该当要把向被让可要以能会去来上下很更最得地着过些没看说想知见做其已仍').join('')
-)
+/* ============ 查询分词与停用词过滤(共享 .vitepress/search-tokenizer.ts) ============ */
 
 /* ============ 展开详情 ============ */
 function excerptFor(id: string): { t: string; x: string } | null {
@@ -227,7 +247,16 @@ function excerptFor(id: string): { t: string; x: string } | null {
   if (!secs?.length) return null
   const q = query.value.trim()
   if (q) {
-    for (const s of secs) if ((s.t + s.x).includes(q)) return s
+    // 分词级匹配: 优先选命中 token 最多的节, 整串 includes 找不到时退回该逻辑
+    const tokens = tokenizeSearch(q).filter((t2) => t2.length > 1)
+    let best: { s: typeof secs[0]; n: number } | null = null
+    for (const s of secs) {
+      const hay = (s.t + s.x).toLowerCase()
+      if (q && hay.includes(q.toLowerCase())) return s
+      const n = tokens.filter((tk) => hay.includes(tk)).length
+      if (n > 0 && (!best || n > best.n)) best = { s, n }
+    }
+    if (best) return best.s
   }
   return secs[0]
 }
@@ -297,9 +326,14 @@ function esc(s: string) {
 }
 function highlight(s: string, q: string) {
   const t = esc(s)
-  const k = esc(q).trim()
-  if (!k) return t
-  const re = new RegExp(k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi')
+  if (!q.trim()) return t
+  // 分词级高亮: 查询整串(尤其中文分词/模糊匹配)可能不连续出现, 逐个 token 高亮
+  const tokens = tokenizeSearch(q).filter((tk) => tk.length > 1 && !(tk.length === 1 && SEARCH_STOP_WORDS.has(tk)))
+  tokens.push(q.trim())
+  tokens.sort((a, b) => b.length - a.length)
+  const unique = [...new Set(tokens)]
+  if (!unique.length) return t
+  const re = new RegExp(unique.map((k) => k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|'), 'gi')
   return t.replace(re, (m) => `<mark>${m}</mark>`)
 }
 function isBodyHit(r: any) {
@@ -351,6 +385,8 @@ function isBodyHit(r: any) {
         <div v-if="fullLoading" class="state-row"><span class="spinner" />正在加载全文索引…</div>
         <div v-else-if="fullFailed" class="state-row error">全文索引加载失败, 请刷新重试</div>
 
+        <div v-if="orFallbackUsed" class="fallback-row">未找到同时包含全部关键词的结果, 已放宽为任一关键词匹配</div>
+
         <ul v-if="results.length" ref="listEl" class="results">
           <li
             v-for="(p, i) in results"
@@ -379,7 +415,7 @@ function isBodyHit(r: any) {
           查询词过于宽泛, 请输入更具体的词(如"楞次定律")
         </div>
         <div v-else-if="query && enableNoResults && !fullLoading" class="no-results">
-          未找到与 "<strong>{{ query }}</strong>" 相关的结果
+          未找到与 "<strong>{{ query }}</strong>" 相关的结果<template v-if="mode === 'full' && !useFuzzy"><br /><span class="hint-dim">试试右上角开启"模糊"匹配(容忍错字/形近词)</span></template>
         </div>
 
         <div class="footer">
@@ -498,6 +534,8 @@ function isBodyHit(r: any) {
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .results { list-style: none; margin: 0; padding: 0; overflow-y: auto; overscroll-behavior: contain; display: flex; flex-direction: column; gap: 4px; }
+.fallback-row { padding: 4px 12px; font-size: 0.75rem; color: var(--vp-c-warning-2); }
+.hint-dim { color: var(--vp-c-text-3); font-size: 0.8rem; }
 .result-item { border-radius: 8px; }
 .result-item.selected { background: var(--vp-c-default-soft); }
 .result { display: block; padding: 8px 12px; border-radius: 8px; text-decoration: none; color: var(--vp-c-text-1); }

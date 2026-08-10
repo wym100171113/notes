@@ -443,6 +443,9 @@ console.log(`[prepare] 完成: ${mdFiles.length} 个笔记 → ${docsDir}`);
 const BASE_URL = '/notes/';
 const searchDataDir = join(docsDir, 'public', 'search-data');
 mkdirSync(searchDataDir, { recursive: true });
+// 摘录/节标题提取的截断参数(在 titleIndex 与 excerpts 两处使用)
+const EXCERPT_MAX = 300; // 每节正文截断字符
+const EXCERPT_MAX_SECTIONS = 12;
 function extractTitle(absPath) {
   let content = readFileSync(absPath, 'utf8');
   const fm = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -459,7 +462,9 @@ for (const f of mdFiles) {
   const abs = f.absSrc;
   const rel = f.relDst.replace(/\.md$/, '');
   // id 必须带 base 前缀, 否则导航拼出错误路径导致 404
-  titleIndex.push({ id: `${BASE_URL}${rel}`, title: extractTitle(abs), titles: [] });
+  // titles: 页内节标题(供"标题"模式检索小节), 取自 buildExcerpts 的节结构
+  const secs = buildExcerpts(abs);
+  titleIndex.push({ id: `${BASE_URL}${rel}`, title: extractTitle(abs), titles: secs.map((s) => s.t).filter(Boolean).slice(0, 16) });
 }
 for (const { dst } of SUBJECTS) {
   const idxFile = join(docsDir, dst, 'index.md');
@@ -472,8 +477,6 @@ console.log(`[prepare] 标题索引: ${titleIndex.length} 条 → search-data/ti
 
 // 摘录索引: 每页按标题切分成 {t: 标题, x: 正文片段}, 供搜索结果"展开详情"展示
 // (不依赖页面 chunk 动态导入, 一次 fetch 全部缓存)
-const EXCERPT_MAX = 300; // 每节正文截断字符
-const EXCERPT_MAX_SECTIONS = 12;
 function buildExcerpts(absPath) {
   let content = readFileSync(absPath, 'utf8');
   content = content.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n/, ''); // 去 frontmatter

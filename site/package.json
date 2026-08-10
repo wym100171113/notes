@@ -11,6 +11,7 @@
     "preview": "vitepress preview"
   },
   "dependencies": {
+    "fflate": "^0.8.3",
     "katex": "^0.18.2",
     "markdown-it-mark": "^4.0.0",
     "mermaid": "^11.16.1"

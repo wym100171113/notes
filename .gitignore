@@ -25,3 +25,4 @@ site/node_modules/
 site/docs/
 site/.vitepress/dist/
 site/.vitepress/cache/
+site/.vitepress/generated/

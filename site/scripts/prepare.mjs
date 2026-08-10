@@ -1,7 +1,7 @@
 // prepare.mjs — 将 Obsidian 笔记(数学/物理/化学)转换为 VitePress 源文件
 // 运行: node scripts/prepare.mjs  (在 site/ 下)
 import {
-  rmSync, mkdirSync, copyFileSync, readdirSync, readFileSync, writeFileSync, existsSync,
+  rmSync, mkdirSync, copyFileSync, readdirSync, readFileSync, writeFileSync, existsSync, statSync,
 } from 'node:fs';
 import { join, dirname, basename, extname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -18,6 +18,11 @@ const SUBJECTS = [
   { src: '化学笔记', dst: '化学' },
 ];
 const ASSETS_DIR = '图片引用';
+
+// 真题 PDF: vault 内源目录 -> 站点 public 子目录(public 内容按原路径静态服务, 浏览器原生渲染 PDF)
+const PDF_SOURCE_DIR = '物理/物理竞赛/真题/PDF';
+const PDF_PUBLIC_DIR = '真题PDF'; // 位于 docs/public 下, 站点路径为 /真题PDF/... 与生成页 docs/真题PDF 区分
+const PDF_PAGE_DIR = '真题PDF';   // 生成的索引页目录(与 public 内同名目录并存: 页面 /真题PDF/ 与资源 /真题PDF/xx.pdf)
 
 const IMG_EXTS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.avif', '.ico']);
 
@@ -50,10 +55,24 @@ mkdirSync(docsDir, { recursive: true });
 const assetsSrc = join(repoRoot, ASSETS_DIR);
 if (existsSync(assetsSrc)) copyDir(assetsSrc, join(docsDir, ASSETS_DIR));
 
-// 站点静态资源(favicon / OG 图片) -> docs/public
+// 站点静态资源(favicon / OG 图片 / sw.js) -> docs/public
 // (VitePress 固定把 srcDir/public 复制到构建输出)
 const sitePublic = join(siteDir, 'public');
 if (existsSync(sitePublic)) copyDir(sitePublic, join(docsDir, 'public'));
+
+// 注入 SW 版本号(构建时间戳, 内容变化时强制更新缓存)
+const swFile = join(docsDir, 'public', 'sw.js');
+if (existsSync(swFile)) {
+  const swVersion = Math.floor(Date.now() / 1000).toString(36);
+  writeFileSync(swFile, readFileSync(swFile, 'utf8').replace('__SW_VERSION__', swVersion));
+  console.log(`[prepare] Service Worker 版本: ${swVersion}`);
+}
+
+// 真题 PDF -> docs/public/真题PDF (浏览器原生渲染, 供 /真题PDF/ 索引页链接)
+const pdfSrc = join(repoRoot, PDF_SOURCE_DIR);
+if (existsSync(pdfSrc)) {
+  copyDir(pdfSrc, join(docsDir, 'public', PDF_PUBLIC_DIR));
+}
 
 // 文件名净化: 去掉会破坏 URL/JSON 的字符(如双引号)
 const sanitizeName = (name) => name.replace(/["']/g, '');
@@ -380,4 +399,71 @@ features:
 `;
 writeFileSync(join(docsDir, 'index.md'), home);
 
+// ---------- 6. 真题 PDF 索引页 ----------// 为 docs/public/真题PDF 下的每个 PDF 生成带 iframe 预览的索引页 /真题PDF/
+// (public 静态资源与生成的 .md 页面同名目录不冲突: 页面在 /真题PDF/, 资源在 /真题PDF/xxx.pdf)
+const pdfPageDir = join(docsDir, PDF_PAGE_DIR);
+const pdfPublicDir = join(docsDir, 'public', PDF_PUBLIC_DIR);
+if (existsSync(pdfPublicDir)) {
+  const groups = []; // { dir, files: [{name, href, sizeKB}] }
+  for (const ent of readdirSync(pdfPublicDir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'))) {
+    if (ent.name.startsWith('.') || ent.name === 'index.md') continue;
+    const sub = join(pdfPublicDir, ent.name);
+    if (ent.isDirectory()) {
+      const files = [];
+      for (const f of readdirSync(sub).filter((n) => n.toLowerCase().endsWith('.pdf')).sort((a, b) => a.localeCompare(b, 'zh-CN'))) {
+        const size = statSync(join(sub, f)).size;
+        files.push({ name: f.replace(/\.pdf$/i, ''), href: `/${PDF_PUBLIC_DIR}/${ent.name}/${encodeURI(f)}`, sizeKB: Math.round(size / 1024) });
+      }
+      if (files.length) groups.push({ dir: ent.name, files });
+    }
+  }
+  if (groups.length) {
+    mkdirSync(pdfPageDir, { recursive: true });
+    const lines = ['# 物理竞赛真题 PDF', '', '> 全国中学生物理竞赛历年真题（预赛 / 复赛 / 决赛），浏览器原生打开 PDF 即可查看。点击条目在线查看，右键可另存。', ''];
+    for (const g of groups) {
+      lines.push(`## ${g.dir}`, '');
+      for (const f of g.files) {
+        lines.push(`- [${f.name}](${f.href})（${f.sizeKB} KB）`);
+      }
+      lines.push('');
+    }
+    lines.push('> [!note] 说明');
+    lines.push('> 1999-2017 年复赛/决赛的官方 Word 版试题与解答（.doc）无法在网页渲染，保留在本地仓库外的 `全国高中物理联赛/` 文件夹；其中 [34届(2017) 复赛]( /物理/物理竞赛/真题/34届(2017)复赛试题及解答 ) 已誊录为 LaTeX 笔记。');
+    writeFileSync(join(pdfPageDir, 'index.md'), lines.join('\n'));
+    console.log(`[prepare] 真题 PDF 索引: ${groups.length} 组 ${groups.reduce((s, g) => s + g.files.length, 0)} 个文件`);
+  }
+}
+
 console.log(`[prepare] 完成: ${mdFiles.length} 个笔记 → ${docsDir}`);
+
+// ---------- 7. 标题索引(快速搜索用) ----------
+// 为"快速/标题"档搜索生成轻量索引: {id, title, titles} 每页一条,
+// 由 VPLocalSearchBox.vue 通过 virtual:title-index 静态引入(数 KB, 随组件打包, 秒开)。
+const generatedDir = join(siteDir, '.vitepress', 'generated');
+mkdirSync(generatedDir, { recursive: true });
+function extractTitle(absPath) {
+  let content = readFileSync(absPath, 'utf8');
+  const fm = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
+  if (fm) {
+    const m = fm[1].match(/^title:\s*(.+)$/m);
+    if (m) return m[1].trim().replace(/^["']|["']$/g, '');
+  }
+  const h1 = content.match(/^#\s+(.+)$/m);
+  if (h1) return h1[1].trim();
+  return basename(absPath, '.md');
+}
+const titleIndex = [];
+for (const f of mdFiles) {
+  const abs = f.absSrc;
+  const rel = f.relDst.replace(/\.md$/, '');
+  titleIndex.push({ id: `/${rel}`, title: extractTitle(abs), titles: [] });
+}
+// 目录页(各 subject 的 index.md)也加入
+for (const { dst } of SUBJECTS) {
+  const idxFile = join(docsDir, dst, 'index.md');
+  if (existsSync(idxFile)) {
+    titleIndex.push({ id: `/${dst}/`, title: extractTitle(idxFile), titles: [] });
+  }
+}
+writeFileSync(join(generatedDir, 'title-index.json'), JSON.stringify(titleIndex));
+console.log(`[prepare] 标题索引: ${titleIndex.length} 条 → ${join(generatedDir, 'title-index.json')}`);

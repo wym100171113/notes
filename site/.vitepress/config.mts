@@ -117,10 +117,32 @@ async function compactSearchIndex(): Promise<Plugin> {
   }
 }
 
-// 中文搜索分词: 连续中文切成 bigram(检索精度好), 英文/数字保持整词
-// (索引体积问题由 compactSearchIndex 插件解决: 按页合并文档 + gzip 压缩内联)
+// 中文搜索分词: 优先用 Intl.Segmenter 词典分词(更接近词语, 误匹配少, 索引更小),
+// 不可用时退回 bigram; 与 VPLocalSearchBox.vue 的 tokenizeQuery 保持一致。
+const HAS_SEGMENTER = typeof Intl !== 'undefined' && 'Segmenter' in Intl
 function tokenizeForSearch(text: string): string[] {
   const tokens: string[] = []
+  if (HAS_SEGMENTER) {
+    const seg = new Intl.Segmenter('zh', { granularity: 'word' })
+    for (const part of seg.segment(text)) {
+      const t = part.segment.trim()
+      if (!t) continue
+      if (/^[\u4e00-\u9fff]+$/u.test(t)) {
+        tokens.push(t)
+      } else {
+        tokens.push(...t.split(/[^\p{L}\p{N}]+/u).filter(Boolean))
+      }
+    }
+    // 词典把整串未知词当成一个词时, 退回 bigram 提高召回
+    if (tokens.length === 1 && /^[\u4e00-\u9fff]{4,}$/u.test(tokens[0])) {
+      const chars = Array.from(tokens[0])
+      const bigrams: string[] = []
+      for (let i = 0; i < chars.length - 1; i++) bigrams.push(chars[i] + chars[i + 1])
+      return bigrams
+    }
+    return tokens
+  }
+  // 兜底: bigram
   const parts = text.split(/([\u4e00-\u9fff]+)/).filter(Boolean)
   for (const part of parts) {
     if (/^[\u4e00-\u9fff]+$/.test(part)) {

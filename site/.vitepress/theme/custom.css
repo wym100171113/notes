@@ -1,49 +1,27 @@
-/* 数学公式在深色主题下的可读性微调 */
-.dark .katex {
-  color: #d1d5db;
+:root {
+  /* 浅色模式品牌色: 默认靛蓝 #3451b2 偏灰暗, 换为明快的天蓝 */
+  --vp-c-brand-1: #2563eb;
+  --vp-c-brand-2: #3b82f6;
+  --vp-c-brand-3: #60a5fa;
+  --vp-c-brand-soft: rgba(59, 130, 246, 0.12);
+  --vp-c-brand-light: #3b82f6;
+  --vp-c-brand-lighter: #60a5fa;
+  --vp-c-brand-dark: #1d4ed8;
+  --vp-c-brand-darker: #1e40af;
+  --vp-c-tip-1: #2563eb;
+  --vp-c-tip-2: #3b82f6;
+  --vp-c-tip-3: #60a5fa;
 }
 
-/* 长公式横向滚动, 避免溢出页面 */
-.katex-display {
-  overflow-x: auto;
-  overflow-y: hidden;
-  padding: 0.25rem 0;
+/* 侧栏: 去掉最左侧 32px 空白的视觉瑕疵(内容与导航对齐更紧凑) */
+@media (min-width: 960px) {
+  .VPSidebar {
+    padding-left: 16px;
+  }
 }
 
-/* 标题锚点与页首之间留出间距 */
-.VPDoc h1,
-.VPDoc h2,
-.VPDoc h3 {
-  scroll-margin-top: 88px;
-}
-
-/* Obsidian ==高亮== -> <mark> */
-.vp-doc mark {
-  background: #fde68a;
-  color: #1f2937;
-  border-radius: 3px;
-  padding: 0 0.2em;
-}
-.dark .vp-doc mark {
-  background: #854d0e;
-  color: #fef3c7;
-}
-
-/* Mermaid 图表容器 */
-.vp-doc .mermaid {
-  margin: 1rem 0;
-  overflow-x: auto;
-  text-align: center;
-}
-.vp-doc .mermaid svg {
-  max-width: 100%;
-  height: auto;
-}
-.mermaid-error {
-  color: #b91c1c;
-  font-size: 0.85rem;
-  margin: 0.5rem 0;
-}
-.dark .mermaid-error {
-  color: #f87171;
+@media (min-width: 1440px) {
+  .VPSidebar {
+    padding-left: max(16px, calc((100% - (var(--vp-layout-max-width) - 64px)) / 2 + 16px));
+  }
 }

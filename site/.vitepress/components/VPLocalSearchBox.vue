@@ -65,6 +65,30 @@ const segThumbStyle = computed(() => ({
     mode.value === 'full' ? `translateX(${SEG_WIDTH}px)` : 'translateX(0px)'
 }))
 
+// 与 config.mts 的 tokenizeForSearch 保持一致(词典分词, 兼容 bigram 兜底)
+function tokenizeQuery(text: string): string[] {
+  const tokens: string[] = []
+  const seg = new Intl.Segmenter('zh', { granularity: 'word' })
+  for (const part of seg.segment(text)) {
+    const t = part.segment.trim()
+    if (!t) continue
+    if (/^[\u4e00-\u9fff]+$/u.test(t)) {
+      // 中文: 词典分词结果直接作为词项
+      tokens.push(t)
+    } else {
+      tokens.push(...t.split(/[^\p{L}\p{N}]+/u).filter(Boolean))
+    }
+  }
+  // 若词典分词把整个查询当成一个词(未知词), 退回 bigram 以提高召回
+  if (tokens.length === 1 && /^[\u4e00-\u9fff]{4,}$/u.test(tokens[0])) {
+    const chars = Array.from(tokens[0])
+    const bigrams: string[] = []
+    for (let i = 0; i < chars.length - 1; i++) bigrams.push(chars[i] + chars[i + 1])
+    return bigrams
+  }
+  return tokens
+}
+
 const el = shallowRef<HTMLElement>()
 const resultsEl = shallowRef<HTMLElement>()
 
@@ -88,24 +112,30 @@ const { activate } = useFocusTrap(el, {
   escapeDeactivates: true
 })
 const { localeIndex, theme } = vitePressData
-// 全文索引: 显式懒加载(避免 computedAsync 的 .value 无法 await 的问题)
+// 全文索引: 显式懒加载 + 模块级缓存
+// (搜索弹窗每次打开都会重建组件实例; 索引 JSON 7MB, 解压+loadJSON 较耗时,
+//  因此把解析好的 MiniSearch 实例缓存在模块作用域, 第二次打开直接复用, 零等待)
+let fullIndexCache: MiniSearch<Result> | undefined = undefined
 const fullIndex = shallowRef<MiniSearch<Result> | undefined>(undefined)
 const fullIndexLoading = ref(false)
 const fullIndexFailed = ref(false)
 async function loadFullIndex() {
-  if (fullIndex.value !== undefined) return
+  if (fullIndexCache !== undefined) {
+    fullIndex.value = fullIndexCache
+    return
+  }
   if (fullIndexLoading.value) return
   fullIndexLoading.value = true
   fullIndexFailed.value = false
   try {
     const data = (await searchIndexData.value[localeIndex.value]?.())?.default
     if (!data) throw new Error('search index empty')
-    fullIndex.value = markRaw(
+    fullIndexCache = markRaw(
       MiniSearch.loadJSON<Result>(data, {
         fields: ['title', 'titles', 'text'],
         storeFields: ['title', 'titles'],
         searchOptions: {
-          fuzzy: 0.2,
+          fuzzy: false,
           prefix: true,
           boost: { title: 4, text: 2, titles: 1 },
           ...(theme.value.search?.provider === 'local' &&
@@ -115,6 +145,7 @@ async function loadFullIndex() {
           theme.value.search.options?.miniSearch?.options)
       })
     )
+    fullIndex.value = fullIndexCache
   } catch (e) {
     console.error(e)
     fullIndexFailed.value = true
@@ -122,6 +153,14 @@ async function loadFullIndex() {
     fullIndexLoading.value = false
   }
 }
+
+// 模式行提示文案: 随"模式 + 加载状态"联动, 避免与加载指示同时出现
+const hintText = computed(() => {
+  if (mode.value === 'quick') return '即时检索标题 · 切"全文"可搜正文'
+  if (fullIndexLoading.value) return ''
+  if (fullIndexFailed.value) return ''
+  return '全文索引已缓存 · 深度检索'
+})
 
 const disableQueryPersistence = computed(() => {
   return (
@@ -138,6 +177,12 @@ const showDetailedList = useLocalStorage(
   theme.value.search?.provider === 'local' &&
     theme.value.search.options?.detailedView === true
 )
+// 高级搜索: 模糊匹配开关(按次搜索覆盖 MiniSearch 参数, 无需重建索引)
+const useFuzzy = useLocalStorage('vitepress:local-search-fuzzy', false)
+// 全文搜索参数: 默认精确(前缀匹配); 开启模糊时附加 fuzzy 容错
+function fullSearchOptions() {
+  return { fuzzy: useFuzzy.value ? 0.2 : false, prefix: true }
+}
 const disableDetailedView = computed(() => {
   return (
     theme.value.search?.provider === 'local' &&
@@ -221,21 +266,21 @@ function runSearch() {
     } else {
       if (!fullIndex.value) return
       results.value = fullIndex.value
-        .search(filterText.value)
+        .search(filterText.value, fullSearchOptions())
         .slice(0, 16) as (SearchResult & Result)[]
       enableNoResults.value = true
     }
   }, mode.value === 'quick' ? 0 : 120)
 }
 
-watch([mode, filterText], () => {
+watch([mode, filterText, useFuzzy], () => {
   enableNoResults.value = false
   runSearch()
 })
 
 /* 高亮与摘录(仅全文档需要) */
 debouncedWatch(
-  () => [fullIndex.value, filterText.value, showDetailedList.value] as const,
+  () => [fullIndex.value, filterText.value, showDetailedList.value, useFuzzy.value] as const,
   async ([index, filterTextValue, showDetailedListValue], old, onCleanup) => {
     if (mode.value !== 'full') return
     if (old?.[0] !== index) cache.clear()
@@ -245,7 +290,7 @@ debouncedWatch(
     })
     if (!index) return
     const fullResults = index
-      .search(filterTextValue)
+      .search(filterTextValue, fullSearchOptions())
       .slice(0, 16) as (SearchResult & Result)[]
     const mods = showDetailedListValue
       ? await Promise.all(fullResults.map((r) => fetchExcerpt(r.id)))
@@ -276,29 +321,30 @@ debouncedWatch(
         })
         const div = document.createElement('div')
         app.mount(div)
-        let h = div.querySelector('h1, h2, h3, h4, h5, h6') as HTMLElement | null
-        while (h) {
-          const href = h.querySelector('a')?.getAttribute('href')
-          const anchor = href?.startsWith('#') && href.slice(1)
-          if (!anchor) break
-          let html = ''
-          let sib = h.nextElementSibling
-          while (sib && !/^h[1-6]$/i.test(sib.tagName)) {
-            html += sib.outerHTML
-            sib = sib.nextElementSibling
+          let h = div.querySelector('h1, h2, h3, h4, h5, h6') as HTMLElement | null
+          while (h) {
+            const href = h.querySelector('a')?.getAttribute('href')
+            const anchor = href?.startsWith('#') && href.slice(1)
+            if (!anchor) break
+            // 摘录包含小节标题本身(带锚点), 渲染标题层级
+            let html = h.outerHTML
+            let sib = h.nextElementSibling
+            while (sib && !/^h[1-6]$/i.test(sib.tagName)) {
+              html += sib.outerHTML
+              sib = sib.nextElementSibling
+            }
+            map.set(anchor, html)
+            h = sib
           }
-          map.set(anchor, html)
-          h = sib
-        }
         app.unmount()
       }
       if (canceled) return
     }
-    const terms = new Set<string>()
+    // 高亮词 = 查询本身的分词(而非索引命中的模糊词项), 保证高亮内容与输入一致
+    const terms = new Set(tokenizeQuery(filterTextValue))
     results.value = fullResults.map((r) => {
       const [id, anchor] = r.id.split('#')
       const text = cache.get(id)?.get(anchor) ?? ''
-      for (const term in r.match) terms.add(term)
       return { ...r, text }
     })
     await nextTick()
@@ -545,9 +591,12 @@ function onMouseMove(e: MouseEvent) {
               全文
             </button>
           </div>
-          <span class="mode-hint">
-            {{ mode === 'quick' ? '即时检索标题 · 切"全文"可搜正文' : '全文索引已加载 · 深度检索' }}
-          </span>
+          <span v-if="hintText" class="mode-hint">{{ hintText }}</span>
+          <label v-if="mode === 'full'" class="fuzzy-toggle" :class="{ on: useFuzzy }" title="近似匹配: 容忍错字/形近词">
+            <input v-model="useFuzzy" type="checkbox" />
+            <span class="fuzzy-track"><span class="fuzzy-knob" /></span>
+            <span class="fuzzy-label">模糊</span>
+          </label>
         </div>
 
         <div v-if="fullIndexLoading" class="index-loading">
@@ -1015,6 +1064,62 @@ svg {
   }
 }
 
+/* 模糊匹配开关(高级搜索): 迷你胶囊开关 */
+.fuzzy-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  flex-shrink: 0;
+  cursor: pointer;
+  user-select: none;
+}
+
+.fuzzy-toggle input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.fuzzy-track {
+  position: relative;
+  width: 28px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--vp-c-divider);
+  transition: background 0.2s ease;
+}
+
+.fuzzy-knob {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--vp-c-bg);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.fuzzy-toggle.on .fuzzy-track {
+  background: var(--vp-c-brand-1);
+}
+
+.fuzzy-toggle.on .fuzzy-knob {
+  transform: translateX(12px);
+}
+
+.fuzzy-label {
+  font-size: 0.75rem;
+  color: var(--vp-c-text-2);
+}
+
+.fuzzy-toggle.on .fuzzy-label {
+  color: var(--vp-c-brand-1);
+  font-weight: 600;
+}
+
 /* 输入框弹性收缩, 防止操作按钮被挤出搜索栏 */
 .search-input {
   flex: 1 1 auto;
@@ -1048,6 +1153,20 @@ svg {
   to {
     transform: rotate(360deg);
   }
+}
+
+/* 摘录内小节标题: 恢复层级与字号, 避免被 .excerpt :deep(*) 统一缩小 */
+.excerpt :deep(h1),
+.excerpt :deep(h2),
+.excerpt :deep(h3),
+.excerpt :deep(h4) {
+  font-size: 0.95rem !important;
+  font-weight: 600 !important;
+  line-height: 1.4 !important;
+  margin: 0.5em 0 0.25em !important;
+  letter-spacing: 0 !important;
+  border: none !important;
+  padding: 0 !important;
 }
 
 .quick-path {

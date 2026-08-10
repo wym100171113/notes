@@ -182,6 +182,8 @@ onMounted(() => {
   // 首次渲染可能在路由就绪前, 再补一次
   setTimeout(renderAll, 0)
   window.addEventListener('keydown', onKeydown)
+  // 预热搜索框 chunk, 打开搜索时秒开
+  import('../components/VPLocalSearchBox.vue').catch(() => {})
 })
 
 watch(

@@ -15,6 +15,55 @@ let excerptsCache: Record<string, { t: string; x: string }[]> | null = null
 let fullIndexCache: MiniSearch | null = null
 let fullIndexPromise: Promise<MiniSearch> | null = null
 
+
+/* ============ IndexedDB 持久缓存(全文索引) ============ */
+const IDB_NAME = 'notes-search'
+const IDB_STORE = 'kv'
+let buildVersion = ''
+async function getBuildVersion() {
+  if (buildVersion) return buildVersion
+  try {
+    const r = await fetch(`${BASE}search-data/version.json`)
+    buildVersion = ((await r.json()) as { v: string }).v
+  } catch {
+    buildVersion = 'local'
+  }
+  return buildVersion
+}
+function idbOpen(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(IDB_NAME, 1)
+    req.onupgradeneeded = () => req.result.createObjectStore(IDB_STORE)
+    req.onsuccess = () => resolve(req.result)
+    req.onerror = () => reject(req.error)
+  })
+}
+async function idbGet(key: string): Promise<string | null> {
+  try {
+    const db = await idbOpen()
+    return await new Promise((resolve) => {
+      const req = db.transaction(IDB_STORE, 'readonly').objectStore(IDB_STORE).get(key)
+      req.onsuccess = () => resolve((req.result as string) ?? null)
+      req.onerror = () => resolve(null)
+    })
+  } catch {
+    return null
+  }
+}
+async function idbSet(key: string, val: string): Promise<void> {
+  try {
+    const db = await idbOpen()
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(IDB_STORE, 'readwrite')
+      tx.objectStore(IDB_STORE).put(val, key)
+      tx.oncomplete = () => resolve()
+      tx.onerror = () => reject(tx.error)
+    })
+  } catch {
+    /* 忽略 */
+  }
+}
+
 async function loadTitles() {
   if (titleCache) return titleCache
   const res = await fetch(`${BASE}search-data/title.json`)
@@ -31,7 +80,22 @@ async function loadFullIndex(): Promise<MiniSearch> {
   if (fullIndexCache) return fullIndexCache
   if (fullIndexPromise) return fullIndexPromise
   fullIndexPromise = (async () => {
-    const data = (await localSearchIndex[localeIndex.value]?.())?.default as string
+    let data = ''
+    try {
+      const v = await getBuildVersion()
+      data = (await idbGet('search-index-' + v)) || ''
+    } catch {
+      data = ''
+    }
+    if (!data) {
+      data = (await localSearchIndex[localeIndex.value]?.())?.default as string
+      try {
+        const v = await getBuildVersion()
+        await idbSet('search-index-' + v, data)
+      } catch {
+        /* 忽略 */
+      }
+    }
     const opts = theme.value.search?.provider === 'local' ? theme.value.search.options : undefined
     return MiniSearch.loadJSON(data, {
       fields: ['title', 'titles', 'text'],
@@ -115,14 +179,7 @@ function fullSearch() {
 }
 
 /* ============ 展开详情(摘录来自静态 excerpts.json) ============ */
-async function toggleExpand() {
-  if (mode.value === 'quick') {
-    expanded.value = true
-    await switchMode('full')
-    return
-  }
-  expanded.value = !expanded.value
-}
+// 详情按钮仅在全文档模式显示, 直接切换 expanded 即可
 function excerptFor(id: string): { t: string; x: string } | null {
   const base = BASE.replace(/\/$/, '')
   const path = id.split('#')[0]
@@ -242,7 +299,7 @@ function isBodyHit(r: any) {
             <button type="button" role="tab" class="seg-btn" :class="{ active: mode === 'full' }" @click="switchMode('full')">全文</button>
           </div>
           <span v-if="hint" class="mode-hint">{{ hint }}</span>
-          <button type="button" class="detail-btn" :class="{ on: expanded }" title="显示/隐藏正文片段" @click="toggleExpand">详情</button>
+          <button v-if="mode === 'full'" type="button" class="detail-btn" :class="{ on: expanded }" title="显示/隐藏正文片段" @click="expanded = !expanded">详情</button>
           <label v-if="mode === 'full'" class="fuzzy-toggle" :class="{ on: useFuzzy }" title="近似匹配: 容忍错字/形近词">
             <input v-model="useFuzzy" type="checkbox" />
             <span class="fuzzy-track"><span class="fuzzy-knob" /></span>

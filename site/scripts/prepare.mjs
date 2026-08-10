@@ -510,3 +510,7 @@ for (const f of mdFiles) {
 }
 writeFileSync(join(searchDataDir, 'excerpts.json'), JSON.stringify(excerpts));
 console.log(`[prepare] 摘录索引: ${Object.keys(excerpts).length} 页 → search-data/excerpts.json`);
+
+// 构建版本号: 驱动前端 IndexedDB 全文索引缓存失效(每次部署新版本)
+writeFileSync(join(searchDataDir, 'version.json'), JSON.stringify({ v: Date.now().toString(36) }));
+console.log(`[prepare] 构建版本 → search-data/version.json`);

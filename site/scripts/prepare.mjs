@@ -165,6 +165,7 @@ const CALLOUT_MAP = {
   // 数学/物理常见标注
   definition: 'info', theorem: 'info', lemma: 'info', corollary: 'info', property: 'info',
   proof: 'tip', exercise: 'tip', remark: 'tip', solution: 'tip',
+  todo: 'tip',
 };
 
 // 把 Obsidian callout(> [!type] 标题 + 嵌套)转换为 VitePress ::: 容器
@@ -441,6 +442,8 @@ console.log(`[prepare] 完成: ${mdFiles.length} 个笔记 → ${docsDir}`);
 // 由 VPLocalSearchBox.vue 通过 virtual:title-index 静态引入(数 KB, 随组件打包, 秒开)。
 const generatedDir = join(siteDir, '.vitepress', 'generated');
 mkdirSync(generatedDir, { recursive: true });
+// 站点 base 路径, 与 config.mts 的 base 保持一致(修改时需同步)
+const BASE_URL = '/notes/';
 function extractTitle(absPath) {
   let content = readFileSync(absPath, 'utf8');
   const fm = content.match(/^---\r?\n([\s\S]*?)\r?\n---/);
@@ -456,13 +459,14 @@ const titleIndex = [];
 for (const f of mdFiles) {
   const abs = f.absSrc;
   const rel = f.relDst.replace(/\.md$/, '');
-  titleIndex.push({ id: `/${rel}`, title: extractTitle(abs), titles: [] });
+  // id 必须带 base 前缀, 否则前端 router.go 拼接出错误路径导致 404
+  titleIndex.push({ id: `${BASE_URL}${rel}`, title: extractTitle(abs), titles: [] });
 }
 // 目录页(各 subject 的 index.md)也加入
 for (const { dst } of SUBJECTS) {
   const idxFile = join(docsDir, dst, 'index.md');
   if (existsSync(idxFile)) {
-    titleIndex.push({ id: `/${dst}/`, title: extractTitle(idxFile), titles: [] });
+    titleIndex.push({ id: `${BASE_URL}${dst}/`, title: extractTitle(idxFile), titles: [] });
   }
 }
 writeFileSync(join(generatedDir, 'title-index.json'), JSON.stringify(titleIndex));

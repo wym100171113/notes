@@ -13,7 +13,7 @@ import {
 import { useFocusTrap } from '@vueuse/integrations/useFocusTrap'
 import Mark from 'mark.js/src/vanilla.js'
 import MiniSearch, { type SearchResult } from 'minisearch'
-import { dataSymbol, inBrowser, useData, useRouter } from 'vitepress'
+import { dataSymbol, inBrowser, useData, useRouter, withBase } from 'vitepress'
 import {
   computed,
   createApp,
@@ -270,7 +270,7 @@ function runSearch() {
         .slice(0, 16) as (SearchResult & Result)[]
       enableNoResults.value = true
     }
-  }, mode.value === 'quick' ? 0 : 120)
+  }, 0)
 }
 
 watch([mode, filterText, useFuzzy], () => {
@@ -364,7 +364,7 @@ debouncedWatch(
     }
     resultsEl.value?.firstElementChild?.scrollIntoView({ block: 'start' })
   },
-  { debounce: 200, immediate: true }
+  { debounce: 60, immediate: true }
 )
 
 async function fetchExcerpt(id: string) {
@@ -386,6 +386,24 @@ function focusSearchInput(select = true) {
   select && searchInput.value?.select()
 }
 onMounted(() => focusSearchInput())
+// 展开详情: 标题档无摘录, 自动切换到全文档再展开
+function toggleDetailedList() {
+  if (!results.value.length) return
+  if (mode.value === 'quick') {
+    showDetailedList.value = true
+    switchMode('full')
+    return
+  }
+  showDetailedList.value = !showDetailedList.value
+}
+
+// 正文命中标记: 标题/目录不含查询词, 说明命中的是正文内容
+function isBodyHit(p: { title: string; titles: string[] }, q: string) {
+  if (!q || !q.trim()) return false
+  const hay = (p.title || '') + ' ' + ((p.titles || []) as string[]).join(' ')
+  return !hay.includes(q.trim())
+}
+
 function onSearchBarClick(event: PointerEvent) {
   if (event.pointerType === 'mouse') {
     focusSearchInput()
@@ -428,7 +446,7 @@ onKeyStroke('Enter', (e) => {
     return
   }
   if (selectedPackage) {
-    router.go(selectedPackage.id)
+    router.go(withBase(selectedPackage.id))
     emit('close')
   }
 })
@@ -553,7 +571,7 @@ function onMouseMove(e: MouseEvent) {
               type="button"
               :class="{ 'detailed-list': showDetailedList }"
               :title="translate('modal.displayDetails')"
-              @click="selectedIndex > -1 && (showDetailedList = !showDetailedList)"
+              @click="toggleDetailedList"
             >
               <span class="vpi-layout-list local-search-icon" />
             </button>
@@ -647,6 +665,7 @@ function onMouseMove(e: MouseEvent) {
                     <span class="text" v-html="p.title" />
                   </span>
                   <span v-if="mode === 'quick'" class="quick-path">{{ p.id }}</span>
+                  <span v-else-if="isBodyHit(p as any, filterText)" class="body-hit">正文命中</span>
                 </div>
 
                 <div v-if="showDetailedList && mode === 'full'" class="excerpt-wrapper">
@@ -1062,6 +1081,18 @@ svg {
     opacity: 1;
     transform: none;
   }
+}
+
+/* 正文命中徽标 */
+.body-hit {
+  margin-left: 6px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  font-size: 0.7rem;
+  font-weight: 500;
+  flex-shrink: 0;
 }
 
 /* 模糊匹配开关(高级搜索): 迷你胶囊开关 */

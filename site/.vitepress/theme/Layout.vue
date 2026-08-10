@@ -4,6 +4,7 @@ import { useRoute, useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import renderMathInElement from 'katex/contrib/auto-render'
 import mermaid from 'mermaid'
+import SidebarLocator from './components/SidebarLocator.vue'
 
 const route = useRoute()
 const { isDark } = useData()
@@ -101,6 +102,10 @@ watch(isDark, () => {
 
 <template>
   <div ref="page" class="katex-root">
-    <DefaultTheme.Layout />
+    <DefaultTheme.Layout>
+      <template #sidebar-nav-after>
+        <SidebarLocator />
+      </template>
+    </DefaultTheme.Layout>
   </div>
 </template>

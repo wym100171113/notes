@@ -54,7 +54,7 @@
 车运输:$$E_{t}=nse(n与m_{1}+m_{2}有关)$$
 储存:$$E_{s}=m_{1}e_{1s}+m_{2}e_{2s}=\sum m_{i}e_{is}$$
  海运:
- - 国际距离:$d_{sea}$$\rightarrow$  $d_{sea}国家不同$
+ - 国际距离:$d_{sea}$ $\rightarrow$  $d_{sea}国家不同$
  - 进口比例:$f$$\rightarrow$$f国家不同$
  - $E_{ts}=\sum fMde$
  其它:$$\begin{array}{l}E_{\text {eat }}=\sum k_{eat}m_{i}e_{is} \\\begin{aligned}E_{\text {目标 }}=E_{\text {sum }}-E_{\text {avoided }}= & n s e+\sum m_{i} e_{i s}+\sum \text { fMde }+\sum \text { kme } \\& -0.9 \sum m_{i} k_{i}\end{aligned}\end{array}$$

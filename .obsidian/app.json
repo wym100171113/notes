@@ -10,8 +10,9 @@
   "alwaysUpdateLinks": true,
   "vimMode": false,
   "userIgnoreFilters": [
-    "site/docs",
-    "site/.vitepress",
-    "site/node_modules"
+    "site",
+    "site/**",
+    ".git",
+    ".github"
   ]
 }

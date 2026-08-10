@@ -82,11 +82,20 @@ const { activate } = useFocusTrap(el, {
   escapeDeactivates: true
 })
 const { localeIndex, theme } = vitePressData
-const searchIndex = computedAsync(async () =>
-  markRaw(
-    MiniSearch.loadJSON<Result>(
-      (await searchIndexData.value[localeIndex.value]?.())?.default,
-      {
+// 全文索引: 显式懒加载(避免 computedAsync 的 .value 无法 await 的问题)
+const fullIndex = shallowRef<MiniSearch<Result> | undefined>(undefined)
+const fullIndexLoading = ref(false)
+const fullIndexFailed = ref(false)
+async function loadFullIndex() {
+  if (fullIndex.value !== undefined) return
+  if (fullIndexLoading.value) return
+  fullIndexLoading.value = true
+  fullIndexFailed.value = false
+  try {
+    const data = (await searchIndexData.value[localeIndex.value]?.())?.default
+    if (!data) throw new Error('search index empty')
+    fullIndex.value = markRaw(
+      MiniSearch.loadJSON<Result>(data, {
         fields: ['title', 'titles', 'text'],
         storeFields: ['title', 'titles'],
         searchOptions: {
@@ -98,12 +107,15 @@ const searchIndex = computedAsync(async () =>
         },
         ...(theme.value.search?.provider === 'local' &&
           theme.value.search.options?.miniSearch?.options)
-      }
+      })
     )
-  )
-)
-const fullIndexLoading = ref(false)
-const fullIndexFailed = ref(false)
+  } catch (e) {
+    console.error(e)
+    fullIndexFailed.value = true
+  } finally {
+    fullIndexLoading.value = false
+  }
+}
 
 const disableQueryPersistence = computed(() => {
   return (
@@ -185,15 +197,8 @@ function quickSearch(q: string): (QuickEntry & { score: number })[] {
 /* 模式切换 */
 async function switchMode(m: SearchMode) {
   mode.value = m
-  if (m === 'full' && searchIndex.value === undefined && !fullIndexLoading.value) {
-    fullIndexLoading.value = true
-    try {
-      await searchIndex.value // 触发 computedAsync 的懒加载
-    } catch {
-      fullIndexFailed.value = true
-    } finally {
-      fullIndexLoading.value = false
-    }
+  if (m === 'full') {
+    await loadFullIndex()
   }
   enableNoResults.value = false
   runSearch()
@@ -208,8 +213,8 @@ function runSearch() {
       results.value = quickSearch(q) as unknown as (SearchResult & Result)[]
       enableNoResults.value = true
     } else {
-      if (!searchIndex.value) return
-      results.value = searchIndex.value
+      if (!fullIndex.value) return
+      results.value = fullIndex.value
         .search(filterText.value)
         .slice(0, 16) as (SearchResult & Result)[]
       enableNoResults.value = true
@@ -224,7 +229,7 @@ watch([mode, filterText], () => {
 
 /* 高亮与摘录(仅全文档需要) */
 debouncedWatch(
-  () => [searchIndex.value, filterText.value, showDetailedList.value] as const,
+  () => [fullIndex.value, filterText.value, showDetailedList.value] as const,
   async ([index, filterTextValue, showDetailedListValue], old, onCleanup) => {
     if (mode.value !== 'full') return
     if (old?.[0] !== index) cache.clear()
@@ -277,7 +282,7 @@ debouncedWatch(
             sib = sib.nextElementSibling
           }
           map.set(anchor, html)
-          h = h.nextElementSibling as HTMLElement | null
+          h = sib
         }
         app.unmount()
       }
@@ -329,6 +334,11 @@ function focusSearchInput(select = true) {
   select && searchInput.value?.select()
 }
 onMounted(() => focusSearchInput())
+function onSearchBarClick(event: PointerEvent) {
+  if (event.pointerType === 'mouse') {
+    focusSearchInput()
+  }
+}
 
 /* 键盘选择 */
 const selectedIndex = ref(-1)

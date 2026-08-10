@@ -5,7 +5,7 @@ import { tokenizeSearch, SEARCH_STOP_WORDS } from '../search-tokenizer'
 
 /* ============ 模块级: 缓存与加载器(组件重挂载/切出再打开不重置) ============ */
 const BASE = import.meta.env.BASE_URL as string
-let titleCache: { id: string; title: string; titles: string[] }[] | null = null
+let titleCache: TitleEntry[] | null = null
 let excerptsCache: Record<string, { t: string; x: string }[]> | null = null
 let fullIndexCache: MiniSearch | null = null
 let fullIndexPromise: Promise<MiniSearch> | null = null
@@ -134,7 +134,13 @@ async function loadFullIndex(): Promise<MiniSearch> {
       tokenize: tokenizeSearch,
     })
   })()
-  fullIndexCache = await fullIndexPromise
+  try {
+    fullIndexCache = await fullIndexPromise
+  } catch (err) {
+    // 一次瞬时失败(缓存损坏/网络)不应让整个会话永久失败: 允许下次重试
+    fullIndexPromise = null
+    throw err
+  }
   return fullIndexCache
 }
 </script>
@@ -153,9 +159,20 @@ setSearchEnv(
 
 /* ============ 状态 ============ */
 type Mode = 'quick' | 'full'
+interface TitleEntry {
+  id: string
+  title: string
+  titles: string[]
+}
+interface SearchResult {
+  id: string
+  title: string
+  titles: string[]
+  score?: number
+}
 const mode = ref<Mode>('quick')
 const query = ref('')
-const results = ref<any[]>([])
+const results = ref<SearchResult[]>([])
 const selectedIndex = ref(-1)
 const enableNoResults = ref(false)
 const expanded = ref(false)
@@ -194,7 +211,7 @@ function quickSearch() {
   if (!q) { results.value = []; return }
   const hit = (s: string) => s.toLowerCase().includes(q)
   const hitStart = (s: string) => s.toLowerCase().startsWith(q)
-  const out: any[] = []
+  const out: SearchResult[] = []
   for (const e of titleCache ?? []) {
     const titleHit = hit(e.title)
     const pathHit = hit(e.id)
@@ -212,7 +229,7 @@ function quickSearch() {
   }
   results.value = out.sort((a, b) => b.score - a.score).slice(0, 16)
 }
-let orFallbackUsed = false
+const orFallbackUsed = ref(false)
 function fullSearch() {
   enableNoResults.value = true
   if (!fullIndexCache) { results.value = []; return }
@@ -228,12 +245,14 @@ function fullSearch() {
   const queryStr = tokens.join(' ')
   let hits = fullIndexCache.search(queryStr, { fuzzy: fuzzyOpt, prefix: true }) as any[]
   // AND 全词匹配 0 结果时自动降级为 OR(任一命中), 避免多词查询因一页缺一个词而整体落空
-  orFallbackUsed = false
+  orFallbackUsed.value = false
   if (!hits.length) {
     hits = fullIndexCache.search(queryStr, { fuzzy: fuzzyOpt, prefix: true, combineWith: 'OR' }) as any[]
-    orFallbackUsed = hits.length > 0
+    orFallbackUsed.value = hits.length > 0
   }
-  results.value = hits.slice(0, 16).map((r) => ({ id: r.id, title: r.title, titles: r.titles || [] }))
+  results.value = hits
+    .slice(0, 16)
+    .map((r) => ({ id: r.id as string, title: r.title as string, titles: (r.titles as string[]) || [] }))
 }
 
 /* ============ 查询分词与停用词过滤(共享 .vitepress/search-tokenizer.ts) ============ */
@@ -247,12 +266,12 @@ function excerptFor(id: string): { t: string; x: string } | null {
   if (!secs?.length) return null
   const q = query.value.trim()
   if (q) {
-    // 分词级匹配: 优先选命中 token 最多的节, 整串 includes 找不到时退回该逻辑
+    // 分词级匹配: 整串命中优先, 否则选命中 token 最多的节
     const tokens = tokenizeSearch(q).filter((t2) => t2.length > 1)
-    let best: { s: typeof secs[0]; n: number } | null = null
+    let best: { s: (typeof secs)[number]; n: number } | null = null
     for (const s of secs) {
       const hay = (s.t + s.x).toLowerCase()
-      if (q && hay.includes(q.toLowerCase())) return s
+      if (hay.includes(q.toLowerCase())) return s
       const n = tokens.filter((tk) => hay.includes(tk)).length
       if (n > 0 && (!best || n > best.n)) best = { s, n }
     }
@@ -269,6 +288,8 @@ async function switchMode(m: Mode) {
     fullFailed.value = false
     try {
       await loadFullIndex()
+      // 索引就绪时若已输入关键词, 补一次搜索(此前的搜索因索引未就绪而落空)
+      if (query.value.trim()) runSearch()
     } catch (e) {
       console.error('[search]', e)
       fullFailed.value = true
@@ -276,7 +297,7 @@ async function switchMode(m: Mode) {
       fullLoading.value = false
     }
   }
-  runSearch()
+  // mode 变更已由下方 watch 触发 runSearch, 这里不再重复调用
 }
 watch([mode, query, useFuzzy], () => {
   enableNoResults.value = false
@@ -314,7 +335,10 @@ function onKey(e: KeyboardEvent) {
 onMounted(() => {
   focusInput()
   // 打开即预取: 标题/摘录/全文索引(后台预热, 点全文时已就绪)
-  loadTitles().catch(() => {})
+  // 预取完成时若用户已输入, 补一次搜索, 避免"立即输入"被空结果误报
+  loadTitles().then(() => {
+    if (query.value.trim()) runSearch()
+  }).catch(() => {})
   loadExcerpts().catch(() => {})
   warmFullIndex()
 })
@@ -370,8 +394,8 @@ function isBodyHit(r: any) {
         <div class="mode-row">
           <div class="segmented" role="tablist" aria-label="搜索范围">
             <div class="seg-thumb" :style="segThumb" />
-            <button type="button" role="tab" class="seg-btn" :class="{ active: mode === 'quick' }" @click="switchMode('quick')">标题</button>
-            <button type="button" role="tab" class="seg-btn" :class="{ active: mode === 'full' }" @click="switchMode('full')">全文</button>
+            <button type="button" role="tab" class="seg-btn" :class="{ active: mode === 'quick' }" :aria-selected="mode === 'quick' ? 'true' : 'false'" @click="switchMode('quick')">标题</button>
+            <button type="button" role="tab" class="seg-btn" :class="{ active: mode === 'full' }" :aria-selected="mode === 'full' ? 'true' : 'false'" @click="switchMode('full')">全文</button>
           </div>
           <span v-if="hint" class="mode-hint">{{ hint }}</span>
           <button v-if="mode === 'full'" type="button" class="detail-btn" :class="{ on: expanded }" title="显示/隐藏正文片段" @click="expanded = !expanded">详情</button>
@@ -387,12 +411,14 @@ function isBodyHit(r: any) {
 
         <div v-if="orFallbackUsed" class="fallback-row">未找到同时包含全部关键词的结果, 已放宽为任一关键词匹配</div>
 
-        <ul v-if="results.length" ref="listEl" class="results">
+        <ul v-if="results.length" ref="listEl" class="results" role="listbox" aria-label="搜索结果">
           <li
             v-for="(p, i) in results"
             :key="p.id"
             class="result-item"
             :class="{ selected: i === selectedIndex }"
+            role="option"
+            :aria-selected="i === selectedIndex ? 'true' : 'false'"
             @mousemove="selectedIndex = i"
           >
             <a :href="p.id" class="result" :aria-label="p.title" @click.prevent="router.go(p.id); emit('close')">

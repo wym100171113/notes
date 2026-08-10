@@ -1,5 +1,15 @@
+/* ============================================================
+ * 全局主题定制(custom.css)
+ * 分区: 1.品牌色 2.侧栏入场 3.导航标题与侧栏对齐 4.宽屏布局
+ *       5.==高亮== 6.长公式窄屏滚动
+ * 说明: 多处需覆盖官方 scoped 规则(特异性 0,2,0), 用双类名
+ *       同特异度 + 后加载取胜; 不要用重复类名(.title.title),
+ *       CSS 压缩器会去重导致特异性下降。
+ * ============================================================ */
+
+/* ---------- 1. 品牌色 ---------- */
+/* 官方默认靛蓝 #3451b2 偏灰暗, 换为明快的天蓝 */
 :root {
-  /* 浅色模式品牌色: 默认靛蓝 #3451b2 偏灰暗, 换为明快的天蓝 */
   --vp-c-brand-1: #2563eb;
   --vp-c-brand-2: #3b82f6;
   --vp-c-brand-3: #60a5fa;
@@ -13,7 +23,9 @@
   --vp-c-tip-3: #60a5fa;
 }
 
-/* 桌面端去掉侧栏入场滑入动画: 滑动过程中侧栏右缘从 0 扫到 272, 会与固定的标题横线短暂错位 */
+/* ---------- 2. 侧栏入场动画 ---------- */
+/* 桌面端去掉侧栏滑入动画: 滑动过程中侧栏右缘从 0 扫到 272,
+ * 会与固定的标题横线短暂错位("先不对齐再对齐")。移动端抽屉保留动画。 */
 @media (min-width: 960px) {
   .VPSidebar.VPSidebar,
   .VPSidebar.VPSidebar.open {
@@ -23,46 +35,39 @@
   }
 }
 
-/* 宽屏布局: 内容区伸长(限宽 1440→1600), 导航标题/搜索贴近左侧
- * 官方 scoped 规则特异性 0,2,0, 用双类名同特异度且后加载覆盖 */
-
-/* 内层 <a>: 宽度 auto 填满 wrapper, 文字 padding-left 16px, 横线完整覆盖侧栏 0→272
- * 注: 不要用重复类名(.title.title), CSS 压缩器会去重导致特异性下降 */
+/* ---------- 3. 导航标题与侧栏对齐 ---------- */
+/* 内层 <a>: 宽度 auto 填满 wrapper(宽度 = --vp-sidebar-width, 由官方 .VPNavBarTitle
+ * 控制), 文字 padding-left 16px, 使标题横线完整覆盖侧栏 0→272 区域
+ * (与侧栏右缘严格对齐)。
+ * 注意: 这里的特异性(id + class)高于 .VPNavBar.VPNavBar.has-sidebar .title,
+ * 因此下面 media 块里无需重复声明 width/padding。 */
 #app .VPNavBarTitle .title {
   width: auto;
   padding-left: 16px;
 }
 
-/* 暗色模式下隐藏标题下划线(与导航栏底部边框重叠产生双线), 保留浅色模式的样式 */
+/* 暗色模式下隐藏标题下划线(与导航栏底部边框重叠产生双线) */
 .dark #app .VPNavBarTitle .title {
   border-bottom-color: transparent;
 }
 
-/* ==高亮== 的 mark: 浏览器默认纯黄太刺眼, 换暖黄; 深浅色分别调 */
-.vp-doc mark {
-  background-color: rgba(245, 197, 24, 0.32);
-  color: inherit;
-  border-radius: 2px;
-  padding: 0 2px;
-}
-
-.dark .vp-doc mark {
-  background-color: rgba(245, 197, 24, 0.22);
-  color: #e8d48b;
-}
+/* 桌面端: 标题行取消自身 padding(由侧栏宽度与 16px 留白接管);
+ * 注意: 官方 .VPNavBarTitle wrapper 的宽度基于 --vp-layout-max-width 计算,
+ * 必须用下面的 width 覆盖, 否则宽屏下标题横线与侧栏右缘错位 */
 @media (min-width: 960px) {
   .VPNavBar.VPNavBar.has-sidebar .title {
     padding: 0;
   }
 }
 
+/* ---------- 4. 宽屏布局(限宽 1440→1600) ---------- */
 @media (min-width: 1440px) {
   :root {
     --vp-layout-max-width: 1600px;
   }
 
+  /* 覆盖官方基于 --vp-layout-max-width 的 title 宽度计算, 钉死为侧栏宽度 */
   .VPNavBar.VPNavBar.has-sidebar .title {
-    padding: 0;
     width: var(--vp-sidebar-width);
   }
 
@@ -75,4 +80,43 @@
     padding-left: calc(var(--vp-sidebar-width) + 16px);
     padding-right: max(24px, calc((100vw - var(--vp-layout-max-width)) / 2));
   }
+}
+
+/* ---------- 5. ==高亮== 的 mark ---------- */
+/* 浏览器默认纯黄太刺眼, 换暖黄; 深浅色分别调 */
+.vp-doc mark {
+  background-color: rgba(245, 197, 24, 0.32);
+  color: inherit;
+  border-radius: 2px;
+  padding: 0 2px;
+}
+
+.dark .vp-doc mark {
+  background-color: rgba(245, 197, 24, 0.22);
+  color: #e8d48b;
+}
+
+/* ---------- 6. 长公式窄屏滚动 ---------- */
+/* 笔记里的长行内块公式可宽至 1000px+, 窄屏会撑破布局;
+ * 让 display 公式在溢出时横向滚动而不是溢出页面 */
+.vp-doc .katex-display {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0;
+}
+
+.vp-doc .katex-display::-webkit-scrollbar {
+  height: 4px;
+}
+
+.vp-doc .katex-display::-webkit-scrollbar-thumb {
+  border-radius: 2px;
+  background: var(--vp-c-divider);
+}
+
+/* Firefox 的细滚动条(::-webkit-* 仅 WebKit 生效) */
+.vp-doc .katex-display {
+  scrollbar-width: thin;
+  scrollbar-color: var(--vp-c-divider) transparent;
 }

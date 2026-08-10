@@ -43,6 +43,13 @@ function scrollToActive() {
   visible.value = false
 }
 
+// 侧栏元素随路由切换会卸载/重建, 用捕获阶段的窗口级监听避免监听泄漏与丢失
+function onWindowScroll(e: Event) {
+  const target = e.target as HTMLElement
+  if (!target.classList?.contains('VPSidebar')) return
+  check()
+}
+
 watch(() => route.path, () => {
   if (inBrowser) check()
 })
@@ -50,15 +57,12 @@ onMounted(() => {
   if (!inBrowser) return
   check()
   window.addEventListener('resize', check)
-  // 只监听侧栏自身的滚动(避免全站滚动高频触发)
-  const sidebar = document.querySelector('.VPSidebar')
-  sidebar?.addEventListener('scroll', check, { passive: true })
+  window.addEventListener('scroll', onWindowScroll, { capture: true, passive: true })
 })
 onBeforeUnmount(() => {
   if (!inBrowser) return
   window.removeEventListener('resize', check)
-  const sidebar = document.querySelector('.VPSidebar')
-  sidebar?.removeEventListener('scroll', check)
+  window.removeEventListener('scroll', onWindowScroll, { capture: true })
 })
 </script>
 
@@ -75,7 +79,6 @@ onBeforeUnmount(() => {
 .sidebar-locator {
   position: sticky;
   bottom: 12px;
-  left: 12px;
   display: inline-flex;
   align-items: center;
   gap: 6px;

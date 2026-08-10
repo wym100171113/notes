@@ -54,8 +54,6 @@ export function tokenizeSearch(text: string): string[] {
 }
 
 // 高频单字停用词: 过滤后提示"查询词过于宽泛", 避免搜"你"命中一堆正文
-export const SEARCH_STOP_WORDS = new Set(
-  Array.from(
-    '你我他她它们这那哪何谁什之的了在是有和就不人都而及与或等被他从以之其对这那也于还中为如但并者且么吧呢个点又再总各只该当要把向被让可要以能会去来上下很更最得地着过些没看说想知见做其已仍'
-  ).join('')
-)
+const STOP_CHARS =
+  '你我他她它们这那哪何谁什之的了在是有和就不人都而及与或等被他从以其对这那也于还中为如但并者且么吧呢个点又再总各只该当要把向被让可要以能会去来上下很更最得地着过些没看说想知见做其已仍'
+export const SEARCH_STOP_WORDS = new Set(STOP_CHARS)

@@ -84,6 +84,8 @@ for (const { src, dst } of SUBJECTS) {
   if (!existsSync(srcAbs)) continue;
   walk(srcAbs, (abs) => {
     if (extname(abs).toLowerCase() !== '.md') return;
+    // 排除 Obsidian 插件自动生成的目录导航 index.md(vault 内部文件, 不进站点)
+    if (basename(abs).toLowerCase() === 'index.md') return;
     const relSrc = toSlashes(relative(srcAbs, abs));
     // 逐段净化路径
     const cleanRel = relSrc.split('/').map(sanitizeName).join('/');

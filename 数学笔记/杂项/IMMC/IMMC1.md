@@ -1,3 +1,11 @@
+---
+type: Concept
+title: IMMC1
+generated:
+  by: okf-enforcer/0.6
+  at: 2026-08-11T07:13:32Z
+---
+
 # 题干
 模型应当考虑：
 
@@ -59,7 +67,7 @@
  - $E_{ts}=\sum fMde$
  其它:
 
-$$\begin{aligned}E_{\text {eat }}&=\sum k_{eat}m_{i}e_{is} \\E_{\text {目标 }}=E_{\text {sum }}-E_{\text {avoided }}&=nse+\sum m_{i} e_{i s}+\sum \text { fMde }+\sum \text { kme } \\&-0.9 \sum m_{i} k_{i}\end{aligned}$$
+$$\begin{aligned}E_{\text {eat }}&=\sum k_{eat}m_{i}e_{is} \\ E_{\text {目标 }}=E_{\text {sum }}-E_{\text {avoided }}&=nse+\sum m_{i} e_{i s}+\sum \text { fMde }+\sum \text { kme } \\&-0.9 \sum m_{i} k_{i}\end{aligned}$$
  ---
  避免上游生产排放：
 $$E_{\text {avoided,up }}=\sum_{i} S_{i} \cdot E F_{i}^{u p}=\sum_{i} M_{i} \cdot r_{i} \cdot\left(1-\omega_{i}\right) \cdot \alpha_{i}$$

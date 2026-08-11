@@ -26,3 +26,34 @@ site/docs/
 site/.vitepress/dist/
 site/.vitepress/cache/
 site/.vitepress/generated/
+
+# Obsidian 自动生成的 index.md(导航文件, 内容自动重建, 不应入库)
+**/index.md
+
+# site 下调试用临时脚本(agent 排错产物)
+site/probe-*.mjs
+site/verify-*.mjs
+site/debug-*.mjs
+site/dbg-*.mjs
+site/check-*.mjs
+site/extra*.mjs
+site/audit*.mjs
+site/find-*.mjs
+site/cdp-*.mjs
+site/dark-reorder*.mjs
+site/mermaid-lazy.mjs
+site/verify-fix.mjs
+
+# Obsidian 插件发布产物(manifest 保留, 二进制不入库)
+.obsidian/plugins/*/main.js
+.obsidian/plugins/*/styles.css
+
+# 未部署的 vault 内容
+化学笔记(外)/
+数学笔记(外)/
+Excalidraw/
+Weave EPUB Reader/
+copilot/
+研究性课题报告项目流程/
+英语/
+语文/

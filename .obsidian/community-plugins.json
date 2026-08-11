@@ -11,5 +11,7 @@
   "weave-epub-reader",
   "obsidian-pretty-bibtex",
   "enhance-navigate-pane",
-  "flexplorer"
+  "flexplorer",
+  "obsidian-linter",
+  "okf-enforcer"
 ]

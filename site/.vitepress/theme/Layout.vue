@@ -23,6 +23,51 @@ const KATEX_OPTIONS = {
   strict: 'ignore',
 } as const
 
+// 手动渲染 $$...$$ 块(兜底): auto-render 的匹配器对某些超长/特殊内容的块会跳过,
+// 这里按"花括号配平找闭合 $$"的逻辑提取并用 KaTeX 直接渲染, 非公式文本做 HTML 转义
+function replaceDollarBlocks(text: string, katex: typeof import('katex')): string {
+  const render = katex.renderToString.bind(katex)
+  let out = ''
+  let i = 0
+  let plain = ''
+  const flushPlain = () => {
+    if (plain) {
+      out += plain.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+      plain = ''
+    }
+  }
+  while (i < text.length) {
+    if (text[i] === '$' && text[i + 1] === '$' && (i === 0 || text[i - 1] !== '\\')) {
+      // 找闭合 $$(花括号配平)
+      let j = i + 2
+      let brace = 0
+      let closed = -1
+      while (j < text.length) {
+        if (text[j] === '\\') { j += 2; continue }
+        if (text[j] === '{') brace++
+        else if (text[j] === '}') brace--
+        else if (text[j] === '$' && text[j + 1] === '$' && brace <= 0) { closed = j; break }
+        j++
+      }
+      if (closed > 0) {
+        const content = text.slice(i + 2, closed)
+        flushPlain()
+        try {
+          out += render(content, { displayMode: true, throwOnError: false })
+        } catch {
+          out += text.slice(i, closed + 2)
+        }
+        i = closed + 2
+        continue
+      }
+    }
+    plain += text[i]
+    i++
+  }
+  flushPlain()
+  return out
+}
+
 let mathRendering = false
 async function renderMath() {
   if (mathRendering) return
@@ -30,25 +75,49 @@ async function renderMath() {
   try {
     const el = page.value
     if (!el) return
-    // 渲染范围: 正文 + 本页目录(大纲标题里的行内公式, 如 $a=-kv$)
     const targets = [
       el.querySelector('.vp-doc'),
       el.querySelector('.VPDocAsideOutline .content'),
     ].filter((n): n is HTMLElement => !!n)
+    // 分批渲染后若有未渲染的公式(竞态/动态内容导致丢失), 最多重试 3 轮;
+    // 渲染幂等, 已渲染的跳过
+    const BLOCK_SELECTOR = 'p, li, td, th, h1, h2, h3, h4, h5, h6, blockquote, dl, dt, dd'
+    for (let attempt = 0; attempt < 3; attempt++) {
+      let remaining = 0
+      for (const target of targets) {
+        for (const b of target.querySelectorAll(BLOCK_SELECTOR)) {
+          if (!b.querySelector('.katex') && /\$/.test(b.textContent)) remaining++
+        }
+      }
+      if (!remaining) break
+      for (const target of targets) {
+        const blocks = [...target.querySelectorAll(BLOCK_SELECTOR)]
+        for (let i = 0; i < blocks.length; i++) {
+          const b = blocks[i]
+          if (!b.isConnected) continue // 竞态中已脱离文档的节点丢弃
+          if (b.querySelector('.katex')) continue
+          try {
+            renderMathInElement(b as HTMLElement, KATEX_OPTIONS)
+          } catch (err) {
+            // 单个公式渲染失败不影响页面
+            console.error('[katex]', err)
+          }
+          if (i % 8 === 7) {
+            await new Promise((resolve) => setTimeout(resolve, 0))
+          }
+        }
+      }
+    }
+    // 兜底: auto-render 匹配器跳过的 $$ 块(超长/特殊内容), 手动提取渲染
+    const katexMod = await import('katex')
+    const katex = katexMod.default || katexMod
     for (const target of targets) {
-      // 按顶层块分批渲染, 每批让出主线程: 长公式页(数百个公式)若一次性同步渲染,
-      // 会以 200ms+ 长任务阻塞输入与滚动
-      const blocks = [...target.children].filter((c) => c.querySelector?.('*'))
-      for (let i = 0; i < blocks.length; i++) {
-        try {
-          renderMathInElement(blocks[i] as HTMLElement, KATEX_OPTIONS)
-        } catch (err) {
-          // 单个公式渲染失败不影响页面
-          console.error('[katex]', err)
-        }
-        if (i % 8 === 7) {
-          await new Promise((resolve) => setTimeout(resolve, 0))
-        }
+      for (const b of target.querySelectorAll(BLOCK_SELECTOR)) {
+        if (!b.isConnected || b.querySelector('.katex')) continue
+        const t = b.textContent
+        if (!t.includes('$$')) continue
+        const html = replaceDollarBlocks(t, katex)
+        if (html !== t) b.innerHTML = html
       }
     }
   } finally {

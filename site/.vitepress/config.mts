@@ -210,6 +210,9 @@ export default defineConfig({
   markdown: {
     // 关闭原始 HTML 透传, 避免笔记中的不规范标签导致 Vue 模板编译失败
     html: false,
+    // 数学统一在浏览器端用 KaTeX auto-render 渲染(见 theme):
+    // 禁用服务端 math, 否则 $$ 块被服务端插件消费, 渲染失败时回退成标题结构
+    math: false,
     // 数学在浏览器端用 KaTeX 渲染(见 theme), 避免 SSR 预渲染 444 页公式导致构建内存溢出
     config(md) {
       // Obsidian ==高亮== -> <mark>

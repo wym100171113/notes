@@ -50,14 +50,16 @@
 - $e:车辆排放因子$
 - $e_{1s}:食品储存因子$
 - $e_{2s}:非食品储存因子$
-避免:$$E_{avoided}=0.9(m_{1}k_{1}+m_{2}k_{2})=0.9\sum m_{i}k_{i}$$
-车运输:$$E_{t}=nse(n与m_{1}+m_{2}有关)$$
-储存:$$E_{s}=m_{1}e_{1s}+m_{2}e_{2s}=\sum m_{i}e_{is}$$
+避免:$E_{avoided}=0.9(m_{1}k_{1}+m_{2}k_{2})=0.9\sum m_{i}k_{i}$
+车运输:$E_{t}=nse(n与m_{1}+m_{2}有关)$
+储存:$E_{s}=m_{1}e_{1s}+m_{2}e_{2s}=\sum m_{i}e_{is}$
  海运:
  - 国际距离:$d_{sea}$ $\rightarrow$  $d_{sea}国家不同$
- - 进口比例:$f$$\rightarrow$$f国家不同$
+ - 进口比例:$f \rightarrow f$ 国家不同
  - $E_{ts}=\sum fMde$
- 其它:$$\begin{array}{l}E_{\text {eat }}=\sum k_{eat}m_{i}e_{is} \\\begin{aligned}E_{\text {目标 }}=E_{\text {sum }}-E_{\text {avoided }}= & n s e+\sum m_{i} e_{i s}+\sum \text { fMde }+\sum \text { kme } \\& -0.9 \sum m_{i} k_{i}\end{aligned}\end{array}$$
+ 其它:
+
+$$\begin{aligned}E_{\text {eat }}&=\sum k_{eat}m_{i}e_{is} \\E_{\text {目标 }}=E_{\text {sum }}-E_{\text {avoided }}&=nse+\sum m_{i} e_{i s}+\sum \text { fMde }+\sum \text { kme } \\&-0.9 \sum m_{i} k_{i}\end{aligned}$$
  ---
  避免上游生产排放：
 $$E_{\text {avoided,up }}=\sum_{i} S_{i} \cdot E F_{i}^{u p}=\sum_{i} M_{i} \cdot r_{i} \cdot\left(1-\omega_{i}\right) \cdot \alpha_{i}$$

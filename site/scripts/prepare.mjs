@@ -214,9 +214,22 @@ function normalizeMath(content) {
   const out = [];
   let inBlock = false;
   let sinceOpen = 0;
+  let inFence = false;
   const MAX_BLOCK_LINES = 50;
 
   for (const line of lines) {
+    const trimmed = line.trim();
+    // 跳过 fenced code block: 代码里的 $$ 只是文本, 计入块状态会错乱配对
+    if (trimmed.startsWith('```')) {
+      inFence = !inFence;
+      out.push(line);
+      continue;
+    }
+    if (inFence) {
+      out.push(line);
+      continue;
+    }
+
     const markers = (line.match(/\$\$/g) || []).length;
     const even = markers % 2 === 0;
 
@@ -244,8 +257,35 @@ function normalizeMath(content) {
   return out.join('\n');
 }
 
+// 规范化数学定界符: Obsidian 允许 $ x $ / $$ x $$(定界符与内容间空白),
+// 但 KaTeX auto-render 不渲染带空格的定界符。这里去掉定界符内侧空白。
+// 跳过 fenced code block 与转义美元(\$)。
+function normalizeMathDelimiters(content) {
+  const parts = content.split(/```/);
+  return parts
+    .map((part, i) => {
+      if (i % 2 === 1) return part;
+      let out = part;
+      // 行内 $ x $ → $x$(内容不跨行, 不含 $; 排除 \$;
+      // 注意用 [ \t]+ 而非 \s+, 否则会跨行匹配把 $$ 块截坏
+      out = out.replace(/(?<!\\)\$[ \t]+([^$\n]{1,120}?)[ \t]+\$/g, '$$$1$');
+      // 块 $$ x $$ → $$x$$(可跨行)
+      // $$ 块: 只清理定界符内侧的"水平"空白(空格/tab)。
+      // 注意: 不能用 \s*(含换行), 否则块闭合 $$ 后跟的换行被删, 与 --- 等粘连;
+      // 替换串里 $$ 表示一个字面 $, 输出 $$ 必须写 $$$$
+      out = out.replace(/(?<!\\)\$\$[ \t]*/g, '$$$$').replace(/[ \t]+\$\$/g, '$$$$');
+      // $$ 块内的空行压缩为单换行: Obsidian 允许块内空行, 但 markdown 渲染
+      // 会把空行分段, auto-render 无法跨段落匹配 $$...$$ 导致整块不渲染
+      out = out.replace(/\$\$[^]*?\$\$/g, (m) => m.replace(/\n[ \t]*\n/g, '\n'));
+      return out;
+    })
+    .join('```');
+}
+
 // 转义花括号, 避免 Vue 把 {{ }} 当作插值表达式解析(markdown-it 会去掉 \{ 的反斜杠, 因此需处理所有 { })
-// 跳过 YAML frontmatter 与 fenced code block(代码中的 {{ }} 仅做最保守的双括号转义)
+// 跳过 YAML frontmatter 与 fenced code block(代码中的 {{ }} 仅做最保守的双括号转义);
+// 数学块($..$ / $$..$$ / \[..\] / \(..\))内的花括号是 LaTeX 语法, 必须保留(KaTeX 需要),
+// 仅对其中的双花括号做实体转义以防 Vue 插值
 function escapeVueBraces(content) {
   let body = content;
   let front = '';
@@ -255,14 +295,108 @@ function escapeVueBraces(content) {
     body = content.slice(fm[0].length);
   }
 
+  // 提取数学块为占位符(占位符用私有区字符, 不可能出现在正文)
+  const mathBlocks = [];
+  const MARK = (i) => `\uE000M${i}\uE001`;
+  // 数学块提取: 字符状态机(跨行行内公式也能保护; 块内单个 $ 忽略;
+  // \$ 转义美元不参与配对)。未闭合的块放弃保护, 交给普通花括号转义兜底
+  const protectMath = (text) => {
+    const n = text.length;
+    let out = '';
+    let state = 0; // 0=text 1=行内$ 2=块$$ 3=\[..\] 4=\(..\)
+    let start = 0;
+    let i = 0;
+    const close = (end) => {
+      mathBlocks.push(text.slice(start, end));
+      out += MARK(mathBlocks.length - 1);
+      state = 0;
+    };
+    while (i < n) {
+      const c = text[i];
+      if (state === 0) {
+        if (c === '\\' && (text[i + 1] === '[' || text[i + 1] === '(')) {
+          state = text[i + 1] === '[' ? 3 : 4;
+          start = i;
+          i += 2;
+          continue;
+        }
+        if (c === '\\') { out += c + (text[i + 1] || ''); i += 2; continue; }
+        if (c === '$') {
+          if (text[i + 1] === '$') { state = 2; start = i; i += 2; continue; }
+          state = 1;
+          start = i;
+          i += 1;
+          continue;
+        }
+        out += c;
+        i += 1;
+      } else if (state === 1) {
+        if (c === '\\') { i += 2; continue; }
+        if (c === '$') close(i + 1);
+        i += 1;
+      } else if (state === 2) {
+        if (text.startsWith('$$', i)) { close(i + 2); i += 2; continue; }
+        i += 1;
+      } else if (state === 3) {
+        if (text.startsWith('\\]', i)) { close(i + 2); i += 2; continue; }
+        i += 1;
+      } else if (state === 4) {
+        if (text.startsWith('\\)', i)) { close(i + 2); i += 2; continue; }
+        i += 1;
+      }
+    }
+    return out;
+  };
+  const restoreMath = (text) =>
+    text.replace(/\uE000M(\d+)\uE001/g, (_, idx) => {
+      let block = mathBlocks[Number(idx)];
+      // 行内公式($..$, 非 $$ 块)里的 \tag 不被 KaTeX 支持, 移除编号
+      // (跨行行内公式同样不删会报错, 这里不限制是否含换行)
+      if (block.startsWith('$') && !block.startsWith('$$')) {
+        block = block.replace(/\\tag\{[^}]*\}/g, '');
+      }
+      // 数学块内 {{ 拆成 { {: 用循环替换直到无残留(单次替换的边界会与
+      // 相邻 { 重组出 {{, 循环每次消除一对必然收敛);
+      // 不用 HTML 实体(会被 markdown-it 双重转义成 &amp;#123; 使 KaTeX 收到字面实体);
+      // }} 无需处理(Vue 插值只认 {{)
+      while (block.includes('{{')) block = block.replace('{{', '{ {');
+      // 数学块内整行只有 = / -(如独立对齐行)会被 markdown-it 的 setext
+      // 标题规则吞成 h1(文本行 + 下划线行): 转义为 \text{...} 使 KaTeX 等价渲染
+      block = block.replace(/^([ \t]*)(=+|-+)[ \t]*$/gm, (_m, ws, marks) => `${ws}\\text{${marks}}`);
+      // markdown-it 会把 \{ 转义为字面 {, 相邻的 { 会组成 {{ 触发 Vue 插值报错;
+      // 用语义等价的 \lbrace/\rbrace 替代(KaTeX 同样渲染字面花括号, 且不受 markdown 转义影响)
+      block = block.split('\\{').join('\\lbrace ').split('\\}').join('\\rbrace ');
+      // markdown-it 会把 \\ 转义为单个 \, 破坏 KaTeX 的换行/对齐(如 aligned 的 \\&);
+      // 换成语义等价的 \newline(字母命令不受 markdown 转义影响)
+      block = block.split('\\\\').join('\\newline');
+      // markdown 会把公式内的 _ 与 * 解析为强调(em 标签), 使 auto-render 无法匹配跨标签的 $...$;
+      // 裸 _ 转义为 \_(markdown 渲染回 _ 供 KaTeX 作下标), 裸 * 同理转义为 \*
+      block = block.replace(/(?<!\\)_/g, '\\_');
+      block = block.replace(/(?<!\\)\*/g, '\\*');
+      // \#(转义井号)经 markdown 渲染会去掉反斜杠变成裸 #(KaTeX 保留字符报错):
+      // 加倍反斜杠, markdown 渲染回 \# 供 KaTeX 显示字面 #;
+      // 注意放在 \\ → \\newline 替换之后, 否则 \\# 的 \\ 会被换行替换吃掉
+      block = block.replace(/\\#/g, '\\\\#');
+      // \\& / \\%(KaTeX 的 & 对齐符与 % 注释符)经 markdown 还原成裸字符会报错;
+      // 同样加倍反斜杠(\\) -> \\newline 已在前面完成, 不会误伤 \\& 换行对齐
+      block = block.replace(/\\&/g, '\\\\&').replace(/\\%/g, '\\\\%');
+      // 数学里的裸 #(集合大小记号)是 KaTeX 保留字符会报错; 同样转义为 \\#
+      block = block.replace(/(?<!\\)#/g, '\\\\#');
+      return block;
+    });
+
   const parts = body.split(/```/);
   const escaped = parts.map((part, i) => {
     if (i % 2 === 1) {
-      // fenced code block 内: 仅转义双花括号, 避免 Vue 插值; 保留单花括号以保证代码可读
-      return part.split('{{').join('&#123;&#123;').split('}}').join('&#125;&#125;');
+      // fenced code block 内: 仅拆 {{ 防 Vue 插值, 保留单花括号以保证代码可读
+      while (part.includes('{{')) part = part.replace('{{', '{ {');
+      return part;
     }
-    // 正文: 转义所有花括号
-    return part.split('{').join('&#123;').split('}').join('&#125;');
+    // 正文: 保护数学块后只拆 {{(单个花括号对 Vue/markdown 均无害), 再还原数学块
+    const tmp = protectMath(part);
+    let out = tmp;
+    while (out.includes('{{')) out = out.replace('{{', '{ {');
+    return restoreMath(out);
   });
   return front + escaped.join('```');
 }
@@ -311,6 +445,7 @@ function transform(content, curRel) {
   content = stripObsidianComments(content);
   content = convertCallouts(content);
   content = normalizeMath(content);
+  content = normalizeMathDelimiters(content);
   content = escapeVueBraces(content);
   return content;
 }

@@ -371,6 +371,19 @@ function escapeVueBraces(content) {
       // markdown-it 会把 \\ 转义为单个 \, 破坏 KaTeX 的换行/对齐(如 aligned 的 \\&);
       // 换成语义等价的 \newline(字母命令不受 markdown 转义影响)
       block = block.split('\\\\').join('\\newline');
+      // markdown-it 会把 \, \; \! \> \| 的反斜杠转义吃掉还原成裸标点,
+      // 使 KaTeX 渲染出错误的逗号/分号/感叹号/单竖线; 换成语义等价的
+      // 字母命令(不受 markdown 转义影响), 后跟字母时加 {} 防止命令粘连
+      block = block.replace(/\\,([A-Za-z])/g, '\\thinspace{}$1');
+      block = block.replace(/\\,/g, '\\thinspace');
+      block = block.replace(/\\;([A-Za-z])/g, '\\thickspace{}$1');
+      block = block.replace(/\\;/g, '\\thickspace');
+      block = block.replace(/\\!([A-Za-z])/g, '\\negthinspace{}$1');
+      block = block.replace(/\\!/g, '\\negthinspace');
+      block = block.replace(/\\>([A-Za-z])/g, '\\medspace{}$1');
+      block = block.replace(/\\>/g, '\\medspace');
+      block = block.replace(/\\\|([A-Za-z])/g, '\\Vert{}$1');
+      block = block.replace(/\\\|/g, '\\Vert');
       // markdown 会把公式内的 _ 与 * 解析为强调(em 标签), 使 auto-render 无法匹配跨标签的 $...$;
       // 裸 _ 转义为 \_(markdown 渲染回 _ 供 KaTeX 作下标), 裸 * 同理转义为 \*
       block = block.replace(/(?<!\\)_/g, '\\_');

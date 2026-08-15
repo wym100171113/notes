@@ -1,10 +1,8 @@
 ---
 format: "weave-epub-bookmarks/v3"
 weave_epub_bookmark_file: true
-stableKey: "epubsrc-65c7b6ca9960"
-bookId: "epub-book-ucjbhn"
-sourceId: "epubsrc-65c7b6ca9960aa94933dd950"
-sourceFingerprint: "65c7b6ca9960aa94933dd950e7191e59b6c4b9a28666738931e61b7c4310bf1d"
+stableKey: "epub-book-9q5e4j"
+bookId: "epub-book-9q5e4j"
 bookPath: "不妨来看看看书/窄门.epub"
 displayTitle: "窄门"
 bookTitle: "窄门"
@@ -34,7 +32,7 @@ user:
   rating: null
   priority: ""
   notes: ""
-updatedAt: 1785809481974
+updatedAt: 1786447762136
 ---
 
 > 📎 本页由 Weave EPUB 自动维护。YAML 中 `readingState`、`bookmarks` 请勿手改；`user` 与「我的标注」可自由编辑。

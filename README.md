@@ -17,6 +17,7 @@
 
 ## 🔗 相关链接
 
+- 🌐 [学习笔记在线站点](https://wym100171113.github.io/notes/)（数学 · 物理 · 化学，由本仓库的 `site/` 自动构建）
 - 🔗 [Pkmer-Math](https://github.com/PKM-er/Pkmer-Math)
 - 🔗 [MathWiki](https://github.com/zhaoshenzhai/mathwiki)
 - 🔗 [OpenText](https://github.com/insile/OpenText)

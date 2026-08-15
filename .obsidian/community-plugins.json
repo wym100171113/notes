@@ -8,9 +8,8 @@
   "editing-toolbar",
   "pdf-plus",
   "luatikz",
-  "weave-epub-reader",
   "obsidian-pretty-bibtex",
   "flexplorer",
   "obsidian-linter",
-  "okf-enforcer"
+  "weave-epub-reader"
 ]

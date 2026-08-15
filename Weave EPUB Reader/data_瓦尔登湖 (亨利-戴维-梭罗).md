@@ -1,40 +1,51 @@
 ---
 format: "weave-epub-bookmarks/v3"
 weave_epub_bookmark_file: true
-stableKey: "epubsrc-588ed71e61de"
-bookId: "epub-book-amzmdw"
-sourceId: "epubsrc-588ed71e61de475afa6c8d3a"
-sourceFingerprint: "588ed71e61de475afa6c8d3aca20dd05232efaf0d170b276e5c2f0dabd928bed"
+stableKey: "epub-book-w89ska"
+bookId: "epub-book-w89ska"
 bookPath: "不妨来看看看书/瓦尔登湖 (亨利·戴维·梭罗).epub"
 displayTitle: "瓦尔登湖 (亨利·戴维·梭罗)"
 bookTitle: "瓦尔登湖 (亨利·戴维·梭罗)"
+bookLanguage: "zh-CN"
+publisher: "上海译文出版社"
+isbn: "9787532768011"
+publishDate: "2010-11"
 coverPath: "/"
-reading-progress: 0
-reading-status: "unstarted"
-reading-total-minutes: 0
-reading-wpm: 0
+wordCount: 133857
+chapterCount: 23
+reading-progress: 6
+reading-status: "reading"
+reading-total-minutes: 3
+reading-wpm: 900
 highlight-count: 0
 excerpt-note-count: 0
 bookmark-count: 0
-last-read-at: 0
+last-read-at: 1786447724962
 readingState:
   currentPosition:
-    chapterIndex: 0
-    cfi: ""
-    percent: 0
+    chapterIndex: 4
+    cfi: "epubcfi(/6/10!/4,/2[a005],/6/1:231)"
+    percent: 5.714285714285714
   readingStats:
-    totalReadTime: 0
-    lastReadTime: 0
+    totalReadTime: 177243
+    lastReadTime: 1786447724962
     createdTime: 0
-    paceSampleCount: 0
-    paceSampleWords: 0
+    bookWpm: 900
+    paceSampleCount: 1
+    paceSampleWords: 6351
 bookmarks: []
+analytics:
+  updatedAt: 1786447714438
+  highlightsByColor: {}
+  commentCount: 0
+  concealedCount: 0
+  topChaptersByHighlights: []
 user:
   tags: []
   rating: null
   priority: ""
   notes: ""
-updatedAt: 1785809481833
+updatedAt: 1786447762194
 ---
 
 > 📎 本页由 Weave EPUB 自动维护。YAML 中 `readingState`、`bookmarks` 请勿手改；`user` 与「我的标注」可自由编辑。
@@ -49,6 +60,12 @@ updatedAt: 1785809481833
 | :-- | :-- |
 | 封面 | ![[/|200]] |
 | 书名 | 瓦尔登湖 (亨利·戴维·梭罗) |
+| 出版社 | 上海译文出版社 |
+| 出版时间 | 2010-11 |
+| ISBN | 9787532768011 |
+| 字数 | 13.4 万 |
+| 章节 | 23 章 |
+| 语言 | zh-CN |
 | 书籍文件 | [[不妨来看看看书/瓦尔登湖 (亨利·戴维·梭罗).epub|📂 瓦尔登湖 (亨利·戴维·梭罗)]] |
 
 ---
@@ -57,15 +74,15 @@ updatedAt: 1785809481833
 
 | 项目 | 值 |
 | :-- | :-- |
-| 状态 | ⚪ 未开始 |
-| 进度 | 0% |
-| 当前章节 | 第 1 章 |
-| 累计阅读 | 0 分钟 |
-| 阅读速度 | — |
-| 最近阅读 | — |
+| 状态 | 🟢 阅读中 |
+| 进度 | 6% |
+| 当前章节 | 第 5 章 |
+| 累计阅读 | 3 分钟 |
+| 阅读速度 | 900 字/分钟 |
+| 最近阅读 | 2026-08-11 19:28 |
 
 > [!tip] 📍 继续阅读
-> 尚未开始阅读。打开书籍即可记录进度。
+> 当前停在 **第 5 章**（约 6%）。在阅读器中打开本书即可续读。
 
 ---
 

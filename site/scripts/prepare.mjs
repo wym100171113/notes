@@ -1,7 +1,7 @@
 // prepare.mjs — 将 Obsidian 笔记(数学/物理/化学)转换为 VitePress 源文件
 // 运行: node scripts/prepare.mjs  (在 site/ 下)
 import {
-  rmSync, mkdirSync, copyFileSync, readdirSync, readFileSync, writeFileSync, existsSync, statSync,
+  rmSync, mkdirSync, copyFileSync, readdirSync, readFileSync, writeFileSync, existsSync,
 } from 'node:fs';
 import { join, dirname, basename, extname, relative, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -19,10 +19,34 @@ const SUBJECTS = [
 ];
 const ASSETS_DIR = '图片引用';
 
-// 真题 PDF: vault 内源目录 -> 站点 public 子目录(public 内容按原路径静态服务, 浏览器原生渲染 PDF)
-const PDF_SOURCE_DIR = '物理/物理竞赛/真题/PDF';
-const PDF_PUBLIC_DIR = '真题PDF'; // 位于 docs/public 下, 站点路径为 /真题PDF/... 与生成页 docs/真题PDF 区分
-const PDF_PAGE_DIR = '真题PDF';   // 生成的索引页目录(与 public 内同名目录并存: 页面 /真题PDF/ 与资源 /真题PDF/xx.pdf)
+// ---------- 发布排除规则 ----------
+// 以下笔记仅从站点生成中排除, vault 内源文件原样保留(站点只发布一部分笔记)。
+// 路径相对仓库根目录, 用 / 分隔; 新增时往数组里加一行即可。
+const EXCLUDE_DIRS = [
+  // 转载他人内容, 非原创笔记
+  '物理/物理学大类/相对论/相对论(知乎潦草搬运)',
+  // 未发表的数学建模竞赛论文, 公开后影响后续参赛/投稿
+  '数学笔记/杂项/IMMC',
+];
+const EXCLUDE_FILES = [
+  // Obsidian Base 视图嵌入(![[数学笔记index.base]]), .base 不会复制到站点 -> 渲染为空页
+  '数学笔记/数学笔记index.md',
+  // 碎片: 仅一个公式或一个未解答的问题, 不成篇
+  '数学笔记/随笔/随笔3.md',
+  '数学笔记/随笔/随笔4.md',
+  '数学笔记/高中数学/复数/小知识.md',
+];
+const EXCLUDE_DIR_PREFIXES = EXCLUDE_DIRS.map((d) => (d.endsWith('/') ? d : d + '/'));
+// rel 为相对仓库根目录、以 / 分隔的路径
+function isExcluded(rel) {
+  return EXCLUDE_FILES.includes(rel) || EXCLUDE_DIR_PREFIXES.some((p) => rel.startsWith(p));
+}
+
+// 真题 PDF 不再托管: 竞赛试题版权归中国物理学会, 且流转副本的元数据中
+// 含第三方姓名信息, 不适合公开分发。站点 /真题PDF/ 页面改为指向官方发布页。
+// 官方"全国竞赛试题和解答"列表页(第 25-38 届, 更早/更新届次见官网通知公告)
+const CPHO_PAPERS_URL = 'https://cpho.pku.edu.cn/ckzl/qgjssthjd.htm';
+const CPHO_HOME_URL = 'https://cpho.pku.edu.cn/';
 
 const IMG_EXTS = new Set(['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg', '.bmp', '.avif', '.ico']);
 
@@ -48,6 +72,14 @@ function copyDir(src, dst) {
 const toSlashes = (p) => p.split('\\').join('/');
 
 // ---------- 1. 清空并准备 docs ----------
+// docs 是脚本整体重建的目录, 但 rmSync(recursive, force) 是无差别删除:
+// 一旦 siteDir 计算错误(如脚本被从别处调用)就会删错地方。删除前先确认目标
+// 确实是 site/ 下的 docs 目录, 不符预期直接退出, 不执行任何删除。
+const docsReal = resolve(docsDir);
+if (basename(docsReal) !== 'docs' || !existsSync(join(docsReal, '..', 'package.json'))) {
+  console.error(`[prepare] 拒绝清空非预期目录(不是 site/docs): ${docsReal}`);
+  process.exit(1);
+}
 rmSync(docsDir, { recursive: true, force: true });
 mkdirSync(docsDir, { recursive: true });
 
@@ -68,17 +100,14 @@ if (existsSync(swFile)) {
   console.log(`[prepare] Service Worker 版本: ${swVersion}`);
 }
 
-// 真题 PDF -> docs/public/真题PDF (浏览器原生渲染, 供 /真题PDF/ 索引页链接)
-const pdfSrc = join(repoRoot, PDF_SOURCE_DIR);
-if (existsSync(pdfSrc)) {
-  copyDir(pdfSrc, join(docsDir, 'public', PDF_PUBLIC_DIR));
-}
+// 真题 PDF 不再复制到站点(版权与第三方隐私考虑, 见文件头部说明)
 
 // 文件名净化: 去掉会破坏 URL/JSON 的字符(如双引号)
 const sanitizeName = (name) => name.replace(/["']/g, '');
 
 // 收集并复制 md 文件
 const mdFiles = []; // { absSrc, relDst, origName }
+const excluded = []; // 命中排除规则的笔记(仅统计, 不动源文件)
 for (const { src, dst } of SUBJECTS) {
   const srcAbs = join(repoRoot, src);
   if (!existsSync(srcAbs)) continue;
@@ -86,6 +115,9 @@ for (const { src, dst } of SUBJECTS) {
     if (extname(abs).toLowerCase() !== '.md') return;
     // 排除 Obsidian 插件自动生成的目录导航 index.md(vault 内部文件, 不进站点)
     if (basename(abs).toLowerCase() === 'index.md') return;
+    // 命中发布排除规则: 不进站点, 源文件保留
+    const relVault = toSlashes(relative(repoRoot, abs));
+    if (isExcluded(relVault)) { excluded.push(relVault); return; }
     const relSrc = toSlashes(relative(srcAbs, abs));
     // 逐段净化路径
     const cleanRel = relSrc.split('/').map(sanitizeName).join('/');
@@ -119,14 +151,20 @@ for (const f of mdFiles) {
 }
 
 // ---------- 3. 链接/嵌入解析 ----------
-function resolveTarget(target) {
+function resolveTarget(target, curRel) {
   let frag = '';
   const h = target.indexOf('#');
   if (h >= 0) { frag = target.slice(h); target = target.slice(0, h); }
   target = target.replace(/\.md$/i, '').trim();
   if (!target) return null;
 
-  // 直接按 docs 相对路径
+  // 1) 相对当前文件所在目录(笔记里最常见的"同级/子目录"引用写法, 如 [[01-xx/00-xx总览]])
+  if (curRel) {
+    const abs = join(docsDir, dirname(curRel), target + '.md');
+    if (existsSync(abs)) return { rel: toSlashes(relative(docsDir, abs)), frag };
+  }
+
+  // 2) 直接按 docs 相对路径
   const direct = join(docsDir, target + '.md');
   if (existsSync(direct)) return { rel: toSlashes(relative(docsDir, direct)), frag };
 
@@ -139,8 +177,8 @@ function resolveTarget(target) {
   const translatedAbs = join(docsDir, translated + '.md');
   if (existsSync(translatedAbs)) return { rel: toSlashes(relative(docsDir, translatedAbs)), frag };
 
-  // 文件名索引
-  const hit = byBase.get(target);
+  // 4) 文件名索引(带路径时退化为最后一段, 与 Obsidian 按名匹配的语义一致)
+  const hit = byBase.get(target) || byBase.get(target.split('/').pop());
   if (hit) return { rel: hit, frag };
 
   return null;
@@ -416,6 +454,17 @@ function escapeVueBraces(content) {
   return front + escaped.join('```');
 }
 
+// 解析 [[...]] / ![[...]] 内部文本 -> { target, alias }
+// Obsidian 导出时把分隔符写成转义的 \|(形如 [[01-xx/00-xx总览\|00-xx总览]]),
+// 旧正则 ([^\]|]+?) 不认转义, 会把 \ 算进文件名 -> resolveTarget 失败 -> 链接降级为纯文本。
+// 这里统一按"第一个未转义或转义的 |"切分, 并还原 target 中的 \| \[ \] 转义。
+function parseWikiInner(inner) {
+  const strip = (s) => s.trim().replace(/\\([|[\]])/g, '$1');
+  const m = inner.match(/^([\s\S]*?)(?:\\?\|)([\s\S]*)$/);
+  if (!m) return { target: strip(inner), alias: '' };
+  return { target: strip(m[1]), alias: m[2].trim() };
+}
+
 function transform(content, curRel) {
   const curDir = dirname(curRel);
   const toRel = (rel) => {
@@ -425,16 +474,15 @@ function transform(content, curRel) {
   const linkLabel = (rel) => basename(rel, extname(rel));
 
   // 嵌入 ![[...]]
-  content = content.replace(/!\[\[([^\]|]+?)(?:\|([^\]]*?))?\]\]/g, (_m, name, alt) => {
-    name = name.trim();
-    alt = (alt ?? '').trim();
+  content = content.replace(/!\[\[([^\]]+?)\]\]/g, (_m, inner) => {
+    const { target: name, alias: alt } = parseWikiInner(inner);
     const ext = extname(name).toLowerCase();
     if (IMG_EXTS.has(ext)) {
       const imgRel = resolveImage(name);
       if (imgRel) return `![${alt || basename(name)}](${encodeURI(toRel(imgRel))})`;
       return alt || basename(name);
     }
-    const resolved = resolveTarget(name);
+    const resolved = resolveTarget(name, curRel);
     if (resolved) {
       const label = alt || linkLabel(resolved.rel);
       return `[${label}](${encodeURI(toRel(resolved.rel))}${resolved.frag})`;
@@ -443,13 +491,12 @@ function transform(content, curRel) {
   });
 
   // 链接 [[...]]
-  content = content.replace(/\[\[([^\]|]+?)(?:\|([^\]]*?))?\]\]/g, (_m, target, alias) => {
-    target = target.trim();
-    alias = (alias ?? '').trim();
+  content = content.replace(/\[\[([^\]]+?)\]\]/g, (_m, inner) => {
+    const { target, alias } = parseWikiInner(inner);
     if (target.startsWith('#')) {
       return `[${alias || target.slice(1)}](${target})`;
     }
-    const resolved = resolveTarget(target);
+    const resolved = resolveTarget(target, curRel);
     if (resolved) {
       const label = alias || linkLabel(resolved.rel);
       return `[${label}](${encodeURI(toRel(resolved.rel))}${resolved.frag})`;
@@ -553,41 +600,32 @@ features:
 `;
 writeFileSync(join(docsDir, 'index.md'), home);
 
-// ---------- 6. 真题 PDF 索引页 ----------// 为 docs/public/真题PDF 下的每个 PDF 生成带 iframe 预览的索引页 /真题PDF/
-// (public 静态资源与生成的 .md 页面同名目录不冲突: 页面在 /真题PDF/, 资源在 /真题PDF/xxx.pdf)
-const pdfPageDir = join(docsDir, PDF_PAGE_DIR);
-const pdfPublicDir = join(docsDir, 'public', PDF_PUBLIC_DIR);
-if (existsSync(pdfPublicDir)) {
-  const groups = []; // { dir, files: [{name, href, sizeKB}] }
-  for (const ent of readdirSync(pdfPublicDir, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name, 'zh-CN'))) {
-    if (ent.name.startsWith('.') || ent.name === 'index.md') continue;
-    const sub = join(pdfPublicDir, ent.name);
-    if (ent.isDirectory()) {
-      const files = [];
-      for (const f of readdirSync(sub).filter((n) => n.toLowerCase().endsWith('.pdf')).sort((a, b) => a.localeCompare(b, 'zh-CN'))) {
-        const size = statSync(join(sub, f)).size;
-        files.push({ name: f.replace(/\.pdf$/i, ''), href: `/${PDF_PUBLIC_DIR}/${ent.name}/${encodeURI(f)}`, sizeKB: Math.round(size / 1024) });
-      }
-      if (files.length) groups.push({ dir: ent.name, files });
-    }
-  }
-  if (groups.length) {
-    mkdirSync(pdfPageDir, { recursive: true });
-    const lines = ['# 物理竞赛真题 PDF', '', '> 全国中学生物理竞赛历年真题（预赛 / 复赛 / 决赛），浏览器原生打开 PDF 即可查看。点击条目在线查看，右键可另存。', ''];
-    for (const g of groups) {
-      lines.push(`## ${g.dir}`, '');
-      for (const f of g.files) {
-        lines.push(`- [${f.name}](${f.href})（${f.sizeKB} KB）`);
-      }
-      lines.push('');
-    }
-    lines.push('> [!note] 说明');
-    lines.push('> 1999-2017 年复赛/决赛的官方 Word 版试题与解答（.doc）无法在网页渲染，保留在本地仓库外的 `全国高中物理联赛/` 文件夹；其中 [34届(2017) 复赛]( /物理/物理竞赛/真题/34届(2017)复赛试题及解答 ) 已誊录为 LaTeX 笔记。');
-    writeFileSync(join(pdfPageDir, 'index.md'), lines.join('\n'));
-    console.log(`[prepare] 真题 PDF 索引: ${groups.length} 组 ${groups.reduce((s, g) => s + g.files.length, 0)} 个文件`);
-  }
-}
+// ---------- 6. 真题页(官方外链指引) ----------
+// 站点不再托管真题 PDF, /真题PDF/ 页面保留为官方获取渠道的指引
+const pdfPageDir = join(docsDir, '真题PDF');
+mkdirSync(pdfPageDir, { recursive: true });
+const pdfLines = [
+  '# 物理竞赛真题（官方发布页）',
+  '',
+  '> 本站不再托管历年真题文件。试题版权归中国物理学会所有，请从官方渠道获取：',
+  '',
+  `- [全国竞赛试题和解答（官方列表页，第 25–38 届）](${CPHO_PAPERS_URL})`,
+  `- [中国物理学会全国中学生物理竞赛网（首页）](${CPHO_HOME_URL})`,
+  '',
+  '## 使用说明',
+  '',
+  '- 官网路径：首页 → 参考资料 → 全国竞赛试题和解答，按届次下载预赛 / 复赛 / 决赛试题与参考解答。',
+  '- 第 39 届（2022）及之后的真题请在官网「通知公告」栏目查找对应届次的发布页。',
+  '- 本地备份：`~/Desktop/东西/01-物理奥赛 近十年预赛试题及讲评2026/`（预赛）与 `~/Desktop/东西/全国高中物理联赛/`（复赛 / 决赛，含官方 Word 原件），仅在本地与 Obsidian 中使用。',
+  '- [34届(2017) 复赛](/物理/物理竞赛/真题/34届(2017)复赛试题及解答) 已誊录为 LaTeX 笔记，可在线阅读。',
+];
+writeFileSync(join(pdfPageDir, 'index.md'), pdfLines.join('\n') + '\n');
+console.log('[prepare] 真题页已改为官方外链指引');
 
+if (excluded.length) {
+  console.log(`[prepare] 排除 ${excluded.length} 个笔记(仅不发布, 源文件保留):`);
+  for (const e of excluded.sort()) console.log(`  - ${e}`);
+}
 console.log(`[prepare] 完成: ${mdFiles.length} 个笔记 → ${docsDir}`);
 
 // ---------- 7. 搜索数据(标题索引 + 摘录索引) ----------

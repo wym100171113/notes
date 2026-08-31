@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, ref, watch } from 'vue'
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue'
 import { useRoute, useData } from 'vitepress'
 import DefaultTheme from 'vitepress/theme'
 import renderMathInElement from 'katex/contrib/auto-render'
@@ -150,6 +150,9 @@ function initOutlineFollow() {
 /* ===== Mermaid 渲染(mermaid 体积大, 页面存在脉络图时才动态加载) ===== */
 let mermaidInitialized = false
 let mermaidModule: typeof import('mermaid') | null = null
+// 深色模式重绘的代际序号: 连续切换时丢弃过期批次的渲染结果。
+// 声明必须早于下方 watch(isDark), 否则 TDZ 会在切换主题的瞬间抛错。
+let redrawGeneration = 0
 
 async function getMermaid(): Promise<typeof import('mermaid') | null> {
   if (!mermaidModule) {
@@ -280,7 +283,12 @@ watch(isDark, async () => {
   })
   await Promise.all(jobs)
 })
-let redrawGeneration = 0
+
+// 组件卸载时断开大纲跟随的 MutationObserver, 避免它继续持有已移除的 DOM 引用
+onBeforeUnmount(() => {
+  outlineObserver?.disconnect()
+  outlineObserver = null
+})
 </script>
 
 <template>
